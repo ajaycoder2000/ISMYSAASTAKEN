@@ -1,0 +1,220 @@
+@import "tailwindcss";
+
+:root {
+  --background: hsl(220, 15%, 8%);
+  --foreground: hsl(40, 20%, 92%);
+  --surface: hsl(220, 12%, 12%);
+  --panel: hsl(220, 12%, 12%);
+  --border: hsl(220, 10%, 18%);
+  --border-hover: hsl(220, 10%, 25%);
+  --text-primary: hsl(40, 20%, 92%);
+  --text-secondary: hsl(40, 8%, 55%);
+  --text-muted: hsl(40, 8%, 35%);
+  --text-dim: hsl(40, 8%, 50%);
+  --accent: hsl(42, 95%, 55%);
+  --accent-mid: hsl(42, 95%, 55%, 0.4);
+  --accent-hover: hsl(42, 95%, 50%);
+  --accent-subtle: hsl(42, 95%, 55%, 0.1);
+  --accent-glow: hsl(42, 95%, 55%, 0.3);
+  --amber: hsl(42, 95%, 55%);
+  --red: hsl(0, 72%, 55%);
+  --danger: hsl(0, 72%, 55%);
+  --caution: hsl(35, 85%, 55%);
+  --clear: hsl(145, 60%, 45%);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(220, 10%, 25%);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(220, 10%, 35%);
+}
+
+/* Selection */
+::selection {
+  background: hsl(42, 95%, 55%, 0.25);
+  color: hsl(40, 20%, 92%);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-amber {
+  0%, 100% { box-shadow: 0 0 0 0 hsl(42, 95%, 55%, 0.2); }
+  50% { box-shadow: 0 0 0 8px hsl(42, 95%, 55%, 0); }
+}
+
+@keyframes grid-drift {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 36px 36px;
+  }
+}
+
+@keyframes radar-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes radar-ping {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+/* Scanline Sweep on Hover */
+@keyframes scanline-sweep {
+  0% {
+    top: -25%;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    top: 140%;
+    opacity: 0;
+  }
+}
+
+.scanline-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.scanline-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -25%;
+  height: 25%;
+  background: linear-gradient(180deg, transparent 0%, var(--accent-mid) 50%, transparent 100%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.scanline-card:hover::before {
+  animation: scanline-sweep 0.65s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.6s ease-out forwards;
+}
+
+.animate-grid-drift {
+  animation: grid-drift 14s linear infinite;
+}
+
+.animate-radar-spin {
+  animation: radar-spin 4s linear infinite;
+}
+
+.animate-radar-ping {
+  animation: radar-ping 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.animate-radar-ping-delayed {
+  animation: radar-ping 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+  animation-delay: 0.8s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-grid-drift {
+    animation: none !important;
+  }
+  .animate-radar-spin,
+  .animate-radar-ping,
+  .animate-radar-ping-delayed {
+    animation: none !important;
+    display: none !important;
+  }
+  .scanline-card:hover::before {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+}
+
+/* Stagger children animations */
+.stagger-children > * {
+  opacity: 0;
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+.stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-children > *:nth-child(2) { animation-delay: 80ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 160ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 240ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 320ms; }
+.stagger-children > *:nth-child(6) { animation-delay: 400ms; }
+.stagger-children > *:nth-child(7) { animation-delay: 480ms; }
+.stagger-children > *:nth-child(8) { animation-delay: 560ms; }
+
+/* Focus styles */
+textarea:focus,
+input:focus {
+  outline: none;
+}
+
+/* Noise texture overlay for surfaces (subtle) */
+.surface-texture {
+  position: relative;
+}
+
+.surface-texture::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.015;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  pointer-events: none;
+  border-radius: inherit;
+}
