@@ -21,6 +21,16 @@
   --danger: hsl(0, 72%, 55%);
   --caution: hsl(35, 85%, 55%);
   --clear: hsl(145, 60%, 45%);
+  --bg: hsl(220, 15%, 8%);
+  --text: hsl(40, 20%, 92%);
+  --text-faint: hsl(40, 8%, 40%);
+  --panel-raised: hsl(220, 14%, 15%);
+  --accent-dim: hsl(42, 95%, 55%, 0.1);
+  --green: hsl(145, 60%, 55%);
+  --green-dim: hsl(145, 60%, 45%, 0.1);
+  --green-mid: hsl(145, 60%, 45%, 0.3);
+  --amber-dim: hsl(42, 95%, 55%, 0.1);
+  --amber-mid: hsl(42, 95%, 55%, 0.3);
 }
 
 @theme inline {

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import ScanHistory from '@/components/ScanHistory';
 import UsageBar from '@/components/UsageBar';
 import ScanningIndicator from '@/components/ScanningIndicator';
+import ScanDiff from '@/components/ScanDiff';
 
 interface UserData {
   id: string;
@@ -44,11 +45,11 @@ export default function DashboardPage() {
 
     // Fetch session and scan history
     Promise.all([
-      fetch('/api/auth/session').then(r => r.json()),
-      fetch('/api/scans').then(r => r.json()).catch(() => ({ scans: [] })),
+      fetch('/api/auth/session').then((r) => r.json()),
+      fetch('/api/scans').then((r) => r.json()).catch(() => ({ scans: [] })),
     ]).then(([sessionData, scansData]) => {
       if (!sessionData.user) {
-        router.push('/login');
+        router.push('/sign-in');
         return;
       }
       setUser(sessionData.user);
@@ -72,10 +73,10 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-[calc(100vh-3.5rem)] px-4 sm:px-6 py-10 sm:py-16">
-      <div className="w-full max-w-2xl mx-auto">
+      <div className="w-full max-w-2xl mx-auto space-y-8">
         {/* Upgrade toast */}
         {showUpgradeToast && (
-          <div className="mb-6 p-4 bg-[hsl(145,60%,45%,0.08)] border border-[hsl(145,60%,45%,0.2)] rounded-lg animate-fade-in">
+          <div className="p-4 bg-[hsl(145,60%,45%,0.08)] border border-[hsl(145,60%,45%,0.2)] rounded-xl animate-fade-in">
             <p className="text-sm text-[hsl(145,60%,55%)] font-[family-name:var(--font-inter)] font-medium">
               🎉 Welcome to Pro! You now have unlimited scans.
             </p>
@@ -83,26 +84,26 @@ export default function DashboardPage() {
         )}
 
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,92%)]">
-            Dashboard
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)]">
+            Founder Dashboard
           </h1>
           <div className="flex items-center gap-3 mt-2">
             <span className="text-sm text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)]">
               {user.email}
             </span>
-            <span className={`text-xs font-[family-name:var(--font-mono)] uppercase tracking-widest px-2 py-0.5 rounded ${
+            <span className={`text-xs font-[family-name:var(--font-mono)] uppercase tracking-widest px-2.5 py-0.5 rounded-full font-bold ${
               user.plan === 'pro'
-                ? 'text-[hsl(42,95%,55%)] bg-[hsl(42,95%,55%,0.1)]'
-                : 'text-[hsl(40,8%,45%)] bg-[hsl(220,10%,18%)]'
+                ? 'text-[hsl(42,95%,55%)] bg-[hsl(42,95%,55%,0.15)] border border-[hsl(42,95%,55%,0.3)]'
+                : 'text-[hsl(40,8%,55%)] bg-[hsl(220,10%,18%)] border border-[hsl(220,10%,24%)]'
             }`}>
               {user.plan}
             </span>
           </div>
         </div>
 
-        {/* Usage */}
-        <div className="mb-8">
+        {/* Usage Telemetry Bar */}
+        <div>
           <UsageBar
             used={user.scansUsedThisMonth}
             limit={user.plan === 'pro' ? null : FREE_MONTHLY_CAP}
@@ -112,25 +113,36 @@ export default function DashboardPage() {
 
         {/* Upgrade CTA for free users */}
         {user.plan === 'free' && (
-          <div className="mb-8 bg-[hsl(220,12%,12%)] border border-[hsl(220,10%,18%)] rounded-lg p-5">
+          <div className="bg-[hsl(220,13%,11%)] border border-[hsl(220,10%,20%)] rounded-2xl p-5 sm:p-6 shadow-md">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <p className="text-sm text-[hsl(40,20%,92%)] font-[family-name:var(--font-inter)] font-medium">
-                  Want unlimited scans and saved history?
+                <p className="text-sm text-[hsl(40,20%,92%)] font-[family-name:var(--font-space-grotesk)] font-bold">
+                  Unlock Unlimited Scans & Market Pivot Angles
                 </p>
-                <p className="text-xs text-[hsl(40,8%,45%)] font-[family-name:var(--font-inter)] mt-1">
-                  Pro is $12/mo. Every scan costs us real money, so this keeps the lights on.
+                <p className="text-xs text-[hsl(40,8%,50%)] font-[family-name:var(--font-inter)] mt-1">
+                  Start with a $9 7-Day Sprint Pass or get full Founder Pro at $12/mo.
                 </p>
               </div>
               <Link
                 href="/pricing"
-                className="flex-shrink-0 px-5 py-2 bg-[hsl(42,95%,55%)] hover:bg-[hsl(42,95%,50%)] text-[hsl(220,15%,8%)] font-bold text-sm rounded-lg transition-all duration-200 font-[family-name:var(--font-space-grotesk)] text-center"
+                className="flex-shrink-0 px-5 py-2.5 bg-[hsl(42,95%,55%)] hover:bg-[hsl(42,95%,50%)] text-[hsl(220,15%,8%)] font-bold text-xs rounded-xl transition-all font-[family-name:var(--font-space-grotesk)] text-center shadow-md cursor-pointer"
               >
-                Upgrade →
+                View Plans →
               </Link>
             </div>
           </div>
         )}
+
+        {/* Market Shift Tracker (Scan Diff) */}
+        <div>
+          <h2 className="text-xs font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-[hsl(40,8%,55%)] mb-3">
+            Market Shift Radar
+          </h2>
+          <ScanDiff
+            ideaText={scans[0]?.ideaText || "AI that turns meeting notes into Linear tickets"}
+            comparedTo="vs. scan from 14 days ago"
+          />
+        </div>
 
         {/* Scan history */}
         <div>
@@ -141,12 +153,12 @@ export default function DashboardPage() {
         </div>
 
         {/* Quick scan CTA */}
-        <div className="mt-8 text-center">
+        <div className="pt-4 text-center">
           <Link
             href="/"
-            className="text-sm text-[hsl(42,95%,55%)] hover:text-[hsl(42,95%,65%)] transition-colors font-[family-name:var(--font-space-grotesk)] font-medium"
+            className="text-xs sm:text-sm text-[hsl(42,95%,55%)] hover:text-[hsl(42,95%,65%)] transition-colors font-[family-name:var(--font-space-grotesk)] font-bold"
           >
-            ← Run a new scan
+            ← Run a new live scan
           </Link>
         </div>
       </div>

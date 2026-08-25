@@ -7,6 +7,7 @@ import {
   UserButton,
   Show,
 } from '@clerk/nextjs';
+import NotificationCenter from './NotificationCenter';
 
 export default function Navbar() {
   return (
@@ -19,10 +20,10 @@ export default function Navbar() {
           ismysaas<span className="text-[hsl(42,95%,55%)]">taken</span><span className="text-[hsl(40,8%,45%)]">?</span>
         </Link>
         
-        <div className="flex items-center gap-3 sm:gap-5">
+        <div className="flex items-center gap-3 sm:gap-4">
           <Link
             href="/#recent-scans"
-            className="text-xs sm:text-sm text-[hsl(40,8%,55%)] hover:text-[hsl(40,20%,92%)] transition-colors font-[family-name:var(--font-inter)]"
+            className="hidden sm:inline text-xs sm:text-sm text-[hsl(40,8%,55%)] hover:text-[hsl(40,20%,92%)] transition-colors font-[family-name:var(--font-inter)]"
           >
             Recent Scans
           </Link>
@@ -32,6 +33,9 @@ export default function Navbar() {
           >
             Pricing
           </Link>
+
+          {/* Market Alerts & Notifications */}
+          <NotificationCenter />
 
           {/* Signed Out Controls */}
           <Show when="signed-out">
@@ -51,7 +55,7 @@ export default function Navbar() {
 
           {/* Signed In Controls */}
           <Show when="signed-in">
-            <div className="flex items-center gap-3.5">
+            <div className="flex items-center gap-3">
               <Link
                 href="/dashboard"
                 className="text-xs sm:text-sm text-[hsl(40,8%,60%)] hover:text-[hsl(40,20%,92%)] transition-colors font-[family-name:var(--font-inter)]"

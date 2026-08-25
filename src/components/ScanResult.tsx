@@ -1,5 +1,4 @@
 'use client';
-import { useState } from 'react';
 import { IScanDocument } from '@/types';
 import CompetitorRow from './CompetitorRow';
 import SignalBars from './SignalBars';
@@ -8,6 +7,8 @@ import SponsorSlot from './SponsorSlot';
 import PivotAngles from './PivotAngles';
 import ShareVerdictCard from './ShareVerdictCard';
 import BookmarkButton from './BookmarkButton';
+import LandscapeMap from './LandscapeMap';
+import CommunityPoll from './CommunityPoll';
 
 interface ScanResultProps {
   data: IScanDocument;
@@ -15,6 +16,14 @@ interface ScanResultProps {
 }
 
 export default function ScanResult({ data }: ScanResultProps) {
+  // Map live competitors to landscape coordinates
+  const landscapeCompetitors = (data.competitors || []).map((c, i) => ({
+    name: c.name,
+    crowdedness: Math.min(0.85, 0.35 + (i * 0.15) + (data.saturationScore === 'high' ? 0.2 : 0)),
+    establishment: Math.max(0.25, 0.85 - (i * 0.12)),
+    size: 12 + (i % 3) * 2,
+  }));
+
   return (
     <div className="w-full mx-auto mt-6 sm:mt-8 space-y-6 sm:space-y-8 animate-in fade-in duration-300 text-left">
       {/* Top Header Actions */}
@@ -47,7 +56,19 @@ export default function ScanResult({ data }: ScanResultProps) {
         </div>
       </section>
 
-      {/* Section 2: Saturation with SignalBars */}
+      {/* Section 2: 2D Competitive Landscape Matrix */}
+      <section>
+        <LandscapeMap
+          competitors={landscapeCompetitors.length > 0 ? landscapeCompetitors : undefined}
+          ideaLabel="YOUR IDEA"
+          ideaPosition={{
+            x: data.saturationScore === 'low' ? 0.22 : data.saturationScore === 'medium' ? 0.38 : 0.58,
+            y: 0.45,
+          }}
+        />
+      </section>
+
+      {/* Section 3: Saturation with SignalBars */}
       <section>
         <h3 className="text-[11px] sm:text-xs font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-[hsl(40,8%,50%)] mb-3 font-semibold">
           Market Saturation Level
@@ -60,7 +81,7 @@ export default function ScanResult({ data }: ScanResultProps) {
         </div>
       </section>
 
-      {/* Section 3: Gap / Opportunity with DecryptText */}
+      {/* Section 4: Gap / Opportunity with DecryptText */}
       <section>
         <h3 className="text-[11px] sm:text-xs font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-[hsl(40,8%,50%)] mb-3 font-semibold">
           Your Opportunity Wedge
@@ -74,7 +95,7 @@ export default function ScanResult({ data }: ScanResultProps) {
         </div>
       </section>
 
-      {/* Section 4: Interactive Strategic Pivot Wedges */}
+      {/* Section 5: Interactive Strategic Pivot Wedges */}
       <section>
         <PivotAngles
           ideaText={data.ideaText}
@@ -83,7 +104,12 @@ export default function ScanResult({ data }: ScanResultProps) {
         />
       </section>
 
-      {/* Section 5: Share / Export Executive Card */}
+      {/* Section 6: Community Validation Poll */}
+      <section className="pt-2">
+        <CommunityPoll scanId={data._id} />
+      </section>
+
+      {/* Section 7: Share / Export Executive Card */}
       <section className="pt-2">
         <ShareVerdictCard
           ideaText={data.ideaText}
