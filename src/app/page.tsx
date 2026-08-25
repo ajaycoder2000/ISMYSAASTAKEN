@@ -13,6 +13,7 @@ import ExpandedResultShowcase from '@/components/ExpandedResultShowcase';
 import RecentScansSection from '@/components/RecentScansSection';
 import HowItWorksPipeline from '@/components/HowItWorksPipeline';
 import MarketPlaybook from '@/components/MarketPlaybook';
+import WeeklyGapSignup from '@/components/WeeklyGapSignup';
 import HeroBackground from '@/components/HeroBackground';
 import TypewriterHeadline from '@/components/TypewriterHeadline';
 import { IScanDocument } from '@/types';
@@ -112,7 +113,7 @@ export default function HomePage() {
           {/* 1. Momentum / Scale Stat Block */}
           <MomentumStat />
 
-          {/* 2. 3-Step Live Intelligence Engine (Replaces raw pricing) */}
+          {/* 2. 3-Step Live Intelligence Engine */}
           <div className="w-full pt-6 sm:pt-10 border-t border-[hsl(220,10%,15%)]">
             <HowItWorksPipeline />
           </div>
@@ -127,7 +128,12 @@ export default function HomePage() {
             <MarketPlaybook />
           </div>
 
-          {/* 5. Recent Scans Live Feed */}
+          {/* 5. Weekly Gap Report Signup Widget */}
+          <div className="w-full pt-10 sm:pt-16 border-t border-[hsl(220,10%,15%)]">
+            <WeeklyGapSignup />
+          </div>
+
+          {/* 6. Recent Scans Live Feed */}
           <div className="w-full pt-12 sm:pt-16 border-t border-[hsl(220,10%,15%)]">
             <RecentScansSection />
           </div>
@@ -149,7 +155,7 @@ export default function HomePage() {
                 View Plans & Passes →
               </Link>
               <Link
-                href="/sponsors"
+                href="/pricing"
                 className="px-5 py-2.5 bg-[hsl(220,12%,14%)] hover:bg-[hsl(220,12%,20%)] border border-[hsl(220,10%,24%)] text-[hsl(40,20%,90%)] text-xs sm:text-sm font-medium rounded-xl transition-all font-[family-name:var(--font-space-grotesk)]"
               >
                 Become a Sponsor

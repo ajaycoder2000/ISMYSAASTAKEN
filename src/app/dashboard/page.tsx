@@ -4,14 +4,14 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import ScanHistory from '@/components/ScanHistory';
-import UsageBar from '@/components/UsageBar';
 import ScanningIndicator from '@/components/ScanningIndicator';
 import ScanDiff from '@/components/ScanDiff';
+import TelemetryGauge from '@/components/TelemetryGauge';
 
 interface UserData {
   id: string;
   email: string;
-  plan: string;
+  plan: 'free' | 'pro' | 'sprint';
   scansUsedThisMonth: number;
   scansRemaining: number;
   scansResetDate: string;
@@ -69,8 +69,6 @@ export default function DashboardPage() {
 
   if (!user) return null;
 
-  const FREE_MONTHLY_CAP = 3;
-
   return (
     <div className="min-h-[calc(100vh-3.5rem)] px-4 sm:px-6 py-10 sm:py-16">
       <div className="w-full max-w-2xl mx-auto space-y-8">
@@ -102,36 +100,14 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Usage Telemetry Bar */}
-        <div>
-          <UsageBar
-            used={user.scansUsedThisMonth}
-            limit={user.plan === 'pro' ? null : FREE_MONTHLY_CAP}
-            resetDate={user.scansResetDate}
-          />
-        </div>
-
-        {/* Upgrade CTA for free users */}
-        {user.plan === 'free' && (
-          <div className="bg-[hsl(220,13%,11%)] border border-[hsl(220,10%,20%)] rounded-2xl p-5 sm:p-6 shadow-md">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <p className="text-sm text-[hsl(40,20%,92%)] font-[family-name:var(--font-space-grotesk)] font-bold">
-                  Unlock Unlimited Scans & Market Pivot Angles
-                </p>
-                <p className="text-xs text-[hsl(40,8%,50%)] font-[family-name:var(--font-inter)] mt-1">
-                  Start with a $9 7-Day Sprint Pass or get full Founder Pro at $12/mo.
-                </p>
-              </div>
-              <Link
-                href="/pricing"
-                className="flex-shrink-0 px-5 py-2.5 bg-[hsl(42,95%,55%)] hover:bg-[hsl(42,95%,50%)] text-[hsl(220,15%,8%)] font-bold text-xs rounded-xl transition-all font-[family-name:var(--font-space-grotesk)] text-center shadow-md cursor-pointer"
-              >
-                View Plans →
-              </Link>
-            </div>
-          </div>
-        )}
+        {/* High-Tech Telemetry Usage Battery Gauge */}
+        <TelemetryGauge
+          plan={user.plan === 'pro' ? 'pro' : 'free'}
+          scansUsed={user.scansUsedThisMonth}
+          scansLimit={3}
+          onUpgrade={() => router.push('/pricing')}
+          onBilling={() => router.push('/pricing')}
+        />
 
         {/* Market Shift Tracker (Scan Diff) */}
         <div>
