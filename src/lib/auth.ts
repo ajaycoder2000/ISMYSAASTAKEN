@@ -7,6 +7,7 @@ import dbConnect from './mongodb';
 import User, { IUser } from '@/models/User';
 import MagicToken from '@/models/MagicToken';
 import { DevStore } from './dev-store';
+import { SupabaseDB } from './supabase/db';
 
 const SESSION_SECRET = process.env.NEXTAUTH_SECRET || process.env.SESSION_SECRET || 'dev-secret-change-in-production-please';
 const COOKIE_NAME = 'saastakenSession';
@@ -47,48 +48,13 @@ export async function getSession(): Promise<SessionPayload | null> {
       const user = await currentUser();
       const email = user?.emailAddresses?.[0]?.emailAddress || `${userId}@user.clerk`;
       
-      let plan: PlanType = 'free';
-      let role: UserRole = 'user';
-
-      try {
-        const conn = await dbConnect();
-        if (conn) {
-          let userDoc = await User.findOne({ clerkId: userId });
-          if (!userDoc) {
-            userDoc = await User.findOne({ email });
-          }
-          if (!userDoc) {
-            const userCount = await User.countDocuments();
-            userDoc = await User.create({
-              clerkId: userId,
-              email,
-              role: userCount === 0 ? 'admin' : 'user',
-            });
-          }
-          if (userDoc) {
-            plan = userDoc.plan;
-            role = userDoc.role || 'user';
-          }
-        }
-      } catch {
-        // fallback
-      }
-
-      let devUser = DevStore.findUserByEmail(email);
-      if (!devUser) {
-        const isFirst = DevStore.getAllUsers().length === 0;
-        devUser = DevStore.createUser(email, isFirst ? 'admin' : 'user');
-      }
-      if (devUser) {
-        plan = devUser.plan;
-        role = devUser.role;
-      }
+      const synced = await SupabaseDB.syncUser(userId, email);
 
       return {
         userId,
-        email,
-        plan,
-        role,
+        email: synced.email,
+        plan: synced.plan,
+        role: synced.role,
       };
     }
   } catch {
@@ -114,6 +80,15 @@ export async function getSession(): Promise<SessionPayload | null> {
 export async function getAdminUser(): Promise<IUser | { _id: string; email: string; role: UserRole; suspended: boolean } | null> {
   const session = await getSession();
   if (!session?.userId) return null;
+
+  if (session.role === 'admin') {
+    return {
+      _id: session.userId,
+      email: session.email,
+      role: 'admin',
+      suspended: false,
+    };
+  }
 
   try {
     const conn = await dbConnect();

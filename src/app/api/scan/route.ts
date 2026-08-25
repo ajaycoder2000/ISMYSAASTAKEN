@@ -5,6 +5,7 @@ import { performScan } from '@/lib/llm';
 import { validateIdeaText, generateSlug } from '@/lib/utils';
 import { checkRateLimit, recordScanUsage } from '@/lib/rate-limit';
 import { DevStore } from '@/lib/dev-store';
+import { SupabaseDB } from '@/lib/supabase/db';
 
 export async function POST(req: NextRequest) {
   try {
@@ -31,43 +32,20 @@ export async function POST(req: NextRequest) {
     const result = await performScan(validation.sanitized!);
 
     const fallbackSlug = generateSlug();
-    let scanId = fallbackSlug;
-    let shareSlug = fallbackSlug;
+    const scanId = fallbackSlug;
+    const shareSlug = fallbackSlug;
     const createdAt = new Date();
 
-    // Save to database or DevStore
-    let savedInDb = false;
-    try {
-      const conn = await dbConnect();
-      if (conn) {
-        const scan = await Scan.create({
-          userId: rateLimit.userId && rateLimit.userId.length === 24 ? rateLimit.userId : null,
-          ideaText: validation.sanitized,
-          ...result,
-          shareSlug: fallbackSlug,
-        });
-        scanId = scan._id.toString();
-        shareSlug = scan.shareSlug;
-        savedInDb = true;
-      }
-    } catch (dbErr) {
-      console.warn('MongoDB save fallback to DevStore:', (dbErr as Error).message);
-    }
-
-    if (!savedInDb) {
-      const devScan = DevStore.createScan({
-        userId: rateLimit.userId || null,
-        ideaText: validation.sanitized!,
-        competitors: result.competitors,
-        saturationScore: result.saturationScore,
-        saturationReasoning: result.saturationReasoning,
-        gapAnalysis: result.gapAnalysis,
-        shareSlug: fallbackSlug,
-        featured: false,
-      });
-      scanId = devScan._id;
-      shareSlug = devScan.shareSlug;
-    }
+    // 1. Save to Supabase (and fallback to DevStore / Mongo)
+    await SupabaseDB.saveScan({
+      userId: rateLimit.userId || null,
+      ideaText: validation.sanitized!,
+      competitors: result.competitors,
+      saturationScore: result.saturationScore,
+      saturationReasoning: result.saturationReasoning,
+      gapAnalysis: result.gapAnalysis,
+      shareSlug: fallbackSlug,
+    });
 
     // Record usage
     try {

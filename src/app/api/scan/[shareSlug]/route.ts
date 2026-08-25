@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/lib/mongodb';
-import Scan from '@/models/Scan';
-import { DevStore } from '@/lib/dev-store';
+import { SupabaseDB } from '@/lib/supabase/db';
 
 export async function GET(
   req: NextRequest,
@@ -9,36 +7,12 @@ export async function GET(
 ) {
   try {
     const { shareSlug } = await params;
-    
-    try {
-      const conn = await dbConnect();
-      if (conn) {
-        const scan = await Scan.findOne({ shareSlug }).lean();
-        if (scan) {
-          return NextResponse.json({
-            success: true,
-            data: {
-              _id: scan._id.toString(),
-              ideaText: scan.ideaText,
-              competitors: scan.competitors,
-              saturationScore: scan.saturationScore,
-              saturationReasoning: scan.saturationReasoning,
-              gapAnalysis: scan.gapAnalysis,
-              shareSlug: scan.shareSlug,
-              createdAt: scan.createdAt,
-            },
-          });
-        }
-      }
-    } catch {
-      // fallback
-    }
+    const scan = await SupabaseDB.getScanBySlug(shareSlug);
 
-    const devScan = DevStore.findScanBySlug(shareSlug);
-    if (devScan) {
+    if (scan) {
       return NextResponse.json({
         success: true,
-        data: devScan,
+        data: scan,
       });
     }
 
