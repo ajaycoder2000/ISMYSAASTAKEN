@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import ScanForm from '@/components/ScanForm';
 import ScanResult from '@/components/ScanResult';
 import ScanLoadingState from '@/components/ScanLoadingState';
@@ -10,8 +11,8 @@ import SponsorRail from '@/components/SponsorRail';
 import MomentumStat from '@/components/MomentumStat';
 import ExpandedResultShowcase from '@/components/ExpandedResultShowcase';
 import RecentScansSection from '@/components/RecentScansSection';
-import ProductPricingSection from '@/components/ProductPricingSection';
-import SponsorshipSection from '@/components/SponsorshipSection';
+import HowItWorksPipeline from '@/components/HowItWorksPipeline';
+import MarketPlaybook from '@/components/MarketPlaybook';
 import HeroBackground from '@/components/HeroBackground';
 import TypewriterHeadline from '@/components/TypewriterHeadline';
 import { IScanDocument } from '@/types';
@@ -108,27 +109,52 @@ export default function HomePage() {
             </div>
           )}
 
-          {/* 1. Momentum / Scale Stat Block (Non-card bold metric) */}
+          {/* 1. Momentum / Scale Stat Block */}
           <MomentumStat />
 
-          {/* 2. Expanded Result Showcase ("See a real result") */}
+          {/* 2. 3-Step Live Intelligence Engine (Replaces raw pricing) */}
+          <div className="w-full pt-6 sm:pt-10 border-t border-[hsl(220,10%,15%)]">
+            <HowItWorksPipeline />
+          </div>
+
+          {/* 3. Expanded Result Showcase ("See a real result") */}
           <div className="w-full pt-10 sm:pt-16 border-t border-[hsl(220,10%,15%)]">
             <ExpandedResultShowcase />
           </div>
 
-          {/* 3. Recent Scans Feed */}
-          <div className="w-full pt-16 sm:pt-24">
+          {/* 4. Founder Moat Playbook (Interactive Archetypes) */}
+          <div className="w-full pt-10 sm:pt-16 border-t border-[hsl(220,10%,15%)]">
+            <MarketPlaybook />
+          </div>
+
+          {/* 5. Recent Scans Live Feed */}
+          <div className="w-full pt-12 sm:pt-16 border-t border-[hsl(220,10%,15%)]">
             <RecentScansSection />
           </div>
 
-          {/* 4. Product Pricing Section (Free vs Pro with monthly/yearly toggle) */}
-          <div className="w-full pt-16 sm:pt-24 border-t border-[hsl(220,10%,15%)]">
-            <ProductPricingSection />
-          </div>
-
-          {/* 5. Sponsorship Section */}
-          <div className="w-full pt-16 sm:pt-24 border-t border-[hsl(220,10%,15%)]">
-            <SponsorshipSection />
+          {/* Bottom Upgrade & Pricing CTA Card */}
+          <div className="w-full mt-14 sm:mt-20 p-6 sm:p-10 bg-[hsl(220,14%,10%)] border border-[hsl(220,10%,18%)] rounded-2xl text-center relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[hsl(42,95%,55%,0.05)] rounded-full blur-3xl pointer-events-none" />
+            <h3 className="text-xl sm:text-2xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)] mb-2 relative z-10">
+              Ready to validate your next startup idea?
+            </h3>
+            <p className="text-xs sm:text-sm text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] max-w-md mx-auto mb-6 relative z-10">
+              Start with 3 free scans every month, or explore our $9 Sprint Pass and unlimited Founder Pro plans.
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-3 relative z-10">
+              <Link
+                href="/pricing"
+                className="px-6 py-2.5 bg-[hsl(42,95%,55%)] hover:bg-[hsl(42,95%,50%)] text-[hsl(220,15%,8%)] font-bold text-xs sm:text-sm rounded-xl transition-all font-[family-name:var(--font-space-grotesk)] shadow-md"
+              >
+                View Plans & Passes →
+              </Link>
+              <Link
+                href="/sponsors"
+                className="px-5 py-2.5 bg-[hsl(220,12%,14%)] hover:bg-[hsl(220,12%,20%)] border border-[hsl(220,10%,24%)] text-[hsl(40,20%,90%)] text-xs sm:text-sm font-medium rounded-xl transition-all font-[family-name:var(--font-space-grotesk)]"
+              >
+                Become a Sponsor
+              </Link>
+            </div>
           </div>
 
           {/* Bottom spacer */}
