@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { toPng, toBlob } from 'html-to-image';
 import SignalBars from './SignalBars';
 
 interface ShareVerdictCardProps {
@@ -31,10 +30,12 @@ export default function ShareVerdictCard({
     return `https://ismysaastaken.vercel.app/scan/${shareSlug}`;
   };
 
+  // Dynamically import html-to-image only on demand
   const handleDownloadPng = async () => {
     if (!cardRef.current) return;
     setDownloading(true);
     try {
+      const { toPng } = await import('html-to-image');
       const dataUrl = await toPng(cardRef.current, {
         cacheBust: true,
         pixelRatio: 2,

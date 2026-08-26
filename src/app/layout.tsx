@@ -1,5 +1,6 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
@@ -57,6 +58,11 @@ export default function RootLayout({
           <main className="flex-1">{children}</main>
           <Footer />
         </ClerkProvider>
+        {/* Lightweight Vercel Analytics */}
+        <Script
+          src="https://va.vercel-scripts.com/v1/script.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
