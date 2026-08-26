@@ -12,6 +12,7 @@ import MomentumStat from '@/components/MomentumStat';
 import ExpandedResultShowcase from '@/components/ExpandedResultShowcase';
 import RecentScansSection from '@/components/RecentScansSection';
 import HowItWorksPipeline from '@/components/HowItWorksPipeline';
+import WhyThisExists from '@/components/WhyThisExists';
 import MarketPlaybook from '@/components/MarketPlaybook';
 import WeeklyGapSignup from '@/components/WeeklyGapSignup';
 import HeroBackground from '@/components/HeroBackground';
@@ -118,22 +119,27 @@ export default function HomePage() {
             <HowItWorksPipeline />
           </div>
 
-          {/* 3. Expanded Result Showcase ("See a real result") */}
-          <div className="w-full pt-10 sm:pt-16 border-t border-[hsl(220,10%,15%)]">
+          {/* 3. Why This Exists (ChatGPT vs This Tool) */}
+          <div className="w-full pt-8 sm:pt-12 border-t border-[hsl(220,10%,15%)]">
+            <WhyThisExists />
+          </div>
+
+          {/* 4. Expanded Result Showcase ("See a real result") */}
+          <div className="w-full pt-8 sm:pt-12 border-t border-[hsl(220,10%,15%)]">
             <ExpandedResultShowcase />
           </div>
 
-          {/* 4. Founder Moat Playbook (Interactive Archetypes) */}
+          {/* 5. Founder Moat Playbook (Interactive Archetypes) */}
           <div className="w-full pt-10 sm:pt-16 border-t border-[hsl(220,10%,15%)]">
             <MarketPlaybook />
           </div>
 
-          {/* 5. Weekly Gap Report Signup Widget */}
+          {/* 6. Weekly Gap Report Signup Widget */}
           <div className="w-full pt-10 sm:pt-16 border-t border-[hsl(220,10%,15%)]">
             <WeeklyGapSignup />
           </div>
 
-          {/* 6. Recent Scans Live Feed */}
+          {/* 7. Recent Scans Live Feed */}
           <div className="w-full pt-12 sm:pt-16 border-t border-[hsl(220,10%,15%)]">
             <RecentScansSection />
           </div>
