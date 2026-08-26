@@ -231,6 +231,24 @@ export const SupabaseDB = {
       return devScan as unknown as IScanDocument;
     }
 
+    // Check pre-seeded real scans
+    const { REAL_SEEDED_SCANS } = await import('@/lib/seeds/real-scans');
+    const seeded = REAL_SEEDED_SCANS.find((s) => s.shareSlug === shareSlug);
+    if (seeded) {
+      return {
+        _id: `seed_${seeded.shareSlug}`,
+        userId: 'system',
+        ideaText: seeded.ideaText,
+        competitors: seeded.competitors,
+        saturationScore: seeded.saturationScore,
+        saturationReasoning: seeded.saturationReasoning,
+        gapAnalysis: seeded.gapAnalysis,
+        shareSlug: seeded.shareSlug,
+        featured: true,
+        createdAt: new Date('2026-08-25T10:00:00Z'),
+      } as unknown as IScanDocument;
+    }
+
     try {
       await dbConnect();
       return (await Scan.findOne({ shareSlug })) as unknown as IScanDocument;

@@ -20,47 +20,51 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Links */}
+          {/* Core Navigation Links */}
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-[family-name:var(--font-inter)] text-[hsl(40,8%,55%)]">
-            <Link
-              href="/#pricing"
-              className="hover:text-[hsl(40,20%,92%)] transition-colors"
-            >
+            <Link href="/pricing" className="hover:text-[hsl(40,20%,92%)] transition-colors">
               Pricing
             </Link>
-            <Link
-              href="/#recent-scans"
-              className="hover:text-[hsl(40,20%,92%)] transition-colors"
-            >
-              Recent Scans
+            <Link href="/#recent-scans" className="hover:text-[hsl(40,20%,92%)] transition-colors">
+              Live Feed
             </Link>
-            <Link
-              href="/#sponsors-section"
-              className="hover:text-[hsl(40,20%,92%)] transition-colors"
-            >
+            <Link href="/pricing" className="hover:text-[hsl(40,20%,92%)] transition-colors">
               Sponsor
             </Link>
-            <Link
-              href="/login"
-              className="hover:text-[hsl(40,20%,92%)] transition-colors"
-            >
-              Sign In
+            <Link href="/dashboard" className="hover:text-[hsl(40,20%,92%)] transition-colors">
+              Dashboard
             </Link>
-            <a
-              href="https://github.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-[hsl(40,20%,92%)] transition-colors flex items-center gap-1"
-            >
-              GitHub ↗
-            </a>
           </div>
         </div>
 
-        {/* Disclaimer & Copyright */}
+        {/* Category Intelligence SEO Index Links */}
+        <div className="py-5 border-b border-[hsl(220,10%,12%)]">
+          <p className="text-[10px] font-bold font-[family-name:var(--font-mono)] uppercase tracking-wider text-[hsl(40,8%,40%)] mb-2.5">
+            Market Intelligence Categories:
+          </p>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-[family-name:var(--font-inter)] text-[hsl(40,8%,55%)]">
+            <Link href="/category/ai-agents" className="hover:text-[hsl(42,95%,55%)] transition-colors">
+              🤖 AI & Automation
+            </Link>
+            <Link href="/category/dev-tools" className="hover:text-[hsl(42,95%,55%)] transition-colors">
+              🛠️ Developer Tools
+            </Link>
+            <Link href="/category/micro-saas" className="hover:text-[hsl(42,95%,55%)] transition-colors">
+              ⚡ Micro-SaaS
+            </Link>
+            <Link href="/category/b2b-saas" className="hover:text-[hsl(42,95%,55%)] transition-colors">
+              📈 B2B SaaS
+            </Link>
+            <Link href="/category/creator-economy" className="hover:text-[hsl(42,95%,55%)] transition-colors">
+              🎨 Creator Economy
+            </Link>
+          </div>
+        </div>
+
+        {/* Privacy & Legal Disclaimer */}
         <div className="pt-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-[11px] font-[family-name:var(--font-inter)] text-[hsl(40,8%,40%)]">
           <p>
-            Results are AI-generated from live web search — directional, not formal market research.
+            🔒 Private & Confidential • Web results are AI-grounded in real-time.
           </p>
           <p className="text-[hsl(40,8%,30%)]">
             © {new Date().getFullYear()} ismysaastaken.
