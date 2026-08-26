@@ -18,14 +18,27 @@ function getSecret(): string {
   return SESSION_SECRET;
 }
 
+/**
+ * Checks whether an email is an authorized admin email.
+ * Configured via ADMIN_EMAIL env var (defaults to ismysaastaken@gmail.com).
+ */
+export function isAdminEmail(email?: string | null): boolean {
+  if (!email) return false;
+  const clean = email.toLowerCase().trim();
+  const adminEnv = (process.env.ADMIN_EMAIL || 'ismysaastaken@gmail.com').toLowerCase();
+  const allowed = adminEnv.split(',').map((e) => e.trim()).filter(Boolean);
+  return allowed.includes(clean);
+}
+
 export async function createSession(
   userId: string,
   email: string,
   plan: string,
-  role: UserRole = 'user'
+  role?: UserRole
 ): Promise<void> {
+  const actualRole: UserRole = role || (isAdminEmail(email) ? 'admin' : 'user');
   const token = jwt.sign(
-    { userId, email, plan, role } as SessionPayload,
+    { userId, email, plan, role: actualRole } as SessionPayload,
     getSecret(),
     { expiresIn: SESSION_DURATION }
   );
@@ -49,12 +62,13 @@ export async function getSession(): Promise<SessionPayload | null> {
       const email = user?.emailAddresses?.[0]?.emailAddress || `${userId}@user.clerk`;
       
       const synced = await SupabaseDB.syncUser(userId, email);
+      const isAuthorizedAdmin = isAdminEmail(email) || synced.role === 'admin';
 
       return {
         userId,
         email: synced.email,
         plan: synced.plan,
-        role: synced.role,
+        role: isAuthorizedAdmin ? 'admin' : 'user',
       };
     }
   } catch {
@@ -68,6 +82,9 @@ export async function getSession(): Promise<SessionPayload | null> {
     if (!token) return null;
 
     const decoded = jwt.verify(token, getSecret()) as SessionPayload;
+    if (decoded?.email) {
+      decoded.role = isAdminEmail(decoded.email) || decoded.role === 'admin' ? 'admin' : 'user';
+    }
     return decoded;
   } catch {
     return null;
@@ -79,9 +96,10 @@ export async function getSession(): Promise<SessionPayload | null> {
  */
 export async function getAdminUser(): Promise<IUser | { _id: string; email: string; role: UserRole; suspended: boolean } | null> {
   const session = await getSession();
-  if (!session?.userId) return null;
+  if (!session?.userId || !session?.email) return null;
 
-  if (session.role === 'admin') {
+  // Strict email-based or explicit admin verification
+  if (isAdminEmail(session.email) || session.role === 'admin') {
     return {
       _id: session.userId,
       email: session.email,
@@ -96,20 +114,20 @@ export async function getAdminUser(): Promise<IUser | { _id: string; email: stri
       const user = await User.findOne({
         $or: [{ _id: session.userId }, { clerkId: session.userId }, { email: session.email }],
       });
-      if (!user || user.role !== 'admin' || user.suspended) {
-        return null;
+      if (user && (user.role === 'admin' || isAdminEmail(user.email)) && !user.suspended) {
+        return user;
       }
-      return user;
+      return null;
     }
   } catch {
     // Fall back to DevStore
   }
 
   const devUser = DevStore.findUserById(session.userId) || DevStore.findUserByEmail(session.email);
-  if (!devUser || devUser.role !== 'admin' || devUser.suspended) {
-    return null;
+  if (devUser && (devUser.role === 'admin' || isAdminEmail(devUser.email)) && !devUser.suspended) {
+    return devUser;
   }
-  return devUser;
+  return null;
 }
 
 export async function destroySession(): Promise<void> {
@@ -147,11 +165,11 @@ export async function verifyMagicToken(token: string): Promise<{ userId: string;
       }
 
       let user = await User.findOne({ email: magicToken.email });
+      const role: UserRole = isAdminEmail(magicToken.email) ? 'admin' : 'user';
       if (!user) {
-        const userCount = await User.countDocuments();
         user = await User.create({
           email: magicToken.email,
-          role: userCount === 0 ? 'admin' : 'user',
+          role,
         });
       }
 
@@ -161,7 +179,7 @@ export async function verifyMagicToken(token: string): Promise<{ userId: string;
         userId: user._id.toString(),
         email: user.email,
         plan: user.plan,
-        role: user.role || 'user',
+        role: isAdminEmail(user.email) ? 'admin' : (user.role || 'user'),
       };
     }
   } catch (error) {
@@ -175,6 +193,6 @@ export async function verifyMagicToken(token: string): Promise<{ userId: string;
     userId: result.user._id,
     email: result.user.email,
     plan: result.user.plan,
-    role: result.user.role,
+    role: isAdminEmail(result.user.email) ? 'admin' : result.user.role,
   };
 }

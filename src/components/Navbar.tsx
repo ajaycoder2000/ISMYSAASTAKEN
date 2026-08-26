@@ -13,7 +13,7 @@ import ScanMeter from './ScanMeter';
 import UpgradeModal from './UpgradeModal';
 
 export default function Navbar() {
-  const [userData, setUserData] = useState<{ plan: 'free' | 'pro'; scansUsedThisMonth: number } | null>(null);
+  const [userData, setUserData] = useState<{ plan: 'free' | 'pro'; role?: 'user' | 'admin'; scansUsedThisMonth: number } | null>(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   useEffect(() => {
@@ -90,12 +90,17 @@ export default function Navbar() {
                 >
                   Dashboard
                 </Link>
-                <Link
-                  href="/admin"
-                  className="text-[11px] font-[family-name:var(--font-mono)] px-2 py-0.5 rounded bg-[hsl(42,95%,55%,0.15)] text-[hsl(42,95%,55%)] border border-[hsl(42,95%,55%,0.3)] hover:bg-[hsl(42,95%,55%,0.25)] transition-colors font-bold"
-                >
-                  Admin ⚡
-                </Link>
+
+                {/* Only visible to ismysaastaken@gmail.com */}
+                {userData?.role === 'admin' && (
+                  <Link
+                    href="/admin"
+                    className="text-[11px] font-[family-name:var(--font-mono)] px-2 py-0.5 rounded bg-[hsl(42,95%,55%,0.15)] text-[hsl(42,95%,55%)] border border-[hsl(42,95%,55%,0.3)] hover:bg-[hsl(42,95%,55%,0.25)] transition-colors font-bold"
+                  >
+                    Admin ⚡
+                  </Link>
+                )}
+
                 <UserButton />
               </div>
             </Show>

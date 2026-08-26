@@ -69,8 +69,9 @@ export const SupabaseDB = {
         }
 
         // 2. Create new user in Supabase
-        const { count } = await supabase.from('users').select('*', { count: 'exact', head: true });
-        const isFirst = (count || 0) === 0;
+        const adminEnv = (process.env.ADMIN_EMAIL || 'ismysaastaken@gmail.com').toLowerCase();
+        const allowedAdmins = adminEnv.split(',').map((e) => e.trim()).filter(Boolean);
+        const assignedRole: UserRole = allowedAdmins.includes(cleanEmail) ? 'admin' : 'user';
 
         const nextReset = new Date();
         nextReset.setMonth(nextReset.getMonth() + 1);
@@ -82,7 +83,7 @@ export const SupabaseDB = {
           .insert({
             clerk_id: clerkId,
             email: cleanEmail,
-            role: isFirst ? 'admin' : 'user',
+            role: assignedRole,
             plan: 'free',
             scans_used_this_month: 0,
             scans_reset_date: nextReset.toISOString(),
@@ -96,7 +97,7 @@ export const SupabaseDB = {
             clerkId: newUser.clerk_id,
             email: newUser.email,
             plan: 'free',
-            role: newUser.role as UserRole,
+            role: assignedRole,
             scansUsedThisMonth: 0,
             scansRemaining: 3,
             scansResetDate: nextReset,
@@ -108,10 +109,13 @@ export const SupabaseDB = {
     }
 
     // DevStore Fallback
+    const adminEnv = (process.env.ADMIN_EMAIL || 'ismysaastaken@gmail.com').toLowerCase();
+    const allowedAdmins = adminEnv.split(',').map((e) => e.trim()).filter(Boolean);
+    const assignedRole: UserRole = allowedAdmins.includes(cleanEmail) ? 'admin' : 'user';
+
     let devUser = DevStore.findUserByEmail(cleanEmail);
     if (!devUser) {
-      const isFirst = DevStore.getAllUsers().length === 0;
-      devUser = DevStore.createUser(cleanEmail, isFirst ? 'admin' : 'user');
+      devUser = DevStore.createUser(cleanEmail, assignedRole);
     }
 
     return {
