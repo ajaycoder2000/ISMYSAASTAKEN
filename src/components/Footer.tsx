@@ -63,9 +63,12 @@ export default function Footer() {
 
         {/* Privacy & Legal Disclaimer */}
         <div className="pt-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-[11px] font-[family-name:var(--font-inter)] text-[hsl(40,8%,40%)]">
-          <p>
-            🔒 Private & Confidential • Web results are AI-grounded in real-time.
-          </p>
+          <div className="flex items-center gap-4">
+            <span>🔒 Private & Confidential • Web results are AI-grounded in real-time.</span>
+            <Link href="/terms" className="text-[hsl(40,8%,55%)] hover:text-[hsl(42,95%,55%)] transition-colors underline">
+              Terms of Service
+            </Link>
+          </div>
           <p className="text-[hsl(40,8%,30%)]">
             © {new Date().getFullYear()} ismysaastaken.
           </p>

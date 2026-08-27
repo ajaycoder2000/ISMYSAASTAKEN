@@ -82,22 +82,31 @@ export default function DashboardPage() {
         )}
 
         {/* Header */}
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)]">
-            Founder Dashboard
-          </h1>
-          <div className="flex items-center gap-3 mt-2">
-            <span className="text-sm text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)]">
-              {user.email}
-            </span>
-            <span className={`text-xs font-[family-name:var(--font-mono)] uppercase tracking-widest px-2.5 py-0.5 rounded-full font-bold ${
-              user.plan === 'pro'
-                ? 'text-[hsl(42,95%,55%)] bg-[hsl(42,95%,55%,0.15)] border border-[hsl(42,95%,55%,0.3)]'
-                : 'text-[hsl(40,8%,55%)] bg-[hsl(220,10%,18%)] border border-[hsl(220,10%,24%)]'
-            }`}>
-              {user.plan}
-            </span>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)]">
+              Founder Dashboard
+            </h1>
+            <div className="flex items-center gap-3 mt-2">
+              <span className="text-sm text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)]">
+                {user.email}
+              </span>
+              <span className={`text-xs font-[family-name:var(--font-mono)] uppercase tracking-widest px-2.5 py-0.5 rounded-full font-bold ${
+                user.plan === 'pro'
+                  ? 'text-[hsl(42,95%,55%)] bg-[hsl(42,95%,55%,0.15)] border border-[hsl(42,95%,55%,0.3)]'
+                  : 'text-[hsl(40,8%,55%)] bg-[hsl(220,10%,18%)] border border-[hsl(220,10%,24%)]'
+              }`}>
+                {user.plan}
+              </span>
+            </div>
           </div>
+
+          <Link
+            href="/settings"
+            className="self-start sm:self-auto px-4 py-2 bg-[hsl(220,12%,14%)] hover:bg-[hsl(220,12%,18%)] border border-[hsl(220,10%,22%)] text-[hsl(40,20%,88%)] hover:text-[hsl(42,95%,55%)] text-xs font-[family-name:var(--font-mono)] font-bold rounded-xl transition-all flex items-center gap-1.5"
+          >
+            ⚙️ Account Settings
+          </Link>
         </div>
 
         {/* High-Tech Telemetry Usage Battery Gauge */}
