@@ -42,7 +42,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-3.5rem)] w-full px-4 sm:px-8 lg:px-12 max-w-6xl mx-auto relative">
+    <div className="min-h-[calc(100vh-3.5rem)] w-full px-4 sm:px-6 lg:px-10 max-w-5xl mx-auto relative">
       {/* Main Centered Content Column */}
       <div className="w-full flex flex-col items-center">
         {/* Hero section */}
@@ -53,7 +53,7 @@ export default function HomePage() {
           {!result && (
             <div className="mb-7 sm:mb-8 animate-fade-in relative z-10">
               <TypewriterHeadline />
-              <p className="mt-3 sm:mt-3.5 text-sm sm:text-base text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] leading-relaxed max-w-2xl">
+              <p className="mt-3 sm:mt-3.5 text-sm sm:text-base text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] leading-relaxed max-w-xl">
                 Describe your idea. We&apos;ll search the web for real competitors, 
                 tell you how crowded the space is, and find the gap you could 
                 actually build toward.

@@ -3,6 +3,8 @@ import { useState } from "react";
 
 interface GapPreviewItem {
   idea: string;
+  category: string;
+  verdict: string;
 }
 
 interface WeeklyGapSignupProps {
@@ -12,11 +14,10 @@ interface WeeklyGapSignupProps {
 }
 
 const DEFAULT_ITEMS: GapPreviewItem[] = [
-  { idea: "voice notes for sales teams" },
-  { idea: "soc2 automation for solopreneurs" },
-  { idea: "figma → tailwind converter" },
-  { idea: "ai cold email warmup tool" },
-  { idea: "micro-saas uptime monitor" },
+  { idea: "voice notes for sales teams → Linear auto-ticket", category: "AI & Workflows", verdict: "OPEN GAP" },
+  { idea: "soc2 compliance tracker for solo founders", category: "Micro-SaaS", verdict: "LOW MOAT" },
+  { idea: "figma design token → tailwind compiler", category: "DevTools", verdict: "OPEN GAP" },
+  { idea: "ai cold email warmup with deliverability telemetry", category: "Growth Tools", verdict: "UNDERSERVED" },
 ];
 
 export default function WeeklyGapSignup({
@@ -27,7 +28,8 @@ export default function WeeklyGapSignup({
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "done">("idle");
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!email.includes("@")) return;
     setStatus("loading");
     try {
@@ -39,74 +41,98 @@ export default function WeeklyGapSignup({
     setTimeout(() => {
       setStatus("idle");
       setEmail("");
-    }, 3000);
+    }, 4000);
   };
 
   return (
-    <div className="bg-[var(--panel)] border border-[var(--border)] rounded-2xl max-w-2xl w-full mx-auto overflow-hidden shadow-2xl">
-      {/* Animated gradient accent bar */}
+    <div className="w-full bg-[hsl(220,14%,10%)] border border-[hsl(220,10%,18%)] rounded-2xl overflow-hidden shadow-2xl relative">
+      {/* Top gradient accent bar */}
       <div
-        className="h-[3px]"
+        className="h-[3px] w-full"
         style={{
-          background: "linear-gradient(90deg, var(--accent), #b967ff, var(--accent))",
+          background: "linear-gradient(90deg, hsl(42,95%,55%), #b967ff, hsl(42,95%,55%))",
           backgroundSize: "200% 100%",
         }}
       />
 
-      <div className="px-6 py-8 text-center">
-        <p className="text-3xl mb-2.5">📡</p>
-        <h3 className="text-lg sm:text-xl font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text)] mb-1">
-          The Weekly Gap Report
-        </h3>
-        <p className="text-xs sm:text-sm text-[var(--text-dim)] font-[family-name:var(--font-inter)] leading-relaxed mb-6 max-w-sm mx-auto">
-          Every Monday: the top 5 defensible SaaS gaps found across all scans that week. No fluff, just pure market opportunities.
-        </p>
+      <div className="p-6 sm:p-8 lg:p-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          {/* Left Column: Copy + Form */}
+          <div className="lg:col-span-7">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xl">📡</span>
+              <span className="text-[10px] font-bold font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-[hsl(42,95%,55%)]">
+                FOUNDER MARKET INTELLIGENCE
+              </span>
+            </div>
 
-        {/* Preview of last week's report */}
-        <div className="bg-[var(--panel-raised)] border border-[var(--border)] rounded-xl px-4 py-3 text-left mb-6">
-          <p className="text-[9.5px] font-bold font-[family-name:var(--font-mono)] text-[var(--text-faint)] tracking-[0.2em] mb-2.5">
-            PREVIEW — LAST WEEK&apos;S SCAN REPORT
-          </p>
-          <div className="space-y-1.5">
-            {previewItems.map((item, i) => (
-              <div
-                key={i}
-                className={`flex justify-between items-center py-1.5 text-xs ${
-                  i < previewItems.length - 1 ? "border-b border-[var(--border)]" : ""
-                }`}
+            <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,95%)] mb-2">
+              The Weekly SaaS Gap Report
+            </h3>
+
+            <p className="text-xs sm:text-sm text-[hsl(40,8%,60%)] font-[family-name:var(--font-inter)] leading-relaxed mb-6 max-w-lg">
+              Every Monday: we distill real scan telemetry into the top 5 defensible startup wedges and underserved market gaps. 100% signal, zero fluff.
+            </p>
+
+            {/* Email form */}
+            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2.5 max-w-md">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="founder@example.com"
+                disabled={status !== "idle"}
+                className="flex-1 bg-[hsl(220,15%,8%)] border border-[hsl(220,10%,20%)] rounded-xl px-4 py-2.5 text-[hsl(40,20%,92%)] font-[family-name:var(--font-inter)] text-xs outline-none focus:border-[hsl(42,95%,55%)] disabled:opacity-50"
+              />
+              <button
+                type="submit"
+                disabled={status !== "idle"}
+                className="bg-[hsl(42,95%,55%)] hover:bg-[hsl(42,95%,50%)] text-[hsl(220,15%,8%)] px-5 py-2.5 rounded-xl text-xs font-bold font-[family-name:var(--font-space-grotesk)] whitespace-nowrap transition-all shadow-md disabled:opacity-50 cursor-pointer"
               >
-                <span className="text-[var(--text)] font-medium">&ldquo;{item.idea}&rdquo;</span>
-                <span className="text-[9.5px] font-bold font-[family-name:var(--font-mono)] px-2 py-0.5 rounded bg-[var(--accent-dim)] text-[var(--accent)] border border-[var(--accent-mid)]">
-                  OPEN GAP
+                {status === "done" ? "✓ Subscribed!" : status === "loading" ? "..." : "Get Free Report →"}
+              </button>
+            </form>
+
+            <p className="text-[11px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,45%)] mt-3">
+              🔒 Join {subscriberCount.toLocaleString()} founders • Unsubscribe anytime with 1 click
+            </p>
+          </div>
+
+          {/* Right Column: Preview Card */}
+          <div className="lg:col-span-5">
+            <div className="bg-[hsl(220,12%,12%)] border border-[hsl(220,10%,18%)] rounded-xl p-4 sm:p-5">
+              <div className="flex items-center justify-between mb-3 border-b border-[hsl(220,10%,16%)] pb-2.5">
+                <span className="text-[9.5px] font-bold font-[family-name:var(--font-mono)] text-[hsl(40,8%,45%)] tracking-[0.2em] uppercase">
+                  PREVIEW: LATEST IDENTIFIED GAPS
+                </span>
+                <span className="text-[9px] font-bold font-[family-name:var(--font-mono)] text-[hsl(145,60%,55%)] bg-[hsl(145,60%,45%,0.1)] px-1.5 py-0.5 rounded border border-[hsl(145,60%,45%,0.2)]">
+                  LIVE ISSUE
                 </span>
               </div>
-            ))}
+
+              <div className="space-y-2">
+                {previewItems.map((item, i) => (
+                  <div
+                    key={i}
+                    className="p-2.5 rounded-lg bg-[hsl(220,14%,9%)] border border-[hsl(220,10%,16%)] flex items-start justify-between gap-3 text-xs"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <span className="text-[hsl(40,20%,90%)] font-medium block truncate">
+                        &ldquo;{item.idea}&rdquo;
+                      </span>
+                      <span className="text-[10px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,45%)]">
+                        {item.category}
+                      </span>
+                    </div>
+                    <span className="text-[9px] font-bold font-[family-name:var(--font-mono)] px-2 py-0.5 rounded bg-[hsl(42,95%,55%,0.12)] text-[hsl(42,95%,55%)] border border-[hsl(42,95%,55%,0.25)] flex-shrink-0">
+                      {item.verdict}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
-
-        {/* Email form */}
-        <div className="flex gap-2">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-            placeholder="founder@example.com"
-            disabled={status !== "idle"}
-            className="flex-1 bg-[hsl(220,15%,8%)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-[var(--text)] font-[family-name:var(--font-inter)] text-xs outline-none focus:border-[var(--accent)] disabled:opacity-50"
-          />
-          <button
-            onClick={handleSubmit}
-            disabled={status !== "idle"}
-            className="bg-[var(--accent)] hover:bg-[hsl(42,95%,50%)] text-[hsl(220,15%,8%)] px-5 py-2.5 rounded-xl text-xs font-bold font-[family-name:var(--font-space-grotesk)] whitespace-nowrap transition-all shadow-md disabled:opacity-50 cursor-pointer"
-          >
-            {status === "done" ? "✓ Subscribed!" : status === "loading" ? "..." : "Subscribe →"}
-          </button>
-        </div>
-
-        <p className="text-[11px] font-[family-name:var(--font-mono)] text-[var(--text-faint)] mt-3.5">
-          Join {subscriberCount.toLocaleString()} founders receiving free weekly gaps
-        </p>
       </div>
     </div>
   );
