@@ -43,7 +43,7 @@ export default function WeeklyGapSignup({
   };
 
   return (
-    <div className="bg-[var(--panel)] border border-[var(--border)] rounded-2xl max-w-[540px] w-full mx-auto overflow-hidden shadow-2xl">
+    <div className="bg-[var(--panel)] border border-[var(--border)] rounded-2xl max-w-2xl w-full mx-auto overflow-hidden shadow-2xl">
       {/* Animated gradient accent bar */}
       <div
         className="h-[3px]"

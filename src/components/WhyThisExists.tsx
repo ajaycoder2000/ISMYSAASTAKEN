@@ -34,7 +34,7 @@ export const COMPARISON_PAIRS: ComparisonPair[] = [
 
 export default function WhyThisExists() {
   return (
-    <section className="w-full max-w-[680px] mx-auto py-12 sm:py-16">
+    <section className="w-full max-w-3xl mx-auto py-12 sm:py-16">
       {/* Eyebrow */}
       <div className="text-center mb-3">
         <span className="text-[10.5px] font-bold font-[family-name:var(--font-mono)] tracking-[0.2em] text-[hsl(42,95%,55%)] uppercase">

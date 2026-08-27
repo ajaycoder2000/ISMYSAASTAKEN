@@ -74,7 +74,7 @@ export default function MarketPlaybook() {
         <h2 className="text-2xl sm:text-3xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)] tracking-tight">
           How to Win in a &ldquo;Crowded&rdquo; Market
         </h2>
-        <p className="mt-2.5 text-xs sm:text-sm text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] max-w-lg mx-auto">
+        <p className="mt-2.5 text-xs sm:text-sm text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] max-w-xl mx-auto">
           Every giant has blind spots. Explore the 4 strategic archetypes used by modern founders to carve out multi-million dollar wedges.
         </p>
       </div>

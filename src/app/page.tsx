@@ -42,7 +42,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-3.5rem)] w-full px-3 sm:px-6 lg:px-8 max-w-4xl mx-auto relative">
+    <div className="min-h-[calc(100vh-3.5rem)] w-full px-4 sm:px-8 lg:px-12 max-w-6xl mx-auto relative">
       {/* Main Centered Content Column */}
       <div className="w-full flex flex-col items-center">
         {/* Hero section */}
@@ -53,7 +53,7 @@ export default function HomePage() {
           {!result && (
             <div className="mb-7 sm:mb-8 animate-fade-in relative z-10">
               <TypewriterHeadline />
-              <p className="mt-3 sm:mt-3.5 text-sm sm:text-base text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] leading-relaxed max-w-xl">
+              <p className="mt-3 sm:mt-3.5 text-sm sm:text-base text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] leading-relaxed max-w-2xl">
                 Describe your idea. We&apos;ll search the web for real competitors, 
                 tell you how crowded the space is, and find the gap you could 
                 actually build toward.
@@ -142,7 +142,7 @@ export default function HomePage() {
           <h3 className="text-xl sm:text-2xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)] mb-2 relative z-10">
             Ready to validate your next startup idea?
           </h3>
-          <p className="text-xs sm:text-sm text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] max-w-md mx-auto mb-6 relative z-10">
+          <p className="text-xs sm:text-sm text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] max-w-lg mx-auto mb-6 relative z-10">
             Start with 3 free scans every month, or explore our $9 Sprint Pass and unlimited Founder Pro plans.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 relative z-10">

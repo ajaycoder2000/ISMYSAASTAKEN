@@ -38,7 +38,7 @@ export default function HowItWorksPipeline() {
         <h2 className="text-2xl sm:text-3xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)] tracking-tight">
           How It Validates Your SaaS in 5 Seconds
         </h2>
-        <p className="mt-2 text-xs sm:text-sm text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] max-w-md mx-auto">
+        <p className="mt-2 text-xs sm:text-sm text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] max-w-lg mx-auto">
           No generic filler text. Real market data, real competitors, and actionable differentiation.
         </p>
       </div>

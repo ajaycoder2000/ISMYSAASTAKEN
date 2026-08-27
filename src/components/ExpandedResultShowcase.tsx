@@ -135,7 +135,7 @@ export default function ExpandedResultShowcase() {
   };
 
   return (
-    <section className="w-full max-w-4xl mx-auto pt-6 sm:pt-10">
+    <section className="w-full pt-6 sm:pt-10">
       {/* Section Header */}
       <div className="text-center sm:text-left mb-6">
         <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-[hsl(42,95%,55%,0.1)] border border-[hsl(42,95%,55%,0.2)] mb-2">
