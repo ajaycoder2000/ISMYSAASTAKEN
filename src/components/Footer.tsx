@@ -28,8 +28,8 @@ export default function Footer() {
             <Link href="/#recent-scans" className="hover:text-[hsl(40,20%,92%)] transition-colors">
               Live Feed
             </Link>
-            <Link href="/pricing" className="hover:text-[hsl(40,20%,92%)] transition-colors">
-              Sponsor
+            <Link href="/roadmap" className="hover:text-[hsl(40,20%,92%)] transition-colors">
+              Roadmap 🚀
             </Link>
             <Link href="/dashboard" className="hover:text-[hsl(40,20%,92%)] transition-colors">
               Dashboard

@@ -57,8 +57,8 @@ export default function PricingPage() {
       a: 'Yes, with one click in your dashboard. You retain Pro access until the end of your billing cycle, and your past scans remain saved forever.',
     },
     {
-      q: 'How do sponsor ad slots work?',
-      a: 'Sponsors get high-visibility placement on both side rails of the scanner. We rotate up to 10 verified SaaS devtools/launchpads with live click-tracking telemetry.',
+      q: 'When will founder tool sponsorships open?',
+      a: 'We are prioritizing search accuracy and founder adoption first. Tool sponsorships will open in Phase 3 after reaching our monthly active scan milestone. You can preview the mockup and join the waitlist on our public roadmap.',
     },
   ];
 
@@ -311,86 +311,35 @@ export default function PricingPage() {
         </div>
       </div>
 
-      {/* Sponsorship & Ad Placements Section */}
-      <div className="w-full bg-[hsl(220,14%,10%)] border border-[hsl(220,10%,18%)] rounded-3xl p-6 sm:p-12 mb-20">
-        <div className="max-w-2xl mb-8">
+      {/* Sponsorship & Ad Placements Roadmap Teaser */}
+      <div className="w-full bg-[hsl(220,14%,10%)] border border-[hsl(220,10%,18%)] rounded-3xl p-6 sm:p-12 mb-20 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-[hsl(42,95%,55%,0.04)] rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-2xl mb-6 relative z-10">
           <span className="text-[11px] font-[family-name:var(--font-mono)] uppercase tracking-[0.25em] text-[hsl(42,95%,55%)] font-bold block mb-2">
-            SPONSORSHIP OPPORTUNITIES
+            UPCOMING ROADMAP MILESTONE
           </span>
           <h2 className="text-2xl sm:text-3xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)]">
-            Reach 10,000+ Active SaaS Founders Every Month
+            Founder & DevTool Sponsorship Network
           </h2>
           <p className="text-xs sm:text-sm text-[hsl(40,8%,60%)] font-[family-name:var(--font-inter)] mt-2 leading-relaxed">
-            Our audience consists 100% of indie hackers, solo developers, and founders actively building software and looking for devtools, APIs, boilerplates, and launch platforms.
+            Active sponsorships will open once our monthly founder validation volume reaches target scale. Explore our visual mockups, placement mechanics, and join the early partner waitlist.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <div className="bg-[hsl(220,12%,12%)] border border-[hsl(220,10%,18%)] rounded-2xl p-5 sm:p-6 flex flex-col justify-between">
-            <div>
-              <span className="text-xs font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,92%)] block mb-1">
-                Sidebar Standard
-              </span>
-              <div className="text-2xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(42,95%,55%)] mb-3">
-                $49 <span className="text-xs text-[hsl(40,8%,45%)] font-normal">/month</span>
-              </div>
-              <ul className="space-y-2 text-xs text-[hsl(40,8%,65%)] font-[family-name:var(--font-inter)] mb-6">
-                <li>• Permanent left/right sidebar card</li>
-                <li>• Real-time click tracking</li>
-                <li>• DoFollow backlink to your domain</li>
-              </ul>
-            </div>
-            <a
-              href="mailto:sponsor@ismysaastaken.com?subject=Sponsor%20Inquiry%20-%20Sidebar%20Standard"
-              className="block w-full text-center py-2 bg-[hsl(220,10%,18%)] hover:bg-[hsl(220,10%,24%)] text-[hsl(40,20%,90%)] text-xs font-bold rounded-lg transition-all font-[family-name:var(--font-space-grotesk)]"
-            >
-              Book Slot ($49/mo) →
-            </a>
-          </div>
-
-          <div className="bg-[hsl(220,12%,12%)] border-2 border-[hsl(42,95%,55%,0.5)] rounded-2xl p-5 sm:p-6 flex flex-col justify-between">
-            <div>
-              <span className="text-xs font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,92%)] block mb-1">
-                Featured Anchor
-              </span>
-              <div className="text-2xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(42,95%,55%)] mb-3">
-                $149 <span className="text-xs text-[hsl(40,8%,45%)] font-normal">/month</span>
-              </div>
-              <ul className="space-y-2 text-xs text-[hsl(40,8%,65%)] font-[family-name:var(--font-inter)] mb-6">
-                <li>• Top priority #1 position on sidebar</li>
-                <li>• Featured tag & glowing border</li>
-                <li>• Mentioned in weekly scan digest</li>
-              </ul>
-            </div>
-            <a
-              href="mailto:sponsor@ismysaastaken.com?subject=Sponsor%20Inquiry%20-%20Featured%20Anchor"
-              className="block w-full text-center py-2 bg-[hsl(42,95%,55%)] hover:bg-[hsl(42,95%,50%)] text-[hsl(220,15%,8%)] text-xs font-bold rounded-lg transition-all font-[family-name:var(--font-space-grotesk)]"
-            >
-              Book Featured ($149/mo) →
-            </a>
-          </div>
-
-          <div className="bg-[hsl(220,12%,12%)] border border-[hsl(220,10%,18%)] rounded-2xl p-5 sm:p-6 flex flex-col justify-between">
-            <div>
-              <span className="text-xs font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,92%)] block mb-1">
-                Category Takeover
-              </span>
-              <div className="text-2xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(42,95%,55%)] mb-3">
-                $299 <span className="text-xs text-[hsl(40,8%,45%)] font-normal">/month</span>
-              </div>
-              <ul className="space-y-2 text-xs text-[hsl(40,8%,65%)] font-[family-name:var(--font-inter)] mb-6">
-                <li>• Exclusivity on all scanner results</li>
-                <li>• Custom CTA badge inside scan reports</li>
-                <li>• Direct founder intro in newsletters</li>
-              </ul>
-            </div>
-            <a
-              href="mailto:sponsor@ismysaastaken.com?subject=Sponsor%20Inquiry%20-%20Category%20Takeover"
-              className="block w-full text-center py-2 bg-[hsl(220,10%,18%)] hover:bg-[hsl(220,10%,24%)] text-[hsl(40,20%,90%)] text-xs font-bold rounded-lg transition-all font-[family-name:var(--font-space-grotesk)]"
-            >
-              Contact for Takeover →
-            </a>
-          </div>
+        <div className="flex flex-wrap items-center gap-4 relative z-10">
+          <Link
+            href="/roadmap"
+            className="px-6 py-3 bg-[hsl(42,95%,55%)] hover:bg-[hsl(42,95%,50%)] text-[hsl(220,15%,8%)] font-bold text-xs sm:text-sm rounded-xl transition-all font-[family-name:var(--font-space-grotesk)] shadow-md"
+          >
+            Preview How Sponsorships Will Look →
+          </Link>
+          <Link
+            href="/roadmap"
+            className="px-5 py-3 bg-[hsl(220,12%,14%)] hover:bg-[hsl(220,12%,18%)] border border-[hsl(220,10%,24%)] text-[hsl(40,20%,90%)] text-xs sm:text-sm font-medium rounded-xl transition-all font-[family-name:var(--font-space-grotesk)]"
+          >
+            Join Early Sponsor Waitlist
+          </Link>
         </div>
       </div>
 
