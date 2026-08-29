@@ -93,6 +93,13 @@ export const SupabaseDB = {
           .single();
 
         if (newUser) {
+          // Auto-subscribe new user to The Weekly SaaS Gap Report
+          try {
+            await SupabaseDB.addSubscriber(cleanEmail);
+          } catch (subErr) {
+            console.warn('Auto-subscribe on signup failed:', subErr);
+          }
+
           return {
             id: newUser.id,
             clerkId: newUser.clerk_id,

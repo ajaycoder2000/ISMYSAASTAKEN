@@ -214,6 +214,7 @@ export const DevStore = {
       createdAt: new Date(),
     };
     inMemoryState.users.push(user);
+    this.addSubscriber(email);
     saveState();
     return user;
   },
