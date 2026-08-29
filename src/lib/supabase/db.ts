@@ -470,18 +470,34 @@ export const SupabaseDB = {
   /**
    * Get active subscribers for the weekly report sendout
    */
-  async getActiveSubscribers(): Promise<Array<{ id: string; email: string; unsubscribe_token: string }>> {
+  async getActiveSubscribers(): Promise<Array<{ id: string; email: string; unsubscribe_token: string; plan?: string }>> {
     const supabase = getSupabaseAdmin();
 
     if (supabase) {
       try {
-        const { data } = await supabase
+        const { data: subs } = await supabase
           .from('subscribers')
           .select('id, email, unsubscribe_token')
           .eq('status', 'active');
 
-        if (data && data.length > 0) {
-          return data;
+        if (subs && subs.length > 0) {
+          const emails = subs.map((s) => s.email.toLowerCase().trim());
+          const { data: users } = await supabase
+            .from('users')
+            .select('email, plan')
+            .in('email', emails);
+
+          const userMap = new Map((users || []).map((u) => [u.email.toLowerCase().trim(), u]));
+
+          return subs.map((s) => {
+            const matched = userMap.get(s.email.toLowerCase().trim());
+            return {
+              id: s.id,
+              email: s.email,
+              unsubscribe_token: s.unsubscribe_token,
+              plan: matched?.plan || 'free',
+            };
+          });
         }
       } catch (err) {
         console.warn('Supabase getActiveSubscribers error:', err);

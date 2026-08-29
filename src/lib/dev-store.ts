@@ -420,10 +420,18 @@ export const DevStore = {
     return { success: false };
   },
 
-  getActiveSubscribers(): Array<{ id: string; email: string; unsubscribe_token: string }> {
+  getActiveSubscribers(): Array<{ id: string; email: string; unsubscribe_token: string; plan?: string }> {
     if (!inMemoryState.subscribers) inMemoryState.subscribers = [];
     return inMemoryState.subscribers
       .filter((s) => s.status === 'active')
-      .map((s) => ({ id: s.id, email: s.email, unsubscribe_token: s.unsubscribe_token }));
+      .map((s) => {
+        const user = inMemoryState.users.find((u) => u.email.toLowerCase() === s.email.toLowerCase());
+        return {
+          id: s.id,
+          email: s.email,
+          unsubscribe_token: s.unsubscribe_token,
+          plan: user?.plan || 'free',
+        };
+      });
   },
 };

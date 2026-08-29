@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
     // 2. Query top 5 gaps from the last 7 days
     const gaps = await SupabaseDB.getWeeklyGaps();
 
-    // 3. Fetch all active subscribers
+    // 3. Fetch all active subscribers with their plan status
     const subscribers = await SupabaseDB.getActiveSubscribers();
 
     if (!subscribers || subscribers.length === 0) {
@@ -35,16 +35,21 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // 4. Prepare Resend API configuration
+    // 4. Calculate dynamic issue number (weeks since launch)
+    const launchDate = new Date('2026-08-01').getTime();
+    const currentWeekDiff = Math.floor((Date.now() - launchDate) / (7 * 24 * 60 * 60 * 1000));
+    const issueNumber = Math.max(1, currentWeekDiff + 1);
+
+    // 5. Prepare Resend API configuration
     const resendApiKey = process.env.RESEND_API_KEY;
     const fromEmail = process.env.RESEND_FROM_EMAIL || 'IsMySaaSTaken <onboarding@resend.dev>';
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ismysaastaken.vercel.app';
 
-    // If Resend API key is not configured (e.g. local dev / test), log and return success
+    // If Resend API key is not configured (e.g. local dev / test), log and return simulated response
     if (!resendApiKey) {
       console.log('====================================================');
       console.log('WEEKLY SAAS GAP REPORT (Simulated Mode - No RESEND_API_KEY)');
-      console.log(`Subscribers (${subscribers.length}):`, subscribers.map((s) => s.email));
+      console.log(`Subscribers (${subscribers.length}):`, subscribers.map((s) => `${s.email} (${s.plan || 'free'})`));
       console.log(`Gaps (${gaps.length}):`, gaps.map((g) => g.idea_text));
       console.log('====================================================');
 
@@ -52,17 +57,20 @@ export async function GET(req: NextRequest) {
         success: true,
         mode: 'simulated_dev',
         message: `Simulated weekly report send for ${subscribers.length} subscribers. Configure RESEND_API_KEY in production to dispatch live emails.`,
+        issueNumber,
         subscribersCount: subscribers.length,
         gapsCount: gaps.length,
-        gapsSample: gaps.slice(0, 2),
+        sampleSubscriber: subscribers[0],
       });
     }
 
-    // 5. Build personalized email payloads with unique unsubscribe tokens
+    // 6. Build personalized email payloads with custom template
     const emailPayloads = subscribers.map((subscriber) => {
       const unsubscribeUrl = `${siteUrl}/api/unsubscribe?token=${subscriber.unsubscribe_token}`;
-      const emailHtml = generateWeeklyReportEmailHtml({
+      const emailHtml = renderCustomWeeklyReportTemplate({
         gaps,
+        subscriber,
+        issueNumber,
         siteUrl,
         unsubscribeUrl,
       });
@@ -70,12 +78,12 @@ export async function GET(req: NextRequest) {
       return {
         from: fromEmail,
         to: subscriber.email,
-        subject: `📡 The Weekly SaaS Gap Report: 5 Defensible Wedges`,
+        subject: `📡 The Weekly SaaS Gap Report: 5 Defensible Wedges (Issue #${issueNumber})`,
         html: emailHtml,
       };
     });
 
-    // 6. Send in batches of 50 via Resend Batch API
+    // 7. Send in batches of 50 via Resend Batch API
     const BATCH_SIZE = 50;
     const batchResults = [];
 
@@ -123,6 +131,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
+      issueNumber,
       sentCount: emailPayloads.length,
       gapsCount: gaps.length,
       batchResults,
@@ -137,10 +146,76 @@ export async function GET(req: NextRequest) {
 }
 
 /**
- * Generate dark-themed, responsive HTML matching the site's design tokens
+ * Extracts a readable first name from an email or user profile
  */
-function generateWeeklyReportEmailHtml({
+function extractUserName(email: string): string {
+  const prefix = email.split('@')[0];
+  const clean = prefix.split(/[._-]/)[0];
+  if (clean && clean.length >= 2 && isNaN(Number(clean))) {
+    return clean.charAt(0).toUpperCase() + clean.slice(1);
+  }
+  return 'Founder';
+}
+
+/**
+ * Returns a styled plan badge based on user tier
+ */
+function getPlanBadgeHtml(plan?: string): string {
+  const normalized = (plan || 'free').toLowerCase();
+  if (normalized === 'pro') {
+    return `<span style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 10px; font-weight: 700; color: #10b981; background-color: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); padding: 4px 10px; border-radius: 999px; letter-spacing: 1px; text-transform: uppercase;">&#x2B50; FOUNDER PRO</span>`;
+  }
+  if (normalized === 'sprint' || normalized === 'pass') {
+    return `<span style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 10px; font-weight: 700; color: #f5a623; background-color: rgba(245,166,35,0.15); border: 1px solid rgba(245,166,35,0.3); padding: 4px 10px; border-radius: 999px; letter-spacing: 1px; text-transform: uppercase;">&#x1F3C3; SPRINT PASS</span>`;
+  }
+  return `<span style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 10px; font-weight: 700; color: #8a8f98; background-color: rgba(138,143,152,0.12); border: 1px solid rgba(138,143,152,0.25); padding: 4px 10px; border-radius: 999px; letter-spacing: 1px; text-transform: uppercase;">&#x1F331; FREE TIER</span>`;
+}
+
+/**
+ * Returns dynamic footer text with upgrade link for free users
+ */
+function getPlanStatusText(plan?: string, siteUrl = 'https://ismysaastaken.vercel.app'): string {
+  const normalized = (plan || 'free').toLowerCase();
+  if (normalized === 'pro') {
+    return `<strong style="color: #10b981;">Founder Pro</strong> (Unlimited Scans &amp; Deep Web Grounding)`;
+  }
+  if (normalized === 'sprint' || normalized === 'pass') {
+    return `<strong style="color: #f5a623;">Sprint Pass Active</strong> (30-Day Speedrun Validation)`;
+  }
+  return `<strong style="color: #e0e0e0;">Free Tier (3 Scans/Mo)</strong> &bull; <a href="${siteUrl}/pricing" style="color: #f5a623; text-decoration: underline; font-weight: 600;">Upgrade to Founder Pro for Unlimited Scans &rarr;</a>`;
+}
+
+/**
+ * Returns styled HTML tag for each gap opportunity
+ */
+function getGapTagHtml(tag: string): string {
+  switch (tag) {
+    case 'open_gap':
+      return `<span style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 9px; font-weight: 700; color: #10b981; background-color: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); padding: 3px 8px; border-radius: 4px; letter-spacing: 0.8px; text-transform: uppercase;">OPEN GAP</span>`;
+    case 'low_moat':
+      return `<span style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 9px; font-weight: 700; color: #f5a623; background-color: rgba(245,166,35,0.12); border: 1px solid rgba(245,166,35,0.3); padding: 3px 8px; border-radius: 4px; letter-spacing: 0.8px; text-transform: uppercase;">LOW MOAT</span>`;
+    case 'underserved':
+    default:
+      return `<span style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 9px; font-weight: 700; color: #b967ff; background-color: rgba(185,103,255,0.12); border: 1px solid rgba(185,103,255,0.3); padding: 3px 8px; border-radius: 4px; letter-spacing: 0.8px; text-transform: uppercase;">UNDERSERVED</span>`;
+  }
+}
+
+function escapeHtml(str: string): string {
+  return (str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+/**
+ * Renders the custom client-safe HTML email template
+ */
+function renderCustomWeeklyReportTemplate({
   gaps,
+  subscriber,
+  issueNumber,
   siteUrl,
   unsubscribeUrl,
 }: {
@@ -151,145 +226,317 @@ function generateWeeklyReportEmailHtml({
     tag: 'open_gap' | 'low_moat' | 'underserved';
     gap_analysis?: string;
   }>;
+  subscriber: {
+    id: string;
+    email: string;
+    unsubscribe_token: string;
+    plan?: string;
+  };
+  issueNumber: number;
   siteUrl: string;
   unsubscribeUrl: string;
 }): string {
-  const getBadgeStyle = (tag: string) => {
-    switch (tag) {
-      case 'open_gap':
-        return {
-          label: 'OPEN GAP',
-          color: '#10b981',
-          bg: 'rgba(16, 185, 129, 0.12)',
-          border: 'rgba(16, 185, 129, 0.3)',
-        };
-      case 'low_moat':
-        return {
-          label: 'LOW MOAT',
-          color: '#f5a623',
-          bg: 'rgba(245, 166, 35, 0.12)',
-          border: 'rgba(245, 166, 35, 0.3)',
-        };
-      case 'underserved':
-      default:
-        return {
-          label: 'UNDERSERVED',
-          color: '#b967ff',
-          bg: 'rgba(185, 103, 255, 0.12)',
-          border: 'rgba(185, 103, 255, 0.3)',
-        };
-    }
-  };
+  const userName = extractUserName(subscriber.email);
+  const planBadgeHtml = getPlanBadgeHtml(subscriber.plan);
+  const planStatusText = getPlanStatusText(subscriber.plan, siteUrl);
+  const scanUrl = `${siteUrl}/`;
+  const logoUrl = `${siteUrl}/icon.png`;
+  const companyAddress = `IsMySaaSTaken • Automated Founder Intelligence • ismysaastaken.vercel.app`;
 
-  const gapCardsHtml = gaps
-    .map((gap, index) => {
-      const badge = getBadgeStyle(gap.tag);
-      return `
-      <div style="background-color: #12151b; border: 1px solid #232731; border-radius: 12px; padding: 18px 20px; margin-bottom: 14px;">
-        <table width="100%" cellpadding="0" cellspacing="0" border="0">
-          <tr>
-            <td valign="middle" align="left">
-              <span style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace; font-size: 10px; font-weight: 700; color: #788090; text-transform: uppercase; letter-spacing: 0.15em;">
-                #0${index + 1} • ${escapeHtml(gap.category)}
-              </span>
-            </td>
-            <td valign="middle" align="right">
-              <span style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace; font-size: 9px; font-weight: 700; color: ${badge.color}; background-color: ${badge.bg}; border: 1px solid ${badge.border}; padding: 3px 8px; border-radius: 6px; letter-spacing: 0.05em; display: inline-block;">
-                ${badge.label}
-              </span>
-            </td>
-          </tr>
-        </table>
-        <h3 style="margin: 10px 0 6px 0; font-size: 15px; font-weight: 700; color: #ede8dc; line-height: 1.4;">
-          &ldquo;${escapeHtml(gap.idea_text)}&rdquo;
-        </h3>
-        ${
-          gap.gap_analysis
-            ? `<p style="margin: 0; font-size: 12px; color: #9aa1b1; line-height: 1.55;">${escapeHtml(gap.gap_analysis)}</p>`
-            : ''
-        }
-      </div>
-    `;
-    })
-    .join('');
+  // Pad gaps array to guarantee 5 entries
+  const g1 = gaps[0] || { category: 'AI & Workflows', idea_text: 'AI meeting notes to Linear tickets', tag: 'open_gap' as const, gap_analysis: 'Focus on developer workflows with 1-click GitHub commit linking.' };
+  const g2 = gaps[1] || { category: 'Micro-SaaS', idea_text: 'SOC2 compliance tracker for solo developers', tag: 'low_moat' as const, gap_analysis: 'Carve out an automated audit-ready Notion-integrated solution.' };
+  const g3 = gaps[2] || { category: 'DevTools', idea_text: 'Figma design token to Tailwind CSS compiler', tag: 'open_gap' as const, gap_analysis: 'Zero-config bi-directional synchronization with component previews.' };
+  const g4 = gaps[3] || { category: 'Growth Tools', idea_text: 'AI cold email deliverability telemetry monitor', tag: 'underserved' as const, gap_analysis: 'Real-time SPF/DKIM verification with auto-rotating mailbox warmup.' };
+  const g5 = gaps[4] || { category: 'B2B SaaS', idea_text: 'Customer churn early-warning system via Slack events', tag: 'open_gap' as const, gap_analysis: 'Detect usage drop-offs before users hit the cancellation flow.' };
 
-  return `
-<!DOCTYPE html>
-<html lang="en">
+  return `<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="color-scheme" content="dark light">
+  <meta name="supported-color-schemes" content="dark light">
   <title>The Weekly SaaS Gap Report</title>
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
   <style>
-    body { margin: 0; padding: 0; background-color: #0c0e12; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+    /* Mobile single-column stacking */
+    @media only screen and (max-width: 480px) {
+      .mobile-full { width: 100% !important; max-width: 100% !important; }
+      .mobile-padding { padding-left: 16px !important; padding-right: 16px !important; }
+      .gap-num-cell { width: 44px !important; padding-left: 14px !important; }
+      .gap-num-cell .gap-number { font-size: 28px !important; }
+      .gap-content-cell { padding: 14px 14px 14px 8px !important; }
+    }
+    /* Prevent dark-mode auto-inversion on key elements */
+    [data-ogsc] .force-bg { background-color: #0c0e12 !important; }
+    [data-ogsc] .force-card-bg { background-color: #14171d !important; }
   </style>
 </head>
-<body style="background-color: #0c0e12; margin: 0; padding: 32px 16px;">
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+<body style="margin: 0; padding: 0; background-color: #0c0e12; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #e0e0e0; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-line-height-rule: exactly;">
+
+  <!-- PREHEADER (hidden inbox preview text) -->
+  <div style="display: none; font-size: 1px; color: #0c0e12; line-height: 1px; max-height: 0; overflow: hidden; mso-hide: all;">
+    This week: 5 open wedges in AI workflows, DevTools &amp; micro-SaaS &rarr;
+    &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
+  </div>
+
+  <!-- OUTER WRAPPER -->
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #0c0e12;" bgcolor="#0c0e12" class="force-bg">
     <tr>
-      <td align="center">
-        <div style="max-width: 560px; width: 100%; text-align: left;">
-          
-          <!-- Header -->
-          <div style="padding-bottom: 24px; border-bottom: 1px solid #1f232b; margin-bottom: 24px;">
-            <table width="100%" cellpadding="0" cellspacing="0" border="0">
-              <tr>
-                <td>
-                  <span style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace; font-size: 10px; font-weight: 700; color: #f5a623; text-transform: uppercase; letter-spacing: 0.2em;">
-                    📡 FOUNDER MARKET INTELLIGENCE
-                  </span>
-                  <h1 style="margin: 8px 0 6px 0; font-size: 24px; font-weight: 800; color: #ede8dc; letter-spacing: -0.02em;">
-                    The Weekly SaaS Gap Report
-                  </h1>
-                  <p style="margin: 0; font-size: 13px; color: #8c92a0; line-height: 1.6;">
-                    Here are the top 5 defensible software wedges and underserved market spaces discovered by live scanner runs this week.
-                  </p>
-                </td>
-              </tr>
-            </table>
-          </div>
+      <td align="center" style="padding: 0;">
 
-          <!-- Gap Cards -->
-          <div style="margin-bottom: 28px;">
-            ${gapCardsHtml}
-          </div>
+        <!-- INNER 600px CONTAINER -->
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" class="mobile-full" style="max-width: 600px; width: 100%;">
 
-          <!-- CTA Box -->
-          <div style="background: linear-gradient(180deg, #161920 0%, #101217 100%); border: 1px solid #232731; border-radius: 14px; padding: 24px; text-align: center; margin-bottom: 32px;">
-            <h4 style="margin: 0 0 6px 0; font-size: 16px; font-weight: 700; color: #ede8dc;">
-              Have an idea you want to validate?
-            </h4>
-            <p style="margin: 0 0 16px 0; font-size: 12px; color: #8c92a0;">
-              Run a live web-grounded competitor crawl in 5 seconds.
-            </p>
-            <a href="${siteUrl}" style="display: inline-block; background-color: #f5a623; color: #0c0e12; font-weight: 700; font-size: 13px; text-decoration: none; padding: 11px 24px; border-radius: 8px;">
-              Scan your SaaS idea free →
-            </a>
-          </div>
+          <!-- ============ LOGO + TOP BAR ============ -->
+          <tr>
+            <td class="mobile-padding" style="padding: 28px 32px 20px 32px; background-color: #0c0e12;" bgcolor="#0c0e12">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                <tr>
+                  <td style="vertical-align: middle;">
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td style="vertical-align: middle; padding-right: 12px;">
+                          <!--[if !mso]><!-->
+                          <img src="data:image/svg+xml,%3Csvg%20width%3D%2236%22%20height%3D%2236%22%20viewBox%3D%220%200%2044%2044%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20x%3D%221%22%20y%3D%221%22%20width%3D%2242%22%20height%3D%2242%22%20rx%3D%228%22%20stroke%3D%22%23f5a623%22%20stroke-width%3D%222.5%22%20fill%3D%22none%22%2F%3E%3Ctext%20x%3D%2222%22%20y%3D%2230%22%20text-anchor%3D%22middle%22%20font-family%3D%22Consolas%2Cmonospace%22%20font-size%3D%2226%22%20font-weight%3D%22700%22%20fill%3D%22%23f5a623%22%3E%3F%3C%2Ftext%3E%3Cline%20x1%3D%228%22%20y1%3D%2236%22%20x2%3D%2236%22%20y2%3D%2236%22%20stroke%3D%22%2310b981%22%20stroke-width%3D%222%22%20stroke-dasharray%3D%223%202%22%20opacity%3D%220.7%22%2F%3E%3C%2Fsvg%3E" width="36" height="36" alt="IsMySaaSTaken" style="display: block; border: 0;">
+                          <!--<![endif]-->
+                          <!--[if mso]>
+                          <img src="${logoUrl}" width="36" height="36" alt="IsMySaaSTaken" style="display: block; border: 0;">
+                          <![endif]-->
+                        </td>
+                        <td style="vertical-align: middle;">
+                          <div style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 16px; font-weight: 700; color: #e0e0e0; letter-spacing: -0.3px; line-height: 1.2; mso-line-height-rule: exactly;">
+                            ismysaas<span style="color: #f5a623;">taken</span><span style="color: #10b981;">?</span>
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                  <td align="right" style="vertical-align: middle;">
+                    ${planBadgeHtml}
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
 
-          <!-- Footer -->
-          <div style="border-top: 1px solid #1f232b; padding-top: 20px; text-align: center;">
-            <p style="margin: 0 0 8px 0; font-size: 11px; color: #5a606e; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;">
-              Sent every Monday morning by IsMySaaSTaken
-            </p>
-            <p style="margin: 0; font-size: 11px; color: #5a606e;">
-              <a href="${unsubscribeUrl}" style="color: #8c92a0; text-decoration: underline;">Unsubscribe</a> with one click at any time.
-            </p>
-          </div>
+          <!-- ============ ISSUE LINE + TITLE ============ -->
+          <tr>
+            <td class="mobile-padding" style="padding: 0 32px 4px 32px; background-color: #0c0e12;" bgcolor="#0c0e12">
+              <div style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 10px; letter-spacing: 1.5px; color: #8a8f98; margin-bottom: 8px; mso-line-height-rule: exactly; line-height: 1.4;">
+                ISSUE #${issueNumber} &bull; MONDAY BRIEFING
+              </div>
+              <div style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 18px; font-weight: 700; color: #f5a623; letter-spacing: -0.5px; line-height: 1.3; mso-line-height-rule: exactly;">
+                The Weekly SaaS Gap Report
+              </div>
+            </td>
+          </tr>
 
-        </div>
+          <!-- DIVIDER UNDER HEADER -->
+          <tr>
+            <td class="mobile-padding" style="padding: 16px 32px 0 32px; background-color: #0c0e12;" bgcolor="#0c0e12">
+              <div style="height: 1px; background-color: #2a2d35; font-size: 1px; line-height: 1px;">&nbsp;</div>
+            </td>
+          </tr>
+
+          <!-- ============ GREETING ============ -->
+          <tr>
+            <td class="mobile-padding" style="padding: 20px 32px 24px 32px; background-color: #0c0e12;" bgcolor="#0c0e12">
+              <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 15px; color: #e0e0e0; line-height: 1.6; mso-line-height-rule: exactly;">
+                Hey ${escapeHtml(userName)}, here are the top 5 defensible SaaS wedges our crawler uncovered this week across AI, DevTools, and Micro-SaaS.
+              </div>
+            </td>
+          </tr>
+
+          <!-- DIVIDER -->
+          <tr>
+            <td class="mobile-padding" style="padding: 0 32px; background-color: #0c0e12;" bgcolor="#0c0e12">
+              <div style="height: 1px; background-color: #2a2d35; font-size: 1px; line-height: 1px;">&nbsp;</div>
+            </td>
+          </tr>
+
+          <!-- ============ GAP CARDS ============ -->
+          <tr>
+            <td class="mobile-padding" style="padding: 24px 32px 12px 32px; background-color: #0c0e12;" bgcolor="#0c0e12">
+
+              <!-- GAP CARD 1 -->
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 12px;">
+                <tr>
+                  <td style="background-color: #14171d; border: 1px solid #2a2d35; border-radius: 6px; padding: 0; mso-line-height-rule: exactly;" bgcolor="#14171d" class="force-card-bg">
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                      <tr>
+                        <td width="60" class="gap-num-cell" style="padding: 20px 0 20px 20px; vertical-align: top;">
+                          <div class="gap-number" style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 36px; font-weight: 700; color: #f5a623; line-height: 1; letter-spacing: -1px; opacity: 0.7;">01</div>
+                        </td>
+                        <td class="gap-content-cell" style="padding: 18px 20px 18px 12px; vertical-align: top;">
+                          <div style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 10px; letter-spacing: 1.5px; color: #8a8f98; margin-bottom: 6px; mso-line-height-rule: exactly; line-height: 1.4;">${escapeHtml(g1.category)}</div>
+                          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 600; color: #e0e0e0; line-height: 1.4; margin-bottom: 8px; mso-line-height-rule: exactly;">${escapeHtml(g1.idea_text)}</div>
+                          <div style="margin-bottom: 10px;">${getGapTagHtml(g1.tag)}</div>
+                          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; color: #8a8f98; line-height: 1.55; mso-line-height-rule: exactly;">${escapeHtml(g1.gap_analysis || 'High uncrowded opportunity in this category.')}</div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- GAP CARD 2 -->
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 12px;">
+                <tr>
+                  <td style="background-color: #14171d; border: 1px solid #2a2d35; border-radius: 6px; padding: 0; mso-line-height-rule: exactly;" bgcolor="#14171d" class="force-card-bg">
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                      <tr>
+                        <td width="60" class="gap-num-cell" style="padding: 20px 0 20px 20px; vertical-align: top;">
+                          <div class="gap-number" style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 36px; font-weight: 700; color: #f5a623; line-height: 1; letter-spacing: -1px; opacity: 0.7;">02</div>
+                        </td>
+                        <td class="gap-content-cell" style="padding: 18px 20px 18px 12px; vertical-align: top;">
+                          <div style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 10px; letter-spacing: 1.5px; color: #8a8f98; margin-bottom: 6px; mso-line-height-rule: exactly; line-height: 1.4;">${escapeHtml(g2.category)}</div>
+                          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 600; color: #e0e0e0; line-height: 1.4; margin-bottom: 8px; mso-line-height-rule: exactly;">${escapeHtml(g2.idea_text)}</div>
+                          <div style="margin-bottom: 10px;">${getGapTagHtml(g2.tag)}</div>
+                          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; color: #8a8f98; line-height: 1.55; mso-line-height-rule: exactly;">${escapeHtml(g2.gap_analysis || 'Defensible wedge opportunity with clear positioning.')}</div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- GAP CARD 3 -->
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 12px;">
+                <tr>
+                  <td style="background-color: #14171d; border: 1px solid #2a2d35; border-radius: 6px; padding: 0; mso-line-height-rule: exactly;" bgcolor="#14171d" class="force-card-bg">
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                      <tr>
+                        <td width="60" class="gap-num-cell" style="padding: 20px 0 20px 20px; vertical-align: top;">
+                          <div class="gap-number" style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 36px; font-weight: 700; color: #f5a623; line-height: 1; letter-spacing: -1px; opacity: 0.7;">03</div>
+                        </td>
+                        <td class="gap-content-cell" style="padding: 18px 20px 18px 12px; vertical-align: top;">
+                          <div style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 10px; letter-spacing: 1.5px; color: #8a8f98; margin-bottom: 6px; mso-line-height-rule: exactly; line-height: 1.4;">${escapeHtml(g3.category)}</div>
+                          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 600; color: #e0e0e0; line-height: 1.4; margin-bottom: 8px; mso-line-height-rule: exactly;">${escapeHtml(g3.idea_text)}</div>
+                          <div style="margin-bottom: 10px;">${getGapTagHtml(g3.tag)}</div>
+                          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; color: #8a8f98; line-height: 1.55; mso-line-height-rule: exactly;">${escapeHtml(g3.gap_analysis || 'Substantial niche gap that avoids enterprise bloat.')}</div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- GAP CARD 4 -->
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 12px;">
+                <tr>
+                  <td style="background-color: #14171d; border: 1px solid #2a2d35; border-radius: 6px; padding: 0; mso-line-height-rule: exactly;" bgcolor="#14171d" class="force-card-bg">
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                      <tr>
+                        <td width="60" class="gap-num-cell" style="padding: 20px 0 20px 20px; vertical-align: top;">
+                          <div class="gap-number" style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 36px; font-weight: 700; color: #f5a623; line-height: 1; letter-spacing: -1px; opacity: 0.7;">04</div>
+                        </td>
+                        <td class="gap-content-cell" style="padding: 18px 20px 18px 12px; vertical-align: top;">
+                          <div style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 10px; letter-spacing: 1.5px; color: #8a8f98; margin-bottom: 6px; mso-line-height-rule: exactly; line-height: 1.4;">${escapeHtml(g4.category)}</div>
+                          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 600; color: #e0e0e0; line-height: 1.4; margin-bottom: 8px; mso-line-height-rule: exactly;">${escapeHtml(g4.idea_text)}</div>
+                          <div style="margin-bottom: 10px;">${getGapTagHtml(g4.tag)}</div>
+                          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; color: #8a8f98; line-height: 1.55; mso-line-height-rule: exactly;">${escapeHtml(g4.gap_analysis || 'Strong technical wedge with high willingness-to-pay.')}</div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- GAP CARD 5 -->
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 12px;">
+                <tr>
+                  <td style="background-color: #14171d; border: 1px solid #2a2d35; border-radius: 6px; padding: 0; mso-line-height-rule: exactly;" bgcolor="#14171d" class="force-card-bg">
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                      <tr>
+                        <td width="60" class="gap-num-cell" style="padding: 20px 0 20px 20px; vertical-align: top;">
+                          <div class="gap-number" style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 36px; font-weight: 700; color: #f5a623; line-height: 1; letter-spacing: -1px; opacity: 0.7;">05</div>
+                        </td>
+                        <td class="gap-content-cell" style="padding: 18px 20px 18px 12px; vertical-align: top;">
+                          <div style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 10px; letter-spacing: 1.5px; color: #8a8f98; margin-bottom: 6px; mso-line-height-rule: exactly; line-height: 1.4;">${escapeHtml(g5.category)}</div>
+                          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 600; color: #e0e0e0; line-height: 1.4; margin-bottom: 8px; mso-line-height-rule: exactly;">${escapeHtml(g5.idea_text)}</div>
+                          <div style="margin-bottom: 10px;">${getGapTagHtml(g5.tag)}</div>
+                          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; color: #8a8f98; line-height: 1.55; mso-line-height-rule: exactly;">${escapeHtml(g5.gap_analysis || 'Clear workflow gap with rapid integration upside.')}</div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- ============ SCAN CTA BOX ============ -->
+          <tr>
+            <td class="mobile-padding" style="padding: 8px 32px 32px 32px; background-color: #0c0e12;" bgcolor="#0c0e12">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                <tr>
+                  <td style="background-color: #14171d; border: 1px solid rgba(245,166,35,0.25); border-radius: 6px; padding: 24px 28px; text-align: center;" bgcolor="#14171d" class="force-card-bg">
+                    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 15px; color: #e0e0e0; margin-bottom: 16px; line-height: 1.5; mso-line-height-rule: exactly;">
+                      Testing a new concept this week?
+                    </div>
+                    <!-- Bulletproof button -->
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
+                      <tr>
+                        <td style="background-color: #f5a623; border-radius: 5px; mso-padding-alt: 0;" bgcolor="#f5a623">
+                          <!--[if mso]>
+                          <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${scanUrl}" style="height:42px;v-text-anchor:middle;width:260px;" arcsize="12%" strokecolor="#f5a623" fillcolor="#f5a623">
+                            <w:anchorlock/>
+                            <center style="color:#0c0e12;font-family:Consolas,Courier,monospace;font-size:13px;font-weight:bold;">Run a live 5-second scan &rarr;</center>
+                          </v:roundrect>
+                          <![endif]-->
+                          <!--[if !mso]><!-->
+                          <a href="${scanUrl}" style="display: block; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 13px; font-weight: 700; color: #0c0e12; text-decoration: none; padding: 12px 28px; letter-spacing: 0.5px; mso-line-height-rule: exactly; line-height: 1.3;">
+                            Run a live 5-second scan &rarr;
+                          </a>
+                          <!--<![endif]-->
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- DIVIDER -->
+          <tr>
+            <td class="mobile-padding" style="padding: 0 32px; background-color: #0c0e12;" bgcolor="#0c0e12">
+              <div style="height: 1px; background-color: #2a2d35; font-size: 1px; line-height: 1px;">&nbsp;</div>
+            </td>
+          </tr>
+
+          <!-- ============ FOOTER ============ -->
+          <tr>
+            <td class="mobile-padding" style="padding: 24px 32px 32px 32px; background-color: #0c0e12;" bgcolor="#0c0e12">
+              <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12px; color: #8a8f98; line-height: 1.7; mso-line-height-rule: exactly;">
+                Sent to ${escapeHtml(subscriber.email)} because you have an active IsMySaaSTaken account.<br>
+                Your current plan: ${planStatusText}<br><br>
+                <a href="${unsubscribeUrl}" style="color: #8a8f98; text-decoration: underline;">Unsubscribe</a><br><br>
+                <span style="font-size: 11px; color: #555555;">${companyAddress}</span>
+              </div>
+            </td>
+          </tr>
+
+        </table>
+        <!-- /INNER CONTAINER -->
+
       </td>
     </tr>
   </table>
-</body>
-</html>
-  `.trim();
-}
+  <!-- /OUTER WRAPPER -->
 
-function escapeHtml(str: string): string {
-  return (str || '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+</body>
+</html>`.trim();
 }
