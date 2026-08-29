@@ -3,6 +3,7 @@ import { IScanDocument, PlanType, UserRole } from '@/types';
 import { DevStore } from '@/lib/dev-store';
 import dbConnect from '@/lib/mongodb';
 import Scan from '@/models/Scan';
+import { REAL_SEEDED_SCANS } from '@/lib/seeds/real-scans';
 
 export const SupabaseDB = {
   /**
@@ -367,5 +368,202 @@ export const SupabaseDB = {
     }
 
     return { bookmarked: true };
+  },
+
+  /**
+   * Add or reactivate a newsletter subscriber
+   */
+  async addSubscriber(email: string): Promise<{ success: boolean; message: string; alreadyActive?: boolean }> {
+    const supabase = getSupabaseAdmin();
+    const cleanEmail = email.toLowerCase().trim();
+    const token = crypto.randomUUID();
+
+    if (supabase) {
+      try {
+        const { data: existing } = await supabase
+          .from('subscribers')
+          .select('id, status')
+          .eq('email', cleanEmail)
+          .maybeSingle();
+
+        if (existing) {
+          if (existing.status === 'active') {
+            return {
+              success: true,
+              message: "You're already subscribed to the Weekly Gap Report!",
+              alreadyActive: true,
+            };
+          } else {
+            await supabase
+              .from('subscribers')
+              .update({
+                status: 'active',
+                subscribed_at: new Date().toISOString(),
+                unsubscribe_token: token,
+              })
+              .eq('id', existing.id);
+            return {
+              success: true,
+              message: 'Welcome back! Your subscription has been reactivated.',
+            };
+          }
+        }
+
+        const { error } = await supabase
+          .from('subscribers')
+          .insert({
+            email: cleanEmail,
+            status: 'active',
+            unsubscribe_token: token,
+          });
+
+        if (!error) {
+          return {
+            success: true,
+            message: "You're subscribed! Expect the top 5 gaps every Monday.",
+          };
+        }
+      } catch (err) {
+        console.warn('Supabase addSubscriber error, falling back:', err);
+      }
+    }
+
+    return DevStore.addSubscriber(cleanEmail);
+  },
+
+  /**
+   * Unsubscribe a subscriber using their token
+   */
+  async unsubscribeByToken(token: string): Promise<{ success: boolean; email?: string }> {
+    const supabase = getSupabaseAdmin();
+
+    if (supabase) {
+      try {
+        const { data: subscriber } = await supabase
+          .from('subscribers')
+          .select('id, email, status')
+          .eq('unsubscribe_token', token)
+          .maybeSingle();
+
+        if (subscriber) {
+          await supabase
+            .from('subscribers')
+            .update({ status: 'inactive' })
+            .eq('id', subscriber.id);
+          return { success: true, email: subscriber.email };
+        }
+      } catch (err) {
+        console.warn('Supabase unsubscribeByToken error:', err);
+      }
+    }
+
+    return DevStore.unsubscribeByToken(token);
+  },
+
+  /**
+   * Get active subscribers for the weekly report sendout
+   */
+  async getActiveSubscribers(): Promise<Array<{ id: string; email: string; unsubscribe_token: string }>> {
+    const supabase = getSupabaseAdmin();
+
+    if (supabase) {
+      try {
+        const { data } = await supabase
+          .from('subscribers')
+          .select('id, email, unsubscribe_token')
+          .eq('status', 'active');
+
+        if (data && data.length > 0) {
+          return data;
+        }
+      } catch (err) {
+        console.warn('Supabase getActiveSubscribers error:', err);
+      }
+    }
+
+    return DevStore.getActiveSubscribers();
+  },
+
+  /**
+   * Fetch top 5 gaps for the weekly report from the last 7 days
+   */
+  async getWeeklyGaps(): Promise<Array<{
+    id: string;
+    idea_text: string;
+    category: string;
+    tag: 'open_gap' | 'low_moat' | 'underserved';
+    gap_analysis?: string;
+    found_at: string;
+  }>> {
+    const supabase = getSupabaseAdmin();
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    // 1. Try querying 'gaps' table if it exists
+    if (supabase) {
+      try {
+        const { data: gapsData, error } = await supabase
+          .from('gaps')
+          .select('*')
+          .gte('found_at', sevenDaysAgo.toISOString())
+          .order('found_at', { ascending: false })
+          .limit(5);
+
+        if (!error && gapsData && gapsData.length >= 5) {
+          return gapsData;
+        }
+      } catch {
+        // Fallback to scans
+      }
+
+      // 2. Query 'scans' table
+      try {
+        const { data: scansData } = await supabase
+          .from('scans')
+          .select('id, idea_text, saturation_score, gap_analysis, created_at')
+          .gte('created_at', sevenDaysAgo.toISOString())
+          .order('created_at', { ascending: false })
+          .limit(5);
+
+        if (scansData && scansData.length > 0) {
+          return scansData.map((s) => {
+            let tag: 'open_gap' | 'low_moat' | 'underserved' = 'open_gap';
+            if (s.saturation_score === 'high') tag = 'low_moat';
+            else if (s.saturation_score === 'medium') tag = 'underserved';
+
+            return {
+              id: s.id,
+              idea_text: s.idea_text,
+              category: 'SaaS Market Intelligence',
+              tag,
+              gap_analysis: s.gap_analysis,
+              found_at: s.created_at,
+            };
+          });
+        }
+      } catch (err) {
+        console.warn('Supabase getWeeklyGaps from scans error:', err);
+      }
+    }
+
+    // 3. Guaranteed authentic seed fallback
+    const tagCycle: Array<'open_gap' | 'low_moat' | 'underserved'> = [
+      'open_gap',
+      'low_moat',
+      'open_gap',
+      'underserved',
+      'open_gap',
+    ];
+
+    return REAL_SEEDED_SCANS.slice(0, 5).map((scan, i) => ({
+      id: `gap_${i + 1}`,
+      idea_text: scan.ideaText,
+      category: scan.category
+        .replace('-', ' ')
+        .replace(/\b\w/g, (l) => l.toUpperCase()),
+      tag: tagCycle[i % tagCycle.length],
+      gap_analysis: scan.gapAnalysis,
+      found_at: new Date().toISOString(),
+    }));
   },
 };

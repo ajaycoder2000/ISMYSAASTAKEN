@@ -70,6 +70,14 @@ interface DevAdminLog {
   timestamp: Date;
 }
 
+interface DevSubscriber {
+  id: string;
+  email: string;
+  subscribed_at: Date;
+  status: 'active' | 'inactive';
+  unsubscribe_token: string;
+}
+
 interface StoreState {
   users: DevUser[];
   tokens: DevMagicToken[];
@@ -77,6 +85,7 @@ interface StoreState {
   sponsors: DevSponsor[];
   config: DevSiteConfig;
   logs: DevAdminLog[];
+  subscribers?: DevSubscriber[];
 }
 
 const STORE_PATH = path.join(process.cwd(), '.dev-store.json');
@@ -369,5 +378,51 @@ export const DevStore = {
 
   getAdminLogs(limit = 50): DevAdminLog[] {
     return inMemoryState.logs.slice(0, limit);
+  },
+
+  // Newsletter Subscribers
+  addSubscriber(email: string): { success: boolean; message: string; alreadyActive?: boolean } {
+    if (!inMemoryState.subscribers) inMemoryState.subscribers = [];
+    const cleanEmail = email.toLowerCase().trim();
+    const existing = inMemoryState.subscribers.find((s) => s.email === cleanEmail);
+
+    if (existing) {
+      if (existing.status === 'active') {
+        return { success: true, message: "You're already subscribed to the Weekly Gap Report!", alreadyActive: true };
+      }
+      existing.status = 'active';
+      existing.subscribed_at = new Date();
+      existing.unsubscribe_token = nanoid(24);
+      saveState();
+      return { success: true, message: 'Welcome back! Your subscription has been reactivated.' };
+    }
+
+    inMemoryState.subscribers.push({
+      id: 'sub_' + nanoid(10),
+      email: cleanEmail,
+      subscribed_at: new Date(),
+      status: 'active',
+      unsubscribe_token: nanoid(24),
+    });
+    saveState();
+    return { success: true, message: "You're subscribed! Expect the top 5 gaps every Monday." };
+  },
+
+  unsubscribeByToken(token: string): { success: boolean; email?: string } {
+    if (!inMemoryState.subscribers) inMemoryState.subscribers = [];
+    const sub = inMemoryState.subscribers.find((s) => s.unsubscribe_token === token);
+    if (sub) {
+      sub.status = 'inactive';
+      saveState();
+      return { success: true, email: sub.email };
+    }
+    return { success: false };
+  },
+
+  getActiveSubscribers(): Array<{ id: string; email: string; unsubscribe_token: string }> {
+    if (!inMemoryState.subscribers) inMemoryState.subscribers = [];
+    return inMemoryState.subscribers
+      .filter((s) => s.status === 'active')
+      .map((s) => ({ id: s.id, email: s.email, unsubscribe_token: s.unsubscribe_token }));
   },
 };

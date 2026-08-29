@@ -26,22 +26,42 @@ export default function WeeklyGapSignup({
   onSubscribe,
 }: WeeklyGapSignupProps) {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "done">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
+  const [message, setMessage] = useState("");
 
   const handleSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (!email.includes("@")) return;
+    const cleanEmail = email.trim().toLowerCase();
+    if (!cleanEmail.includes("@")) return;
+
     setStatus("loading");
+    setMessage("");
+
     try {
-      await onSubscribe?.(email);
+      if (onSubscribe) {
+        await onSubscribe(cleanEmail);
+      }
+
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: cleanEmail }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        setStatus("done");
+        setMessage(data.message || "✓ You're in! First report lands Monday at 9:00 AM.");
+        setEmail("");
+      } else {
+        setStatus("error");
+        setMessage(data.error || "Failed to subscribe. Please try again.");
+      }
     } catch {
-      // Proceed anyway for UI
+      setStatus("error");
+      setMessage("Network error. Please check your connection and try again.");
     }
-    setStatus("done");
-    setTimeout(() => {
-      setStatus("idle");
-      setEmail("");
-    }, 4000);
   };
 
   return (
@@ -78,20 +98,33 @@ export default function WeeklyGapSignup({
             <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2.5 max-w-md">
               <input
                 type="email"
+                required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="founder@example.com"
-                disabled={status !== "idle"}
+                disabled={status === "loading"}
                 className="flex-1 bg-[hsl(220,15%,8%)] border border-[hsl(220,10%,20%)] rounded-xl px-4 py-2.5 text-[hsl(40,20%,92%)] font-[family-name:var(--font-inter)] text-xs outline-none focus:border-[hsl(42,95%,55%)] disabled:opacity-50"
               />
               <button
                 type="submit"
-                disabled={status !== "idle"}
+                disabled={status === "loading"}
                 className="bg-[hsl(42,95%,55%)] hover:bg-[hsl(42,95%,50%)] text-[hsl(220,15%,8%)] px-5 py-2.5 rounded-xl text-xs font-bold font-[family-name:var(--font-space-grotesk)] whitespace-nowrap transition-all shadow-md disabled:opacity-50 cursor-pointer"
               >
-                {status === "done" ? "✓ Subscribed!" : status === "loading" ? "..." : "Get Free Report →"}
+                {status === "loading" ? "Subscribing..." : "Get Free Report →"}
               </button>
             </form>
+
+            {message && (
+              <div
+                className={`mt-3 p-3 rounded-xl text-xs font-[family-name:var(--font-mono)] max-w-md animate-fade-in ${
+                  status === "done"
+                    ? "bg-[hsl(145,60%,45%,0.1)] border border-[hsl(145,60%,45%,0.3)] text-[hsl(145,60%,55%)]"
+                    : "bg-[hsl(0,72%,55%,0.1)] border border-[hsl(0,72%,55%,0.3)] text-[hsl(0,72%,65%)]"
+                }`}
+              >
+                {message}
+              </div>
+            )}
 
             <p className="text-[11px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,45%)] mt-3">
               🔒 Join {subscriberCount.toLocaleString()} founders • Unsubscribe anytime with 1 click
