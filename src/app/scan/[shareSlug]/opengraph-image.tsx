@@ -65,7 +65,7 @@ export default async function Image({
               }}
             />
             <span style={{ fontSize: '28px', fontWeight: 'bold', letterSpacing: '-0.5px' }}>
-              ismysaas<span style={{ color: '#f5a623' }}>taken</span>?
+              ismysaas<span style={{ color: '#f5a623' }}>taken</span><span style={{ color: '#10b981' }}>?</span>
             </span>
           </div>
           <span

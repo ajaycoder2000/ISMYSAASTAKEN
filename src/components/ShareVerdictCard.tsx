@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import Image from 'next/image';
 import SignalBars from './SignalBars';
 
 interface ShareVerdictCardProps {
@@ -90,9 +91,9 @@ export default function ShareVerdictCard({
         {/* Brand header */}
         <div className="flex items-center justify-between pb-4 mb-4 border-b border-[hsl(220,10%,16%)] relative z-10">
           <div className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 rounded-full bg-[hsl(42,95%,55%)] animate-pulse" />
+            <Image src="/icon.png" alt="Logo" width={20} height={20} className="rounded" />
             <span className="font-[family-name:var(--font-space-grotesk)] font-bold text-[hsl(40,20%,92%)] text-sm tracking-tight">
-              ismysaas<span className="text-[hsl(42,95%,55%)]">taken</span>?
+              ismysaas<span className="text-[hsl(42,95%,55%)]">taken</span><span className="text-[hsl(145,60%,55%)]">?</span>
             </span>
           </div>
           <span className="text-[10px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,50%)] uppercase tracking-widest">

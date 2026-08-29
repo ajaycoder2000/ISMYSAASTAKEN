@@ -304,23 +304,9 @@ function renderCustomWeeklyReportTemplate({
               <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
                 <tr>
                   <td style="vertical-align: middle;">
-                    <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-                      <tr>
-                        <td style="vertical-align: middle; padding-right: 12px;">
-                          <!--[if !mso]><!-->
-                          <img src="data:image/svg+xml,%3Csvg%20width%3D%2236%22%20height%3D%2236%22%20viewBox%3D%220%200%2044%2044%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20x%3D%221%22%20y%3D%221%22%20width%3D%2242%22%20height%3D%2242%22%20rx%3D%228%22%20stroke%3D%22%23f5a623%22%20stroke-width%3D%222.5%22%20fill%3D%22none%22%2F%3E%3Ctext%20x%3D%2222%22%20y%3D%2230%22%20text-anchor%3D%22middle%22%20font-family%3D%22Consolas%2Cmonospace%22%20font-size%3D%2226%22%20font-weight%3D%22700%22%20fill%3D%22%23f5a623%22%3E%3F%3C%2Ftext%3E%3Cline%20x1%3D%228%22%20y1%3D%2236%22%20x2%3D%2236%22%20y2%3D%2236%22%20stroke%3D%22%2310b981%22%20stroke-width%3D%222%22%20stroke-dasharray%3D%223%202%22%20opacity%3D%220.7%22%2F%3E%3C%2Fsvg%3E" width="36" height="36" alt="IsMySaaSTaken" style="display: block; border: 0;">
-                          <!--<![endif]-->
-                          <!--[if mso]>
-                          <img src="${logoUrl}" width="36" height="36" alt="IsMySaaSTaken" style="display: block; border: 0;">
-                          <![endif]-->
-                        </td>
-                        <td style="vertical-align: middle;">
-                          <div style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 16px; font-weight: 700; color: #e0e0e0; letter-spacing: -0.3px; line-height: 1.2; mso-line-height-rule: exactly;">
-                            ismysaas<span style="color: #f5a623;">taken</span><span style="color: #10b981;">?</span>
-                          </div>
-                        </td>
-                      </tr>
-                    </table>
+                    <a href="${siteUrl}" target="_blank" style="text-decoration: none; display: inline-block;">
+                      <img src="${siteUrl}/logo.png" width="190" height="23" alt="IsMySaaSTaken" style="display: block; border: 0; max-height: 26px; width: auto;" />
+                    </a>
                   </td>
                   <td align="right" style="vertical-align: middle;">
                     ${planBadgeHtml}

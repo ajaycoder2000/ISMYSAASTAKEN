@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   SignInButton,
   SignUpButton,
@@ -33,9 +34,17 @@ export default function Navbar() {
         <div className="w-full max-w-[1780px] mx-auto px-3 sm:px-5 lg:px-8 h-14 flex items-center justify-between">
           <Link
             href="/"
-            className="font-[family-name:var(--font-space-grotesk)] font-bold text-[hsl(40,20%,92%)] text-base hover:text-[hsl(42,95%,55%)] transition-colors tracking-tight"
+            className="flex items-center gap-2 hover:opacity-90 transition-opacity"
+            title="IsMySaaSTaken"
           >
-            ismysaas<span className="text-[hsl(42,95%,55%)]">taken</span><span className="text-[hsl(40,8%,45%)]">?</span>
+            <Image
+              src="/logo.png"
+              alt="IsMySaaSTaken"
+              width={200}
+              height={24}
+              priority
+              className="h-6 sm:h-7 w-auto object-contain"
+            />
           </Link>
           
           <div className="flex items-center gap-2.5 sm:gap-4">

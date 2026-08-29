@@ -40,6 +40,14 @@ export const metadata: Metadata = {
     description:
       "Describe your SaaS idea, get back real competitors and a gap you could actually build toward.",
   },
+  icons: {
+    icon: [
+      { url: "/icon.png", sizes: "128x128", type: "image/png" },
+      { url: "/favicon.ico", sizes: "32x32" },
+    ],
+    shortcut: "/icon.png",
+    apple: "/icon.png",
+  },
 };
 
 export default function RootLayout({

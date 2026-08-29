@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Footer() {
   return (
@@ -11,9 +12,15 @@ export default function Footer() {
           <div>
             <Link
               href="/"
-              className="font-[family-name:var(--font-space-grotesk)] font-bold text-[hsl(40,20%,92%)] text-base hover:text-[hsl(42,95%,55%)] transition-colors"
+              className="inline-block hover:opacity-90 transition-opacity"
             >
-              ismysaas<span className="text-[hsl(42,95%,55%)]">taken</span><span className="text-[hsl(40,8%,45%)]">?</span>
+              <Image
+                src="/logo.png"
+                alt="IsMySaaSTaken"
+                width={180}
+                height={22}
+                className="h-5 sm:h-6 w-auto object-contain"
+              />
             </Link>
             <p className="mt-1 text-xs text-[hsl(40,8%,45%)] font-[family-name:var(--font-inter)]">
               Instant market validation and competitive gap discovery for SaaS founders.

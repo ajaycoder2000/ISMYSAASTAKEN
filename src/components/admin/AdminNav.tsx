@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 
 interface AdminNavProps {
@@ -25,6 +26,7 @@ export default function AdminNav({ adminEmail }: AdminNavProps) {
         <div className="p-4 sm:p-5 border-b border-[hsl(220,10%,14%)] flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2">
+              <Image src="/icon.png" alt="Logo" width={22} height={22} className="rounded" />
               <span className="font-[family-name:var(--font-space-grotesk)] font-bold text-sm text-[hsl(40,20%,92%)] tracking-tight">
                 ismysaas<span className="text-[hsl(42,95%,55%)]">taken</span>
               </span>
