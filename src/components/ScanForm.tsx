@@ -4,41 +4,56 @@ import { IScanDocument } from '@/types';
 import ScanningIndicator from './ScanningIndicator';
 
 interface ScanFormProps {
-  onResult: (data: IScanDocument) => void;
+  onScanStart?: () => void;
+  onScanSuccess?: (data: IScanDocument) => void;
+  onResult?: (data: IScanDocument) => void;
   onError: (message: string) => void;
   onRateLimited: (message: string) => void;
   disabled?: boolean;
 }
 
-export default function ScanForm({ onResult, onError, onRateLimited, disabled }: ScanFormProps) {
+export default function ScanForm({
+  onScanStart,
+  onScanSuccess,
+  onResult,
+  onError,
+  onRateLimited,
+  disabled,
+}: ScanFormProps) {
   const [ideaText, setIdeaText] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!ideaText.trim() || loading || disabled) return;
-    
+
     setLoading(true);
+    onScanStart?.();
+
     try {
       const res = await fetch('/api/scan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ideaText: ideaText.trim() }),
       });
-      
+
       const data = await res.json();
-      
+
       if (res.status === 429) {
         onRateLimited(data.error || 'Rate limit reached.');
         return;
       }
-      
+
       if (!res.ok || !data.success) {
         onError(data.error || 'Something went wrong.');
         return;
       }
-      
-      onResult(data.data);
+
+      if (onScanSuccess) {
+        onScanSuccess(data.data);
+      } else if (onResult) {
+        onResult(data.data);
+      }
     } catch {
       onError('Network error. Check your connection and try again.');
     } finally {
@@ -73,10 +88,10 @@ export default function ScanForm({ onResult, onError, onRateLimited, disabled }:
           disabled={!ideaText.trim() || loading || disabled}
           className="w-full sm:w-auto px-7 py-3 bg-[hsl(42,95%,55%)] hover:bg-[hsl(42,95%,50%)] text-[hsl(220,15%,8%)] font-bold text-xs sm:text-sm rounded-xl transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-[family-name:var(--font-space-grotesk)] shadow-lg shadow-[rgba(245,166,35,0.15)] cursor-pointer"
         >
-          {loading ? (
+          {loading || disabled ? (
             <>
               <ScanningIndicator size="sm" />
-              <span>Searching competitors...</span>
+              <span>Scanning live market...</span>
             </>
           ) : (
             'Scan this idea →'

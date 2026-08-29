@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Link from 'next/link';
 import ScanForm from '@/components/ScanForm';
 import ScanResult from '@/components/ScanResult';
-import ScanLoadingState from '@/components/ScanLoadingState';
+import RadarScanLoader from '@/components/RadarScanLoader';
 import RateLimitMessage from '@/components/RateLimitMessage';
 import LivePulse from '@/components/LivePulse';
 import MomentumStat from '@/components/MomentumStat';
@@ -20,25 +20,54 @@ import { IScanDocument } from '@/types';
 
 export default function HomePage() {
   const [result, setResult] = useState<IScanDocument | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [scanning, setScanning] = useState(false);
+  const [competitors, setCompetitors] = useState<{ name: string }[]>([]);
+  const [scanComplete, setScanComplete] = useState(false);
+  const pendingResultRef = useRef<IScanDocument | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [rateLimitMsg, setRateLimitMsg] = useState<string | null>(null);
 
-  const handleResult = (data: IScanDocument) => {
-    setResult(data);
+  const handleScanStart = () => {
+    setScanning(true);
+    setCompetitors([]);
+    setScanComplete(false);
+    pendingResultRef.current = null;
+    setResult(null);
     setError(null);
     setRateLimitMsg(null);
-    setLoading(false);
+  };
+
+  const handleScanSuccess = (data: IScanDocument) => {
+    pendingResultRef.current = data;
+    // Map real competitor data returned by the scan API
+    const mappedCompetitors = (data.competitors || []).map((c) => ({
+      name: c.name || 'Competitor',
+    }));
+    setCompetitors(mappedCompetitors);
+    setScanComplete(true);
+  };
+
+  const handleRadarDone = () => {
+    setScanning(false);
+    if (pendingResultRef.current) {
+      setResult(pendingResultRef.current);
+    }
   };
 
   const handleError = (message: string) => {
+    setScanning(false);
+    setScanComplete(false);
+    setCompetitors([]);
+    pendingResultRef.current = null;
     setError(message);
-    setLoading(false);
   };
 
   const handleRateLimited = (message: string) => {
+    setScanning(false);
+    setScanComplete(false);
+    setCompetitors([]);
+    pendingResultRef.current = null;
     setRateLimitMsg(message);
-    setLoading(false);
   };
 
   return (
@@ -67,16 +96,24 @@ export default function HomePage() {
           {/* Scan form */}
           <div className={`w-full relative z-10 ${result ? 'opacity-80 hover:opacity-100 transition-opacity' : ''}`}>
             <ScanForm
-              onResult={handleResult}
+              onScanStart={handleScanStart}
+              onScanSuccess={handleScanSuccess}
               onError={handleError}
               onRateLimited={handleRateLimited}
-              disabled={loading}
+              disabled={scanning}
             />
           </div>
         </div>
 
-        {/* Loading state */}
-        {loading && <ScanLoadingState />}
+        {/* Radar-sweep loading animation */}
+        <div className="w-full relative z-10">
+          <RadarScanLoader
+            active={scanning}
+            competitors={competitors}
+            isComplete={scanComplete}
+            onDone={handleRadarDone}
+          />
+        </div>
 
         {/* Error message */}
         {error && (
