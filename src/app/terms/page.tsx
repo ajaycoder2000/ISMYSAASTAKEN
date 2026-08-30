@@ -4,6 +4,9 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'Terms of Service — Is My SaaS Taken?',
   description: 'Terms of Service and usage guidelines for Is My SaaS Taken?',
+  alternates: {
+    canonical: '/terms',
+  },
 };
 
 function SectionHeading({ children }: { children: React.ReactNode }) {

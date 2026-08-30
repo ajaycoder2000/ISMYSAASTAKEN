@@ -36,6 +36,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {
       title: `"${truncatedIdea}" — Market Validation Report`,
       description: `Saturation: ${saturation} • ${count} competitors found. ${reasoning.slice(0, 120)}...`,
+      alternates: {
+        canonical: `/scan/${shareSlug}`,
+      },
       openGraph: {
         title: `Is this SaaS idea taken? "${truncatedIdea}"`,
         description: `Saturation: ${saturation} — ${count} competitors tracked live. See the full gap analysis.`,
