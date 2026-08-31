@@ -100,8 +100,34 @@ export default async function SharedScanPage({ params }: Props) {
     );
   }
   
+  const scanJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'TechArticle',
+    headline: `Market Saturation Analysis: ${scan.ideaText}`,
+    description: `Competitive market validation for "${scan.ideaText}". Found ${scan.competitors?.length || 0} competitors. Saturation score: ${scan.saturationScore}.`,
+    datePublished: scan.createdAt,
+    author: {
+      '@type': 'Organization',
+      name: 'IsMySaaSTaken',
+      url: 'https://ismysaastaken.vercel.app',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'IsMySaaSTaken',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://ismysaastaken.vercel.app/icon.png',
+      },
+    },
+    mainEntityOfPage: `https://ismysaastaken.vercel.app/scan/${scan.shareSlug}`,
+  };
+
   return (
     <div className="min-h-[calc(100vh-3.5rem)] px-3 sm:px-6 py-6 sm:py-12 max-w-3xl xl:max-w-4xl mx-auto pb-28">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(scanJsonLd) }}
+      />
       {/* Breadcrumb Bar */}
       <div className="flex items-center gap-2 text-[11px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,45%)] mb-5">
         <Link href="/" className="hover:text-[hsl(42,95%,55%)] transition-colors">

@@ -29,11 +29,28 @@ export const metadata: Metadata = {
   title: "Is My SaaS Taken? — Instant Market Validation for SaaS Ideas",
   description:
     "Describe your SaaS idea, get back real competitors, market saturation, and a specific gap you could build toward. No signup required for your first scan.",
+  keywords: [
+    'SaaS idea validation',
+    'market saturation checker',
+    'competitor analysis tool',
+    'find SaaS competitors',
+    'startup gap analysis',
+    'micro SaaS ideas',
+    'indie hacker validation',
+    'software competitor search',
+    'Product Hunt alternatives',
+    'startup moat analysis',
+  ],
+  authors: [{ name: 'IsMySaaSTaken Team', url: 'https://ismysaastaken.vercel.app' }],
+  creator: 'IsMySaaSTaken',
+  publisher: 'IsMySaaSTaken',
+  category: 'technology',
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: "Is My SaaS Taken?",
+    siteName: 'Is My SaaS Taken?',
+    title: "Is My SaaS Taken? — Instant Market Validation for SaaS Ideas",
     description:
       "Instant, honest market validation for SaaS founders. Real competitors. Real gaps. No BS.",
     type: "website",
@@ -52,20 +69,44 @@ export const metadata: Metadata = {
     shortcut: "/icon.png",
     apple: "/icon.png",
   },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+  },
 };
 
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'SoftwareApplication',
-  name: 'Is My SaaS Taken?',
-  applicationCategory: 'BusinessApplication',
-  description: 'Instant market validation for SaaS founders. Real competitors, real gaps, no BS.',
-  url: 'https://ismysaastaken.vercel.app',
-  offers: {
-    '@type': 'Offer',
-    price: '0',
-    priceCurrency: 'USD',
-  },
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': 'https://ismysaastaken.vercel.app/#website',
+      url: 'https://ismysaastaken.vercel.app',
+      name: 'Is My SaaS Taken?',
+      description: 'Instant market validation for SaaS founders. Real competitors, real gaps, no BS.',
+      publisher: {
+        '@type': 'Organization',
+        name: 'IsMySaaSTaken',
+        logo: {
+          '@type': 'ImageObject',
+          url: 'https://ismysaastaken.vercel.app/icon.png',
+        },
+      },
+    },
+    {
+      '@type': 'SoftwareApplication',
+      '@id': 'https://ismysaastaken.vercel.app/#software',
+      name: 'Is My SaaS Taken?',
+      applicationCategory: 'BusinessApplication',
+      operatingSystem: 'All',
+      description: 'Instant market validation for SaaS founders. Real competitors, real gaps, no BS.',
+      url: 'https://ismysaastaken.vercel.app',
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'USD',
+      },
+    },
+  ],
 };
 
 export default function RootLayout({

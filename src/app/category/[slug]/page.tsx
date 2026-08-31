@@ -80,6 +80,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: cat.metaDesc,
       type: 'website',
     },
+    twitter: {
+      card: 'summary_large_image',
+      title: cat.metaTitle,
+      description: cat.metaDesc,
+    },
   };
 }
 
@@ -97,8 +102,37 @@ export default async function CategoryPage({ params }: Props) {
     ? Math.round(categoryScans.reduce((acc, curr) => acc + curr.competitors.length, 0) / categoryScans.length)
     : 0;
 
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://ismysaastaken.vercel.app',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Categories',
+        item: 'https://ismysaastaken.vercel.app/#categories',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: category.name,
+        item: `https://ismysaastaken.vercel.app/category/${slug}`,
+      },
+    ],
+  };
+
   return (
     <div className="min-h-[calc(100vh-3.5rem)] px-4 sm:px-6 lg:px-8 py-8 sm:py-14 max-w-4xl mx-auto">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       {/* Breadcrumb Bar */}
       <div className="flex items-center gap-2 text-[11px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,45%)] mb-6">
         <Link href="/" className="hover:text-[hsl(42,95%,55%)] transition-colors">
