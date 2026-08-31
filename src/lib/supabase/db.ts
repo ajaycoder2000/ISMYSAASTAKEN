@@ -314,20 +314,29 @@ export const SupabaseDB = {
 
     if (supabase) {
       try {
-        const { data } = await supabase
-          .from('scans')
-          .select('id, idea_text, competitors, saturation_score, share_slug, created_at')
-          .eq('user_id', userId)
-          .order('created_at', { ascending: false });
+        const [{ data: scansData }, { data: bookmarksData }] = await Promise.all([
+          supabase
+            .from('scans')
+            .select('id, idea_text, competitors, saturation_score, share_slug, created_at')
+            .eq('user_id', userId)
+            .order('created_at', { ascending: false }),
+          supabase
+            .from('bookmarks')
+            .select('scan_id')
+            .eq('user_id', userId),
+        ]);
 
-        if (data) {
-          return data.map((s) => ({
+        const bookmarkedIds = new Set((bookmarksData || []).map((b) => b.scan_id));
+
+        if (scansData) {
+          return scansData.map((s) => ({
             _id: s.id,
             ideaText: s.idea_text,
             competitorCount: Array.isArray(s.competitors) ? s.competitors.length : 0,
             saturationScore: s.saturation_score,
             shareSlug: s.share_slug,
             createdAt: s.created_at,
+            isBookmarked: bookmarkedIds.has(s.id),
           }));
         }
       } catch (err) {
@@ -344,6 +353,7 @@ export const SupabaseDB = {
         saturationScore: s.saturationScore,
         shareSlug: s.shareSlug,
         createdAt: s.createdAt,
+        isBookmarked: false,
       }));
   },
 

@@ -3,7 +3,6 @@ import { IScanDocument } from '@/types';
 import CompetitorRow from './CompetitorRow';
 import SignalBars from './SignalBars';
 import DecryptText from './DecryptText';
-import SponsorSlot from './SponsorSlot';
 import PivotAngles from './PivotAngles';
 import ShareVerdictCard from './ShareVerdictCard';
 import BookmarkButton from './BookmarkButton';
@@ -118,11 +117,6 @@ export default function ScanResult({ data }: ScanResultProps) {
           gapAnalysis={data.gapAnalysis}
           shareSlug={data.shareSlug}
         />
-      </section>
-
-      {/* Sponsor placement */}
-      <section className="pt-2">
-        <SponsorSlot />
       </section>
     </div>
   );

@@ -24,6 +24,7 @@ interface ScanEntry {
   shareSlug: string;
   competitorCount: number;
   createdAt: string;
+  isBookmarked?: boolean;
 }
 
 export default function DashboardPage() {
@@ -32,6 +33,7 @@ export default function DashboardPage() {
   const [scans, setScans] = useState<ScanEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [showUpgradeToast, setShowUpgradeToast] = useState(false);
+  const [filterTab, setFilterTab] = useState<'all' | 'bookmarked'>('all');
 
   useEffect(() => {
     // Check for upgrade success
@@ -131,10 +133,43 @@ export default function DashboardPage() {
 
         {/* Scan history */}
         <div>
-          <h2 className="text-xs font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-[hsl(40,8%,55%)] mb-4">
-            Your Scans
-          </h2>
-          <ScanHistory scans={scans} />
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <h2 className="text-xs font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-[hsl(40,8%,55%)]">
+              Your Scans
+            </h2>
+            <div className="flex items-center gap-1 bg-[hsl(220,14%,10%)] border border-[hsl(220,10%,18%)] rounded-lg p-1">
+              <button
+                onClick={() => setFilterTab('all')}
+                className={`text-[11px] font-[family-name:var(--font-mono)] px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                  filterTab === 'all'
+                    ? 'bg-[hsl(220,12%,18%)] text-[hsl(40,20%,95%)] font-bold'
+                    : 'text-[hsl(40,8%,55%)] hover:text-[hsl(40,20%,85%)]'
+                }`}
+              >
+                All ({scans.length})
+              </button>
+              <button
+                onClick={() => setFilterTab('bookmarked')}
+                className={`text-[11px] font-[family-name:var(--font-mono)] px-2.5 py-1 rounded-md transition-all flex items-center gap-1 cursor-pointer ${
+                  filterTab === 'bookmarked'
+                    ? 'bg-[hsl(42,95%,55%,0.15)] text-[hsl(42,95%,55%)] font-bold border border-[hsl(42,95%,55%,0.3)]'
+                    : 'text-[hsl(40,8%,55%)] hover:text-[hsl(40,20%,85%)]'
+                }`}
+              >
+                <span>★</span>
+                <span>Bookmarked ({scans.filter((s) => s.isBookmarked).length})</span>
+              </button>
+            </div>
+          </div>
+
+          <ScanHistory
+            scans={filterTab === 'bookmarked' ? scans.filter((s) => s.isBookmarked) : scans}
+            emptyMessage={
+              filterTab === 'bookmarked'
+                ? 'No bookmarked scans yet. Click the star icon on any scan report to save and isolate your best ideas here.'
+                : undefined
+            }
+          />
         </div>
 
         {/* Quick scan CTA */}

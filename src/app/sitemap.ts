@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/pricing`, lastModified: now, priority: 0.8, changeFrequency: 'weekly' },
     { url: `${baseUrl}/roadmap`, lastModified: now, priority: 0.6, changeFrequency: 'weekly' },
     { url: `${baseUrl}/terms`, lastModified: now, priority: 0.3, changeFrequency: 'monthly' },
+    { url: `${baseUrl}/privacy`, lastModified: now, priority: 0.3, changeFrequency: 'monthly' },
   ];
 
   // Category index pages

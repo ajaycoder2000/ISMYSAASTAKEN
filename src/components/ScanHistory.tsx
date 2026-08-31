@@ -10,14 +10,21 @@ interface ScanHistoryEntry {
   shareSlug: string;
   competitorCount: number;
   createdAt: string;
+  isBookmarked?: boolean;
 }
 
-export default function ScanHistory({ scans }: { scans: ScanHistoryEntry[] }) {
+export default function ScanHistory({
+  scans,
+  emptyMessage,
+}: {
+  scans: ScanHistoryEntry[];
+  emptyMessage?: string;
+}) {
   if (scans.length === 0) {
     return (
-      <div className="text-center py-12">
-        <p className="text-[hsl(40,8%,45%)] font-[family-name:var(--font-inter)] text-sm">
-          No scans yet. Your history will show up once you run your first one.
+      <div className="text-center py-12 bg-[hsl(220,14%,10%)] border border-[hsl(220,10%,16%)] rounded-xl p-6">
+        <p className="text-[hsl(40,8%,45%)] font-[family-name:var(--font-inter)] text-sm leading-relaxed">
+          {emptyMessage || 'No scans yet. Your history will show up once you run your first one.'}
         </p>
       </div>
     );
@@ -33,9 +40,16 @@ export default function ScanHistory({ scans }: { scans: ScanHistoryEntry[] }) {
         >
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1 min-w-0">
-              <p className="text-sm text-[hsl(40,20%,92%)] font-[family-name:var(--font-inter)] truncate group-hover:text-[hsl(42,95%,55%)] transition-colors">
-                {scan.ideaText}
-              </p>
+              <div className="flex items-center gap-2">
+                {scan.isBookmarked && (
+                  <span className="text-[hsl(42,95%,55%)] text-xs" title="Bookmarked Idea">
+                    ★
+                  </span>
+                )}
+                <p className="text-sm text-[hsl(40,20%,92%)] font-[family-name:var(--font-inter)] truncate group-hover:text-[hsl(42,95%,55%)] transition-colors">
+                  {scan.ideaText}
+                </p>
+              </div>
               <div className="flex items-center gap-3 mt-2">
                 <SaturationBadge level={scan.saturationScore} />
                 <span className="text-xs font-[family-name:var(--font-mono)] text-[hsl(40,8%,35%)]">
