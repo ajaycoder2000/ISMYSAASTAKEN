@@ -13,6 +13,7 @@ import RecentScansSection from '@/components/RecentScansSection';
 import HowItWorksPipeline from '@/components/HowItWorksPipeline';
 import WhyThisExists from '@/components/WhyThisExists';
 import KeywordTeaserSection from '@/components/KeywordTeaserSection';
+import IsItTakenSection from '@/components/IsItTakenSection';
 import MarketPlaybook from '@/components/MarketPlaybook';
 import WeeklyGapSignup from '@/components/WeeklyGapSignup';
 import HeroBackground from '@/components/HeroBackground';
@@ -144,7 +145,12 @@ export default function HomePage() {
         {/* 1. Momentum / Scale Stat Block */}
         <MomentumStat />
 
-        {/* 2. 3-Step Live Intelligence Engine */}
+        {/* 2. Is It Taken? — Startup Name & Handle Availability */}
+        <div className="w-full pt-4 sm:pt-6 border-t border-[hsl(220,10%,15%)]">
+          <IsItTakenSection />
+        </div>
+
+        {/* 3. 3-Step Live Intelligence Engine */}
         <div className="w-full pt-6 sm:pt-10 border-t border-[hsl(220,10%,15%)]">
           <HowItWorksPipeline />
         </div>

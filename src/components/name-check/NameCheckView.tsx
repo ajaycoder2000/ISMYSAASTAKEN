@@ -92,15 +92,15 @@ export default function NameCheckView() {
       <div className="text-center max-w-2xl mx-auto space-y-3">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[hsl(42,95%,55%,0.1)] border border-[hsl(42,95%,55%,0.25)] text-[11px] font-[family-name:var(--font-mono)] text-[hsl(42,95%,55%)] font-bold">
           <span className="w-1.5 h-1.5 rounded-full bg-[hsl(42,95%,55%)] animate-pulse" />
-          FOUNDER IDENTITY RADAR
+          FOUNDER IDENTITY RADAR // IS IT TAKEN?
         </div>
 
         <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)] tracking-tight">
-          Name &amp; Handle Availability
+          Is It Taken?
         </h1>
 
         <p className="text-xs sm:text-sm text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] leading-relaxed">
-          Verify domain availability (.com, .io, .co, .app via official RDAP protocol) and social handle availability across X, GitHub, Instagram, and TikTok in one search.
+          Check if your startup name is taken across .com, .io, .co, .app domains (via official RDAP protocol) and X, GitHub, Instagram, and TikTok — all in one search.
         </p>
       </div>
 

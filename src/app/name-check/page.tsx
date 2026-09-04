@@ -1,8 +1,5 @@
-import React from 'react';
-import NameCheckView from '@/components/name-check/NameCheckView';
+import { redirect } from 'next/navigation';
 
-export const dynamic = 'force-dynamic';
-
-export default function NameCheckPage() {
-  return <NameCheckView />;
+export default function NameCheckRedirectPage() {
+  redirect('/is-it-taken');
 }

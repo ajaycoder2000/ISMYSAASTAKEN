@@ -72,10 +72,13 @@ export default function Navbar() {
               </span>
             </Link>
             <Link
-              href="/name-check"
-              className="hidden lg:inline text-xs sm:text-sm text-[hsl(40,8%,55%)] hover:text-[hsl(40,20%,92%)] transition-colors font-[family-name:var(--font-inter)]"
+              href="/is-it-taken"
+              className="text-xs sm:text-sm text-[hsl(40,8%,55%)] hover:text-[hsl(40,20%,92%)] transition-colors font-[family-name:var(--font-inter)] flex items-center gap-1.5"
             >
-              Name Check
+              <span>Is It Taken?</span>
+              <span className="text-[9px] font-[family-name:var(--font-mono)] uppercase px-1.5 py-0.5 bg-[hsl(145,60%,45%,0.15)] text-[hsl(145,60%,55%)] rounded border border-[hsl(145,60%,45%,0.3)] font-bold">
+                NEW
+              </span>
             </Link>
             <Link
               href="/pricing"
@@ -187,12 +190,14 @@ export default function Navbar() {
                 </span>
               </Link>
               <Link
-                href="/name-check"
+                href="/is-it-taken"
                 onClick={() => setMobileMenuOpen(false)}
                 className="px-3 py-2 rounded-lg text-[hsl(40,20%,90%)] hover:bg-[hsl(220,12%,14%)] flex items-center justify-between"
               >
-                <span>Name &amp; Handle Checker</span>
-                <span className="text-xs">🏷️</span>
+                <span>Is It Taken?</span>
+                <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 bg-[hsl(145,60%,45%,0.15)] text-[hsl(145,60%,55%)] rounded font-bold border border-[hsl(145,60%,45%,0.3)]">
+                  NEW
+                </span>
               </Link>
               <Link
                 href="/pricing"

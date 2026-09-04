@@ -33,8 +33,8 @@ export default function Footer() {
               <span>Keyword Radar</span>
               <span className="text-[9px] font-mono px-1 py-0.2 bg-[hsl(145,60%,45%,0.15)] text-[hsl(145,60%,55%)] rounded">NEW</span>
             </Link>
-            <Link href="/name-check" className="hover:text-[hsl(42,95%,55%)] transition-colors flex items-center gap-1 font-medium">
-              <span>Name Checker</span>
+            <Link href="/is-it-taken" className="hover:text-[hsl(42,95%,55%)] transition-colors flex items-center gap-1 font-medium">
+              <span>Is It Taken?</span>
               <span className="text-[9px] font-mono px-1 py-0.2 bg-[hsl(42,95%,55%,0.15)] text-[hsl(42,95%,55%)] rounded">NEW</span>
             </Link>
             <Link href="/pricing" className="hover:text-[hsl(40,20%,92%)] transition-colors">
