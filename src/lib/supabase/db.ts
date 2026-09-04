@@ -599,4 +599,112 @@ export const SupabaseDB = {
       found_at: new Date().toISOString(),
     }));
   },
+
+  /**
+   * Get cached keyword research data
+   */
+  async getKeywordCache(seed: string): Promise<any | null> {
+    const supabase = getSupabaseAdmin();
+    const normalized = seed.toLowerCase().trim();
+
+    if (supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('keyword_cache')
+          .select('*')
+          .eq('seed', normalized)
+          .maybeSingle();
+
+        if (!error && data) {
+          return data;
+        }
+      } catch (err) {
+        console.warn('Supabase getKeywordCache failed, falling back to DevStore:', err);
+      }
+    }
+
+    return DevStore.getKeywordCache(normalized);
+  },
+
+  /**
+   * Save or update keyword research cache (48h TTL)
+   */
+  async saveKeywordCache(data: {
+    seed: string;
+    trend_data: any;
+    generated_keywords: any;
+    competition_signal: any;
+  }): Promise<void> {
+    const supabase = getSupabaseAdmin();
+    const normalized = data.seed.toLowerCase().trim();
+
+    if (supabase) {
+      try {
+        await supabase.from('keyword_cache').upsert(
+          {
+            seed: normalized,
+            trend_data: data.trend_data,
+            generated_keywords: data.generated_keywords,
+            competition_signal: data.competition_signal,
+            fetched_at: new Date().toISOString(),
+          },
+          { onConflict: 'seed' }
+        );
+      } catch (err) {
+        console.warn('Supabase saveKeywordCache failed, falling back to DevStore:', err);
+      }
+    }
+
+    DevStore.upsertKeywordCache(data);
+  },
+
+  /**
+   * Record keyword lookup usage for a user
+   */
+  async recordKeywordUsage(userId: string): Promise<void> {
+    if (!userId) return;
+    const supabase = getSupabaseAdmin();
+
+    if (supabase) {
+      try {
+        await supabase.from('keyword_usage').insert({
+          user_id: userId,
+          used_at: new Date().toISOString(),
+        });
+      } catch (err) {
+        console.warn('Supabase recordKeywordUsage failed:', err);
+      }
+    }
+
+    DevStore.recordKeywordUsage(userId);
+  },
+
+  /**
+   * Get user's keyword usage count for the current calendar month
+   */
+  async getKeywordUsageThisMonth(userId: string): Promise<number> {
+    if (!userId) return 0;
+    const supabase = getSupabaseAdmin();
+    const startOfMonth = new Date();
+    startOfMonth.setDate(1);
+    startOfMonth.setHours(0, 0, 0, 0);
+
+    if (supabase) {
+      try {
+        const { count, error } = await supabase
+          .from('keyword_usage')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', userId)
+          .gte('used_at', startOfMonth.toISOString());
+
+        if (!error && typeof count === 'number') {
+          return count;
+        }
+      } catch (err) {
+        console.warn('Supabase getKeywordUsageThisMonth failed:', err);
+      }
+    }
+
+    return DevStore.getKeywordUsageCount(userId, startOfMonth);
+  },
 };

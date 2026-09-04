@@ -78,6 +78,21 @@ interface DevSubscriber {
   unsubscribe_token: string;
 }
 
+export interface DevKeywordCache {
+  id: string;
+  seed: string;
+  trend_data: any;
+  generated_keywords: any;
+  competition_signal: any;
+  fetched_at: string;
+}
+
+export interface DevKeywordUsage {
+  id: string;
+  user_id: string;
+  used_at: string;
+}
+
 interface StoreState {
   users: DevUser[];
   tokens: DevMagicToken[];
@@ -86,6 +101,8 @@ interface StoreState {
   config: DevSiteConfig;
   logs: DevAdminLog[];
   subscribers?: DevSubscriber[];
+  keyword_cache?: DevKeywordCache[];
+  keyword_usage?: DevKeywordUsage[];
 }
 
 const STORE_PATH = path.join(process.cwd(), '.dev-store.json');
@@ -433,5 +450,57 @@ export const DevStore = {
           plan: user?.plan || 'free',
         };
       });
+  },
+
+  getKeywordCache(seed: string): DevKeywordCache | null {
+    if (!inMemoryState.keyword_cache) inMemoryState.keyword_cache = [];
+    const normalized = seed.toLowerCase().trim();
+    return inMemoryState.keyword_cache.find((k) => k.seed === normalized) || null;
+  },
+
+  upsertKeywordCache(data: {
+    seed: string;
+    trend_data: any;
+    generated_keywords: any;
+    competition_signal: any;
+  }): DevKeywordCache {
+    if (!inMemoryState.keyword_cache) inMemoryState.keyword_cache = [];
+    const normalized = data.seed.toLowerCase().trim();
+    const existingIndex = inMemoryState.keyword_cache.findIndex((k) => k.seed === normalized);
+    const entry: DevKeywordCache = {
+      id: existingIndex >= 0 ? inMemoryState.keyword_cache[existingIndex].id : 'kc_' + nanoid(10),
+      seed: normalized,
+      trend_data: data.trend_data,
+      generated_keywords: data.generated_keywords,
+      competition_signal: data.competition_signal,
+      fetched_at: new Date().toISOString(),
+    };
+
+    if (existingIndex >= 0) {
+      inMemoryState.keyword_cache[existingIndex] = entry;
+    } else {
+      inMemoryState.keyword_cache.push(entry);
+    }
+    saveState();
+    return entry;
+  },
+
+  recordKeywordUsage(userId: string): void {
+    if (!inMemoryState.keyword_usage) inMemoryState.keyword_usage = [];
+    inMemoryState.keyword_usage.push({
+      id: 'ku_' + nanoid(10),
+      user_id: userId,
+      used_at: new Date().toISOString(),
+    });
+    saveState();
+  },
+
+  getKeywordUsageCount(userId: string, sinceDate?: Date): number {
+    if (!inMemoryState.keyword_usage) inMemoryState.keyword_usage = [];
+    return inMemoryState.keyword_usage.filter((u) => {
+      if (u.user_id !== userId) return false;
+      if (sinceDate && new Date(u.used_at) < sinceDate) return false;
+      return true;
+    }).length;
   },
 };

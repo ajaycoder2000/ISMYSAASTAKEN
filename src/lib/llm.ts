@@ -247,3 +247,80 @@ export async function performScan(ideaText: string): Promise<ScanResult> {
     gapAnalysis: 'Create a hyper-focused niche tool that integrates directly into existing founder toolchains rather than building an all-in-one suite.',
   };
 }
+
+/**
+ * Expand autocomplete suggestions into long-tail and question-format keywords using Gemini
+ */
+export async function expandKeywordsWithLLM(seed: string, autocomplete: string[]): Promise<string[]> {
+  const apiKey = process.env.GEMINI_API_KEY || GEMINI_API_KEY;
+
+  if (apiKey) {
+    const models = ['gemini-2.5-flash', 'gemini-1.5-flash'];
+    const prompt = `Seed keyword: "${seed}"
+Real Google autocomplete suggestions: ${JSON.stringify(autocomplete)}
+
+Generate 10 additional realistic long-tail and question-format keyword variations
+a SaaS founder researching this space might actually search for. Base these on the
+real suggestions above plus your knowledge of the space — don't invent implausible phrases.
+Return ONLY a valid JSON array of strings, nothing else. Example: ["keyword 1", "keyword 2"]`;
+
+    for (const model of models) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 12000);
+
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            signal: controller.signal,
+            body: JSON.stringify({
+              contents: [{ role: 'user', parts: [{ text: prompt }] }],
+              generationConfig: {
+                temperature: 0.3,
+                maxOutputTokens: 1024,
+              },
+            }),
+          }
+        );
+
+        clearTimeout(timeoutId);
+
+        if (response.ok) {
+          const data = await response.json();
+          const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (text) {
+            let cleaned = text.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '');
+            const start = cleaned.indexOf('[');
+            const end = cleaned.lastIndexOf(']');
+            if (start !== -1 && end !== -1 && end > start) {
+              cleaned = cleaned.substring(start, end + 1);
+            }
+            const parsed = JSON.parse(cleaned);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              return parsed.map((k: any) => String(k).trim()).filter(Boolean);
+            }
+          }
+        }
+      } catch (err) {
+        console.warn(`Gemini keyword expansion on ${model} failed:`, err);
+      }
+    }
+  }
+
+  // Graceful fallback if LLM is unavailable or offline
+  return [
+    `best ${seed} software`,
+    `how to build ${seed}`,
+    `${seed} alternatives`,
+    `open source ${seed}`,
+    `${seed} for small business`,
+    `is ${seed} worth building`,
+    `${seed} api pricing`,
+    `${seed} tools for founders`,
+    `why do ${seed} tools fail`,
+    `${seed} vs competitors`,
+  ];
+}
+

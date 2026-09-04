@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { IScanDocument } from '@/types';
 import ScanningIndicator from './ScanningIndicator';
 
@@ -22,6 +22,16 @@ export default function ScanForm({
 }: ScanFormProps) {
   const [ideaText, setIdeaText] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const prefilledIdea = params.get('idea');
+      if (prefilledIdea) {
+        setIdeaText(prefilledIdea);
+      }
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
