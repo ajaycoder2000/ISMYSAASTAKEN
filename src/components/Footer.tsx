@@ -29,6 +29,10 @@ export default function Footer() {
 
           {/* Core Navigation Links */}
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-[family-name:var(--font-inter)] text-[hsl(40,8%,55%)]">
+            <Link href="/keywords" className="hover:text-[hsl(145,60%,55%)] transition-colors flex items-center gap-1 font-medium">
+              <span>Keyword Radar</span>
+              <span className="text-[9px] font-mono px-1 py-0.2 bg-[hsl(145,60%,45%,0.15)] text-[hsl(145,60%,55%)] rounded">NEW</span>
+            </Link>
             <Link href="/pricing" className="hover:text-[hsl(40,20%,92%)] transition-colors">
               Pricing
             </Link>

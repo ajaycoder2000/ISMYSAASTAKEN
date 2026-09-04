@@ -12,6 +12,7 @@ import ExpandedResultShowcase from '@/components/ExpandedResultShowcase';
 import RecentScansSection from '@/components/RecentScansSection';
 import HowItWorksPipeline from '@/components/HowItWorksPipeline';
 import WhyThisExists from '@/components/WhyThisExists';
+import KeywordTeaserSection from '@/components/KeywordTeaserSection';
 import MarketPlaybook from '@/components/MarketPlaybook';
 import WeeklyGapSignup from '@/components/WeeklyGapSignup';
 import HeroBackground from '@/components/HeroBackground';
@@ -153,7 +154,12 @@ export default function HomePage() {
           <WhyThisExists />
         </div>
 
-        {/* 4. Expanded Result Showcase ("See a real result") */}
+        {/* 4. Search Demand & Keyword Radar Feature Showcase */}
+        <div className="w-full pt-8 sm:pt-12 border-t border-[hsl(220,10%,15%)]">
+          <KeywordTeaserSection />
+        </div>
+
+        {/* 5. Expanded Result Showcase ("See a real result") */}
         <div className="w-full pt-8 sm:pt-12 border-t border-[hsl(220,10%,15%)]">
           <ExpandedResultShowcase />
         </div>
