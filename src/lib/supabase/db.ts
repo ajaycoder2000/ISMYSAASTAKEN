@@ -707,4 +707,105 @@ export const SupabaseDB = {
 
     return DevStore.getKeywordUsageCount(userId, startOfMonth);
   },
+
+  /**
+   * Get cached name check results (24h TTL)
+   */
+  async getNameCheckCache(name: string): Promise<any | null> {
+    const supabase = getSupabaseAdmin();
+    const cleanName = name.toLowerCase().trim().replace(/[^a-z0-9]/g, '');
+
+    if (supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('name_check_cache')
+          .select('*')
+          .eq('name', cleanName)
+          .maybeSingle();
+
+        if (!error && data) {
+          return data;
+        }
+      } catch (err) {
+        console.warn('Supabase getNameCheckCache failed, falling back to DevStore:', err);
+      }
+    }
+
+    return DevStore.getNameCheckCache(cleanName);
+  },
+
+  /**
+   * Save or update name check cache
+   */
+  async saveNameCheckCache(name: string, results: any): Promise<void> {
+    const supabase = getSupabaseAdmin();
+    const cleanName = name.toLowerCase().trim().replace(/[^a-z0-9]/g, '');
+
+    if (supabase) {
+      try {
+        await supabase.from('name_check_cache').upsert(
+          {
+            name: cleanName,
+            results,
+            fetched_at: new Date().toISOString(),
+          },
+          { onConflict: 'name' }
+        );
+      } catch (err) {
+        console.warn('Supabase saveNameCheckCache failed, falling back to DevStore:', err);
+      }
+    }
+
+    DevStore.upsertNameCheckCache(cleanName, results);
+  },
+
+  /**
+   * Record name check lookup usage for a user
+   */
+  async recordNameCheckUsage(userId: string): Promise<void> {
+    if (!userId) return;
+    const supabase = getSupabaseAdmin();
+
+    if (supabase) {
+      try {
+        await supabase.from('name_check_usage').insert({
+          user_id: userId,
+          used_at: new Date().toISOString(),
+        });
+      } catch (err) {
+        console.warn('Supabase recordNameCheckUsage failed:', err);
+      }
+    }
+
+    DevStore.recordNameCheckUsage(userId);
+  },
+
+  /**
+   * Get user's name check usage count for the current calendar month
+   */
+  async getNameCheckUsageThisMonth(userId: string): Promise<number> {
+    if (!userId) return 0;
+    const supabase = getSupabaseAdmin();
+    const startOfMonth = new Date();
+    startOfMonth.setDate(1);
+    startOfMonth.setHours(0, 0, 0, 0);
+
+    if (supabase) {
+      try {
+        const { count, error } = await supabase
+          .from('name_check_usage')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', userId)
+          .gte('used_at', startOfMonth.toISOString());
+
+        if (!error && typeof count === 'number') {
+          return count;
+        }
+      } catch (err) {
+        console.warn('Supabase getNameCheckUsageThisMonth failed:', err);
+      }
+    }
+
+    return DevStore.getNameCheckUsageCount(userId, startOfMonth);
+  },
 };

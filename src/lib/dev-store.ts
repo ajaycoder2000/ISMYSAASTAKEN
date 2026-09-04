@@ -93,6 +93,19 @@ export interface DevKeywordUsage {
   used_at: string;
 }
 
+export interface DevNameCheckCache {
+  id: string;
+  name: string;
+  results: any;
+  fetched_at: string;
+}
+
+export interface DevNameCheckUsage {
+  id: string;
+  user_id: string;
+  used_at: string;
+}
+
 interface StoreState {
   users: DevUser[];
   tokens: DevMagicToken[];
@@ -103,6 +116,8 @@ interface StoreState {
   subscribers?: DevSubscriber[];
   keyword_cache?: DevKeywordCache[];
   keyword_usage?: DevKeywordUsage[];
+  name_check_cache?: DevNameCheckCache[];
+  name_check_usage?: DevNameCheckUsage[];
 }
 
 const STORE_PATH = path.join(process.cwd(), '.dev-store.json');
@@ -498,6 +513,51 @@ export const DevStore = {
   getKeywordUsageCount(userId: string, sinceDate?: Date): number {
     if (!inMemoryState.keyword_usage) inMemoryState.keyword_usage = [];
     return inMemoryState.keyword_usage.filter((u) => {
+      if (u.user_id !== userId) return false;
+      if (sinceDate && new Date(u.used_at) < sinceDate) return false;
+      return true;
+    }).length;
+  },
+
+  getNameCheckCache(name: string): DevNameCheckCache | null {
+    if (!inMemoryState.name_check_cache) inMemoryState.name_check_cache = [];
+    const normalized = name.toLowerCase().trim().replace(/[^a-z0-9]/g, '');
+    return inMemoryState.name_check_cache.find((n) => n.name === normalized) || null;
+  },
+
+  upsertNameCheckCache(name: string, results: any): DevNameCheckCache {
+    if (!inMemoryState.name_check_cache) inMemoryState.name_check_cache = [];
+    const normalized = name.toLowerCase().trim().replace(/[^a-z0-9]/g, '');
+    const existingIndex = inMemoryState.name_check_cache.findIndex((n) => n.name === normalized);
+    const entry: DevNameCheckCache = {
+      id: existingIndex >= 0 ? inMemoryState.name_check_cache[existingIndex].id : 'nc_' + nanoid(10),
+      name: normalized,
+      results,
+      fetched_at: new Date().toISOString(),
+    };
+
+    if (existingIndex >= 0) {
+      inMemoryState.name_check_cache[existingIndex] = entry;
+    } else {
+      inMemoryState.name_check_cache.push(entry);
+    }
+    saveState();
+    return entry;
+  },
+
+  recordNameCheckUsage(userId: string): void {
+    if (!inMemoryState.name_check_usage) inMemoryState.name_check_usage = [];
+    inMemoryState.name_check_usage.push({
+      id: 'ncu_' + nanoid(10),
+      user_id: userId,
+      used_at: new Date().toISOString(),
+    });
+    saveState();
+  },
+
+  getNameCheckUsageCount(userId: string, sinceDate?: Date): number {
+    if (!inMemoryState.name_check_usage) inMemoryState.name_check_usage = [];
+    return inMemoryState.name_check_usage.filter((u) => {
       if (u.user_id !== userId) return false;
       if (sinceDate && new Date(u.used_at) < sinceDate) return false;
       return true;
