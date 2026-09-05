@@ -369,6 +369,263 @@ export default function NameCheckView() {
           </div>
         </div>
       )}
+
+      {/* Empty State: Section A (Preview), Section B (How It Works), Section C (Methodology) */}
+      {!results && !loading && (
+        <div className="space-y-12 animate-in fade-in duration-300 max-w-4xl mx-auto">
+          {/* Section A — Sample Output Preview */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[hsl(42,95%,55%)] animate-pulse" />
+                <span className="text-[11px] font-bold font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-[hsl(42,95%,55%)]">
+                  PREVIEW: SAMPLE CHECK RESULT
+                </span>
+              </div>
+              <span className="text-[10px] font-mono font-bold text-[hsl(42,95%,55%)] bg-[hsl(42,95%,55%,0.1)] px-2.5 py-0.5 rounded border border-[hsl(42,95%,55%,0.25)]">
+                STATIC SAMPLE
+              </span>
+            </div>
+
+            {/* Mock result card */}
+            <div className="bg-[hsl(220,14%,10%)]/90 border border-[hsl(220,10%,20%)] rounded-2xl p-5 sm:p-6 space-y-6 shadow-2xl relative overflow-hidden">
+              <div className="flex items-center justify-between flex-wrap gap-2 pb-3 border-b border-[hsl(220,10%,16%)]">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)]">
+                    Target Name:
+                  </span>
+                  <span className="text-sm font-mono font-bold text-[hsl(42,95%,55%)] bg-[hsl(42,95%,55%,0.1)] px-2.5 py-0.5 rounded border border-[hsl(42,95%,55%,0.25)]">
+                    flowlyapp
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono text-[hsl(40,8%,50%)]">
+                  Simulated multi-channel scan
+                </span>
+              </div>
+
+              {/* 2-Column Mock Layout: Domains vs Social Handles */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Domains Row */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-[hsl(145,60%,55%)] font-bold">
+                      OFFICIAL RDAP PROTOCOL
+                    </span>
+                    <span className="text-[10px] font-mono text-[hsl(40,8%,50%)]">Domains</span>
+                  </div>
+
+                  <div className="space-y-2">
+                    {/* flowlyapp.com */}
+                    <div className="flex items-center justify-between p-3 rounded-xl bg-[hsl(220,15%,8%)] border border-[hsl(220,10%,16%)]">
+                      <span className="font-mono text-sm font-bold text-[hsl(40,20%,92%)]">
+                        flowlyapp.com
+                      </span>
+                      <span className="px-2.5 py-1 rounded-md bg-[hsl(0,70%,50%,0.1)] border border-[hsl(0,70%,50%,0.25)] text-[hsl(0,75%,65%)] text-xs font-[family-name:var(--font-mono)] font-bold">
+                        Taken
+                      </span>
+                    </div>
+
+                    {/* flowlyapp.io */}
+                    <div className="flex items-center justify-between p-3 rounded-xl bg-[hsl(220,15%,8%)] border border-[hsl(220,10%,16%)]">
+                      <span className="font-mono text-sm font-bold text-[hsl(40,20%,92%)]">
+                        flowlyapp.io
+                      </span>
+                      <span className="px-2.5 py-1 rounded-md bg-[hsl(145,60%,45%,0.15)] border border-[hsl(145,60%,45%,0.3)] text-[hsl(145,60%,55%)] text-xs font-[family-name:var(--font-mono)] font-bold">
+                        ✓ Available
+                      </span>
+                    </div>
+
+                    {/* flowlyapp.co */}
+                    <div className="flex items-center justify-between p-3 rounded-xl bg-[hsl(220,15%,8%)] border border-[hsl(220,10%,16%)]">
+                      <span className="font-mono text-sm font-bold text-[hsl(40,20%,92%)]">
+                        flowlyapp.co
+                      </span>
+                      <span className="px-2.5 py-1 rounded-md bg-[hsl(145,60%,45%,0.15)] border border-[hsl(145,60%,45%,0.3)] text-[hsl(145,60%,55%)] text-xs font-[family-name:var(--font-mono)] font-bold">
+                        ✓ Available
+                      </span>
+                    </div>
+
+                    {/* flowlyapp.app */}
+                    <div className="flex items-center justify-between p-3 rounded-xl bg-[hsl(220,15%,8%)] border border-[hsl(220,10%,16%)]">
+                      <span className="font-mono text-sm font-bold text-[hsl(40,20%,92%)]">
+                        flowlyapp.app
+                      </span>
+                      <span className="px-2.5 py-1 rounded-md bg-[hsl(0,70%,50%,0.1)] border border-[hsl(0,70%,50%,0.25)] text-[hsl(0,75%,65%)] text-xs font-[family-name:var(--font-mono)] font-bold">
+                        Taken
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Handles Row */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-[hsl(42,95%,55%)] font-bold">
+                      PROFILE HEURISTIC
+                    </span>
+                    <span className="text-[10px] font-mono text-[hsl(40,8%,50%)]">Social Handles</span>
+                  </div>
+
+                  <div className="space-y-2">
+                    {/* X */}
+                    <div className="flex items-center justify-between p-3 rounded-xl bg-[hsl(220,15%,8%)] border border-[hsl(220,10%,16%)]">
+                      <div className="flex items-center gap-1.5 font-mono text-sm text-[hsl(40,20%,92%)]">
+                        <span className="font-bold">X</span>
+                        <span className="text-xs text-[hsl(40,8%,50%)]">(@flowlyapp)</span>
+                      </div>
+                      <span className="px-2.5 py-1 rounded-md bg-[hsl(145,60%,45%,0.15)] border border-[hsl(145,60%,45%,0.3)] text-[hsl(145,60%,55%)] text-xs font-[family-name:var(--font-mono)] font-bold">
+                        ✓ Likely available
+                      </span>
+                    </div>
+
+                    {/* Instagram */}
+                    <div className="flex items-center justify-between p-3 rounded-xl bg-[hsl(220,15%,8%)] border border-[hsl(220,10%,16%)]">
+                      <div className="flex items-center gap-1.5 font-mono text-sm text-[hsl(40,20%,92%)]">
+                        <span className="font-bold">Instagram</span>
+                        <span className="text-xs text-[hsl(40,8%,50%)]">(@flowlyapp)</span>
+                      </div>
+                      <span className="px-2.5 py-1 rounded-md bg-[hsl(42,95%,55%,0.1)] border border-[hsl(42,95%,55%,0.25)] text-[hsl(42,95%,55%)] text-xs font-[family-name:var(--font-mono)] font-bold">
+                        Likely taken
+                      </span>
+                    </div>
+
+                    {/* TikTok */}
+                    <div className="flex items-center justify-between p-3 rounded-xl bg-[hsl(220,15%,8%)] border border-[hsl(220,10%,16%)]">
+                      <div className="flex items-center gap-1.5 font-mono text-sm text-[hsl(40,20%,92%)]">
+                        <span className="font-bold">TikTok</span>
+                        <span className="text-xs text-[hsl(40,8%,50%)]">(@flowlyapp)</span>
+                      </div>
+                      <span className="px-2.5 py-1 rounded-md bg-[hsl(145,60%,45%,0.15)] border border-[hsl(145,60%,45%,0.3)] text-[hsl(145,60%,55%)] text-xs font-[family-name:var(--font-mono)] font-bold">
+                        ✓ Likely available
+                      </span>
+                    </div>
+
+                    {/* GitHub */}
+                    <div className="flex items-center justify-between p-3 rounded-xl bg-[hsl(220,15%,8%)] border border-[hsl(220,10%,16%)]">
+                      <div className="flex items-center gap-1.5 font-mono text-sm text-[hsl(40,20%,92%)]">
+                        <span className="font-bold">GitHub</span>
+                        <span className="text-xs text-[hsl(40,8%,50%)]">(@flowlyapp)</span>
+                      </div>
+                      <span className="px-2.5 py-1 rounded-md bg-[hsl(145,60%,45%,0.15)] border border-[hsl(145,60%,45%,0.3)] text-[hsl(145,60%,55%)] text-xs font-[family-name:var(--font-mono)] font-bold">
+                        ✓ Likely available
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <p className="text-center text-xs font-[family-name:var(--font-mono)] text-[hsl(40,8%,50%)]">
+              Sample data shown. Run a real check above for your own name.
+            </p>
+          </div>
+
+          {/* Section B — How It Works */}
+          <div className="pt-8 sm:pt-10 border-t border-[hsl(220,10%,16%)] space-y-6">
+            <div className="text-center space-y-1.5 max-w-xl mx-auto">
+              <span className="text-[10px] font-bold font-[family-name:var(--font-mono)] uppercase tracking-[0.25em] text-[hsl(40,8%,50%)] block">
+                CHECK PIPELINE
+              </span>
+              <h2 className="text-xl sm:text-2xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)]">
+                How It Works
+              </h2>
+              <p className="text-xs text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)]">
+                Unified registry queries and profile probes executed simultaneously.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+              <div className="bg-[hsl(220,13%,11%)] border border-[hsl(220,10%,18%)] hover:border-[hsl(42,95%,55%,0.3)] rounded-2xl p-5 sm:p-6 space-y-3 transition-all">
+                <div className="flex items-center justify-between">
+                  <div className="w-9 h-9 rounded-xl bg-[hsl(220,15%,15%)] border border-[hsl(220,10%,22%)] flex items-center justify-center text-base">
+                    🌐
+                  </div>
+                  <span className="text-xs font-bold font-[family-name:var(--font-mono)] text-[hsl(42,95%,55%)] bg-[hsl(42,95%,55%,0.1)] px-2 py-0.5 rounded border border-[hsl(42,95%,55%,0.2)]">
+                    STEP 01
+                  </span>
+                </div>
+                <div>
+                  <h3 className="text-sm sm:text-base font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)]">
+                    Domain check
+                  </h3>
+                  <p className="text-xs text-[hsl(40,8%,60%)] font-[family-name:var(--font-inter)] leading-relaxed mt-2">
+                    We query RDAP — the official domain registration protocol used by registries — across .com, .io, .co, and .app instantly.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-[hsl(220,13%,11%)] border border-[hsl(220,10%,18%)] hover:border-[hsl(42,95%,55%,0.3)] rounded-2xl p-5 sm:p-6 space-y-3 transition-all">
+                <div className="flex items-center justify-between">
+                  <div className="w-9 h-9 rounded-xl bg-[hsl(220,15%,15%)] border border-[hsl(220,10%,22%)] flex items-center justify-center text-base">
+                    👤
+                  </div>
+                  <span className="text-xs font-bold font-[family-name:var(--font-mono)] text-[hsl(42,95%,55%)] bg-[hsl(42,95%,55%,0.1)] px-2 py-0.5 rounded border border-[hsl(42,95%,55%,0.2)]">
+                    STEP 02
+                  </span>
+                </div>
+                <div>
+                  <h3 className="text-sm sm:text-base font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)]">
+                    Handle check
+                  </h3>
+                  <p className="text-xs text-[hsl(40,8%,60%)] font-[family-name:var(--font-inter)] leading-relaxed mt-2">
+                    We check whether X, Instagram, TikTok, and GitHub profile URLs for that name currently resolve.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-[hsl(220,13%,11%)] border border-[hsl(220,10%,18%)] hover:border-[hsl(42,95%,55%,0.3)] rounded-2xl p-5 sm:p-6 space-y-3 transition-all">
+                <div className="flex items-center justify-between">
+                  <div className="w-9 h-9 rounded-xl bg-[hsl(220,15%,15%)] border border-[hsl(220,10%,22%)] flex items-center justify-center text-base">
+                    ⚡
+                  </div>
+                  <span className="text-xs font-bold font-[family-name:var(--font-mono)] text-[hsl(42,95%,55%)] bg-[hsl(42,95%,55%,0.1)] px-2 py-0.5 rounded border border-[hsl(42,95%,55%,0.2)]">
+                    STEP 03
+                  </span>
+                </div>
+                <div>
+                  <h3 className="text-sm sm:text-base font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)]">
+                    One combined view
+                  </h3>
+                  <p className="text-xs text-[hsl(40,8%,60%)] font-[family-name:var(--font-inter)] leading-relaxed mt-2">
+                    See everything in one place instead of checking four domain registrars and four platforms by hand.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Section C — Methodology Note */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-[hsl(220,12%,10%)] border border-[hsl(220,10%,16%)] text-xs text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] leading-relaxed">
+            <div className="flex items-start gap-2.5">
+              <span className="text-base shrink-0 mt-0.5">ℹ️</span>
+              <p>
+                <strong className="text-[hsl(40,20%,90%)] font-[family-name:var(--font-mono)]">Methodology Note: </strong>
+                Domain results come from RDAP, the official registry protocol — reliable and accurate. Social handle results are estimated by checking whether a profile page exists at that URL, which is not an official API from any platform — treat these as a strong signal, not a guarantee, especially right before you commit to a name everywhere.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Shared: Cross-link footer */}
+      <div className="pt-6 pb-6 border-t border-[hsl(220,10%,16%)] flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs font-[family-name:var(--font-mono)] text-[hsl(40,8%,50%)] max-w-4xl mx-auto">
+        <span className="text-[hsl(40,8%,40%)] uppercase tracking-wider text-[11px]">Also try:</span>
+        <Link
+          href="/"
+          className="px-3 py-1.5 rounded-lg bg-[hsl(220,12%,12%)] hover:bg-[hsl(220,12%,16%)] text-[hsl(40,20%,85%)] hover:text-white border border-[hsl(220,10%,18%)] hover:border-[hsl(42,95%,55%,0.3)] transition-colors inline-flex items-center gap-1.5"
+        >
+          <span>🚀</span>
+          <span>SaaS Idea Scanner</span>
+        </Link>
+        <span>·</span>
+        <Link
+          href="/keywords"
+          className="px-3 py-1.5 rounded-lg bg-[hsl(220,12%,12%)] hover:bg-[hsl(220,12%,16%)] text-[hsl(40,20%,85%)] hover:text-white border border-[hsl(220,10%,18%)] hover:border-[hsl(145,60%,45%,0.3)] transition-colors inline-flex items-center gap-1.5"
+        >
+          <span>📡</span>
+          <span>SaaS Keyword Radar</span>
+        </Link>
+      </div>
     </div>
   );
 }
