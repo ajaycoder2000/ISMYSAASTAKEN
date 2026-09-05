@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 export interface UserSettings {
   email: string;
-  plan: 'free' | 'pro' | 'sprint';
+  plan: 'free' | 'pro' | 'sprint' | 'sprint_pass' | 'founder_pro';
   scansUsedThisMonth: number;
   scansLimit: number;
   joinedDate: string;
@@ -121,7 +121,11 @@ export default function AccountSettings({
           <div>
             <p className="text-xs text-[hsl(40,8%,50%)] font-[family-name:var(--font-inter)]">Current plan</p>
             <p className="text-sm sm:text-base font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,92%)] mt-0.5">
-              {user.plan === 'pro' ? 'Founder Pro (Unlimited)' : user.plan === 'sprint' ? '7-Day Sprint Pass' : 'Free Explorer Tier'}
+              {user.plan === 'pro' || user.plan === 'founder_pro'
+                ? 'Founder Pro (Unlimited)'
+                : user.plan === 'sprint' || user.plan === 'sprint_pass'
+                ? '7-Day Sprint Pass'
+                : 'Free Explorer Tier'}
             </p>
           </div>
           <div className="flex items-center gap-3">

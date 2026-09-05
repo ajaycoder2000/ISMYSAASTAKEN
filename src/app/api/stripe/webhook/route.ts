@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import dbConnect from '@/lib/mongodb';
 import User from '@/models/User';
+import { getSupabaseAdmin } from '@/lib/supabase/admin';
 
 export async function POST(req: NextRequest) {
   if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_WEBHOOK_SECRET) {
@@ -35,11 +36,20 @@ export async function POST(req: NextRequest) {
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session;
-        if (session.client_reference_id && session.customer) {
+        if (session.client_reference_id) {
+          const planToSet = session.metadata?.plan === 'sprint_pass' ? 'sprint_pass' : 'founder_pro';
           await User.findByIdAndUpdate(session.client_reference_id, {
-            plan: 'pro',
-            stripeCustomerId: session.customer as string,
+            plan: planToSet,
+            stripeCustomerId: (session.customer as string) || undefined,
           });
+
+          const supabase = getSupabaseAdmin();
+          if (supabase) {
+            await supabase.from('users').update({
+              plan: planToSet,
+              stripe_customer_id: (session.customer as string) || null,
+            }).or(`id.eq.${session.client_reference_id},clerk_id.eq.${session.client_reference_id}`);
+          }
         }
         break;
       }

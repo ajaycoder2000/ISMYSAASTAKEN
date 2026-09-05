@@ -144,8 +144,8 @@ export default function PricingPage() {
               <li className="flex items-start gap-2">
                 <span className="text-[hsl(145,60%,45%)]">✓</span> Market saturation signal bars
               </li>
-              <li className="flex items-start gap-2 text-[hsl(40,8%,35%)]">
-                <span>✕</span> No Pivot Moats or Pitch Deck Export
+              <li className="flex items-start gap-2 text-[hsl(40,8%,45%)]">
+                <span className="text-[var(--red)] font-semibold">✕</span> No Pivot Moats or Pitch Deck Export
               </li>
             </ul>
           </div>
@@ -256,19 +256,19 @@ export default function PricingPage() {
                 <span className="text-[hsl(42,95%,55%)]">✓</span> Executive Pitch Card PNG export
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-[hsl(42,95%,55%)]">✓</span> Saved Bookmarks &amp; History
+                <span className="text-[hsl(42,95%,55%)]">✓</span> Saved scan history &amp; bookmarks
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-[hsl(42,95%,55%)]">✓</span> Priority search indexing queue
+                <span className="text-[hsl(42,95%,55%)]">✓</span> Priority LLM processing queue
               </li>
             </ul>
           </div>
 
           <button
             onClick={() => handleCheckout(billingPeriod === 'monthly' ? 'price_pro_monthly' : 'price_pro_yearly')}
-            className="w-full py-3 bg-[hsl(42,95%,55%)] hover:bg-[hsl(42,95%,50%)] text-[hsl(220,15%,8%)] font-bold text-xs sm:text-sm rounded-xl transition-all font-[family-name:var(--font-space-grotesk)] shadow-lg shadow-[rgba(245,166,35,0.2)] cursor-pointer"
+            className="w-full py-3 bg-[hsl(42,95%,55%)] hover:bg-[hsl(42,95%,50%)] text-[hsl(220,15%,8%)] rounded-xl text-xs sm:text-sm font-bold transition-all shadow-md font-[family-name:var(--font-space-grotesk)] cursor-pointer"
           >
-            {billingPeriod === 'monthly' ? 'Upgrade to Pro — $19/mo →' : 'Upgrade to Pro — $144/yr →'}
+            Upgrade to Pro ({billingPeriod === 'monthly' ? '$19/mo' : '$12/mo'}) →
           </button>
         </div>
 
@@ -320,6 +320,16 @@ export default function PricingPage() {
         </div>
       </div>
 
+      {/* Trust Quote / Proof Signal */}
+      <div className="w-full max-w-xl mx-auto text-center mb-16 p-4 rounded-xl bg-[hsl(220,13%,10%)] border border-[hsl(220,10%,16%)]">
+        <p className="text-xs sm:text-sm text-[hsl(40,8%,65%)] font-[family-name:var(--font-inter)] italic">
+          &ldquo;Found two direct competitors in 10 seconds that I completely missed after 3 days of manual Googling. Saved me 3 months of wasted build time.&rdquo;
+        </p>
+        <span className="text-[11px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,45%)] mt-2 block font-medium">
+          — Indie Hacker launching in Q3
+        </span>
+      </div>
+
       {/* Feature Comparison Table Across Free, Sprint Pass, Founder Pro */}
       <div className="w-full bg-[hsl(220,14%,10%)] border border-[hsl(220,10%,18%)] rounded-3xl p-5 sm:p-10 mb-20 overflow-hidden shadow-xl">
         <div className="text-center max-w-xl mx-auto mb-8">
@@ -361,7 +371,7 @@ export default function PricingPage() {
                   3 scans/mo
                 </td>
                 <td className="py-3.5 px-4 text-[hsl(40,20%,90%)] font-mono">
-                  Unlimited (30 days)
+                  Unlimited (7 days)
                 </td>
                 <td className="py-3.5 px-4 text-[hsl(42,95%,55%)] font-bold font-mono">
                   Unlimited
@@ -378,7 +388,7 @@ export default function PricingPage() {
                   1 combined free scan <span className="text-[hsl(40,8%,50%)]">(shared)</span>
                 </td>
                 <td className="py-3.5 px-4 text-[hsl(145,60%,55%)] font-mono font-medium">
-                  Unlimited (30 days)
+                  Unlimited (7 days)
                 </td>
                 <td className="py-3.5 px-4 text-[hsl(42,95%,55%)] font-bold font-mono">
                   Unlimited
@@ -395,7 +405,7 @@ export default function PricingPage() {
                   1 combined free scan <span className="text-[hsl(40,8%,50%)]">(shared)</span>
                 </td>
                 <td className="py-3.5 px-4 text-[hsl(145,60%,55%)] font-mono font-medium">
-                  Unlimited (30 days)
+                  Unlimited (7 days)
                 </td>
                 <td className="py-3.5 px-4 text-[hsl(42,95%,55%)] font-bold font-mono">
                   Unlimited
@@ -413,7 +423,7 @@ export default function PricingPage() {
                 <td className="py-3.5 px-4 font-medium text-[hsl(40,20%,92%)]">
                   Strategic Pivot Moats &amp; Wedges
                 </td>
-                <td className="py-3.5 px-4 text-[hsl(40,8%,40%)]">✕</td>
+                <td className="py-3.5 px-4 text-[var(--red)] font-semibold">✕</td>
                 <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ Included</td>
                 <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ Included</td>
               </tr>
@@ -421,7 +431,7 @@ export default function PricingPage() {
                 <td className="py-3.5 px-4 font-medium text-[hsl(40,20%,92%)]">
                   Executive Pitch Deck PNG Export
                 </td>
-                <td className="py-3.5 px-4 text-[hsl(40,8%,40%)]">✕</td>
+                <td className="py-3.5 px-4 text-[var(--red)] font-semibold">✕</td>
                 <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ Included</td>
                 <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ Included</td>
               </tr>
@@ -429,7 +439,7 @@ export default function PricingPage() {
                 <td className="py-3.5 px-4 font-medium text-[hsl(40,20%,92%)]">
                   Saved Bookmarks &amp; History
                 </td>
-                <td className="py-3.5 px-4 text-[hsl(40,8%,40%)]">✕</td>
+                <td className="py-3.5 px-4 text-[var(--red)] font-semibold">✕</td>
                 <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ Included</td>
                 <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ Included</td>
               </tr>

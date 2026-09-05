@@ -19,7 +19,7 @@ const UserSchema = new Schema<IUser>({
   clerkId: { type: String, sparse: true, index: true },
   email: { type: String, required: true, unique: true, lowercase: true, trim: true, index: true },
   role: { type: String, enum: ['user', 'admin'], default: 'user', index: true },
-  plan: { type: String, enum: ['free', 'pro'], default: 'free' },
+  plan: { type: String, enum: ['free', 'pro', 'sprint_pass', 'founder_pro'], default: 'free' },
   suspended: { type: Boolean, default: false, index: true },
   adminNotes: { type: String },
   stripeCustomerId: { type: String },
@@ -39,7 +39,7 @@ UserSchema.methods.canScan = function(): { allowed: boolean; reason?: string; re
     return { allowed: false, reason: 'Your account is suspended. Contact support.' };
   }
 
-  if (this.plan === 'pro') return { allowed: true };
+  if (this.plan === 'pro' || this.plan === 'founder_pro' || this.plan === 'sprint_pass') return { allowed: true };
   
   // Check if scansResetDate has passed, reset if so
   if (new Date() > this.scansResetDate) {

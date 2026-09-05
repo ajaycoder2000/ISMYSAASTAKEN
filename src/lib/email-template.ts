@@ -34,10 +34,10 @@ export function extractUserName(email: string, name?: string): string {
 
 export function getPlanBadgeHtml(plan?: string): string {
   const normalized = (plan || 'free').toLowerCase();
-  if (normalized === 'pro') {
+  if (normalized === 'pro' || normalized === 'founder_pro') {
     return `<span style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 10px; font-weight: 700; color: #10b981; background-color: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); padding: 4px 10px; border-radius: 999px; letter-spacing: 1px; text-transform: uppercase;">&#x2B50; FOUNDER PRO</span>`;
   }
-  if (normalized === 'sprint' || normalized === 'pass') {
+  if (normalized === 'sprint' || normalized === 'pass' || normalized === 'sprint_pass') {
     return `<span style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 10px; font-weight: 700; color: #f5a623; background-color: rgba(245,166,35,0.15); border: 1px solid rgba(245,166,35,0.3); padding: 4px 10px; border-radius: 999px; letter-spacing: 1px; text-transform: uppercase;">&#x1F3C3; SPRINT PASS</span>`;
   }
   return `<span style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 10px; font-weight: 700; color: #8a8f98; background-color: rgba(138,143,152,0.12); border: 1px solid rgba(138,143,152,0.25); padding: 4px 10px; border-radius: 999px; letter-spacing: 1px; text-transform: uppercase;">&#x1F331; FREE TIER</span>`;
@@ -45,11 +45,11 @@ export function getPlanBadgeHtml(plan?: string): string {
 
 export function getPlanStatusText(plan?: string, siteUrl = 'https://ismysaastaken.vercel.app'): string {
   const normalized = (plan || 'free').toLowerCase();
-  if (normalized === 'pro') {
+  if (normalized === 'pro' || normalized === 'founder_pro') {
     return `<strong style="color: #10b981;">Founder Pro</strong> (Unlimited Scans &amp; Deep Web Grounding)`;
   }
-  if (normalized === 'sprint' || normalized === 'pass') {
-    return `<strong style="color: #f5a623;">Sprint Pass Active</strong> (30-Day Speedrun Validation)`;
+  if (normalized === 'sprint' || normalized === 'pass' || normalized === 'sprint_pass') {
+    return `<strong style="color: #f5a623;">Sprint Pass Active</strong> (7-Day Speedrun Validation)`;
   }
   return `<strong style="color: #e0e0e0;">Free Tier (3 Scans/Mo)</strong> &bull; <a href="${siteUrl}/pricing" style="color: #f5a623; text-decoration: underline; font-weight: 600;">Upgrade to Founder Pro for Unlimited Scans &rarr;</a>`;
 }

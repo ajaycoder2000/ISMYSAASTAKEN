@@ -40,7 +40,8 @@ export async function checkRateLimit(): Promise<RateLimitResult> {
           if (user.suspended) {
             return { allowed: false, reason: 'Your account is suspended. Please contact support.', isAnonymous: false };
           }
-          if (user.plan === 'pro') {
+          const isUserPaid = ['pro', 'founder_pro', 'sprint_pass', 'sprint'].includes(user.plan);
+          if (isUserPaid) {
             return { allowed: true, isAnonymous: false, userId: user._id.toString() };
           }
 
@@ -68,7 +69,8 @@ export async function checkRateLimit(): Promise<RateLimitResult> {
           if (devUser.suspended) {
             return { allowed: false, reason: 'Your account is suspended. Please contact support.', isAnonymous: false };
           }
-          if (devUser.plan === 'pro') {
+          const isDevPaid = ['pro', 'founder_pro', 'sprint_pass', 'sprint'].includes(devUser.plan);
+          if (isDevPaid) {
             return { allowed: true, isAnonymous: false, userId: devUser._id };
           }
           monthlyCap = DevStore.getConfig().freeTierMonthlyLimit || 3;
@@ -83,7 +85,8 @@ export async function checkRateLimit(): Promise<RateLimitResult> {
         if (devUser.suspended) {
           return { allowed: false, reason: 'Your account is suspended. Please contact support.', isAnonymous: false };
         }
-        if (devUser.plan === 'pro') {
+        const isDevPaid = ['pro', 'founder_pro', 'sprint_pass', 'sprint'].includes(devUser.plan);
+        if (isDevPaid) {
           return { allowed: true, isAnonymous: false, userId: devUser._id };
         }
         monthlyCap = DevStore.getConfig().freeTierMonthlyLimit || 3;
@@ -92,9 +95,10 @@ export async function checkRateLimit(): Promise<RateLimitResult> {
       }
     }
 
-    const remaining = userPlan === 'pro' ? Infinity : Math.max(0, monthlyCap - scansUsed);
+    const isPaidPlan = ['pro', 'founder_pro', 'sprint_pass', 'sprint'].includes(userPlan);
+    const remaining = isPaidPlan ? Infinity : Math.max(0, monthlyCap - scansUsed);
 
-    if (userPlan !== 'pro' && scansUsed >= monthlyCap) {
+    if (!isPaidPlan && scansUsed >= monthlyCap) {
       return {
         allowed: false,
         reason: `You've used all ${monthlyCap} free scans this month. Resets on ${new Date(scansResetDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}. Upgrade to Pro for unlimited.`,
