@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { SupabaseDB } from '@/lib/supabase/db';
 import { getSession } from '@/lib/auth';
+import { checkNewToolsAccess, incrementNewToolsUsage } from '@/lib/checkNewToolsAccess';
 
 export const dynamic = 'force-dynamic';
 
@@ -50,19 +51,21 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // --- 1. User session & Rate limiting check ---
+    // --- 1. User session & Freemium Gating Check ---
     const session = await getSession();
-    const effectiveUserId = session?.userId || body.userId || 'anonymous';
-    const userPlan = session?.plan || 'free';
+    const userId = session?.userId || null;
 
-    const allowed = await checkUsageAllowed(effectiveUserId, userPlan);
-    if (!allowed) {
+    const access = await checkNewToolsAccess(userId);
+    if (!access.allowed) {
       return NextResponse.json(
         {
-          error: 'Monthly name-check limit reached. Upgrade to Sprint Pass or Founder Pro for unlimited searches.',
-          rateLimited: true,
+          error:
+            access.reason === 'SIGN_IN_REQUIRED'
+              ? 'Sign in to use this tool.'
+              : 'Free scan used. Upgrade to continue.',
+          paywall: access.reason,
         },
-        { status: 429 }
+        { status: access.reason === 'SIGN_IN_REQUIRED' ? 401 : 402 }
       );
     }
 
@@ -73,7 +76,9 @@ export async function POST(req: NextRequest) {
       Date.now() - new Date(cached.fetched_at).getTime() < CACHE_TTL_HOURS * 60 * 60 * 1000;
 
     if (isFresh && cached.results) {
-      await SupabaseDB.recordNameCheckUsage(effectiveUserId);
+      if (userId) {
+        await incrementNewToolsUsage(userId);
+      }
       return NextResponse.json({
         success: true,
         name: cleanName,
@@ -97,7 +102,9 @@ export async function POST(req: NextRequest) {
 
     // --- 4. Save to Cache & Record Usage ---
     await SupabaseDB.saveNameCheckCache(cleanName, results);
-    await SupabaseDB.recordNameCheckUsage(effectiveUserId);
+    if (userId) {
+      await incrementNewToolsUsage(userId);
+    }
 
     return NextResponse.json({
       success: true,
@@ -200,16 +207,4 @@ async function checkAllHandles(handle: string): Promise<HandleCheckResult[]> {
   return Promise.all(checks);
 }
 
-// ============================================================================
-// RATE LIMITING
-// ============================================================================
-async function checkUsageAllowed(userId: string, plan: string): Promise<boolean> {
-  if (plan === 'pro' || plan === 'sprint') {
-    return true;
-  }
 
-  // Free tier cap: 10 name checks per calendar month
-  const monthlyCap = 10;
-  const usedThisMonth = await SupabaseDB.getNameCheckUsageThisMonth(userId);
-  return usedThisMonth < monthlyCap;
-}

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import PaywallModal from '@/components/PaywallModal';
 
 interface DomainCheckResult {
   domain: string;
@@ -40,6 +41,7 @@ export default function NameCheckView() {
   const [error, setError] = useState<string | null>(null);
   const [rateLimited, setRateLimited] = useState(false);
   const [results, setResults] = useState<NameCheckData | null>(null);
+  const [paywallMode, setPaywallMode] = useState<'PAYWALL' | 'SIGN_IN_REQUIRED' | null>(null);
 
   const cleanInput = name.toLowerCase().trim().replace(/[^a-z0-9]/g, '');
 
@@ -55,6 +57,7 @@ export default function NameCheckView() {
     setLoading(true);
     setError(null);
     setRateLimited(false);
+    setPaywallMode(null);
     if (targetName) setName(targetName);
 
     try {
@@ -67,6 +70,14 @@ export default function NameCheckView() {
       const data = await res.json();
 
       if (!res.ok) {
+        if (data.paywall === 'SIGN_IN_REQUIRED' || res.status === 401) {
+          setPaywallMode('SIGN_IN_REQUIRED');
+          return;
+        }
+        if (data.paywall === 'PAYWALL' || res.status === 402) {
+          setPaywallMode('PAYWALL');
+          return;
+        }
         if (res.status === 429) {
           setRateLimited(true);
         }
@@ -626,6 +637,14 @@ export default function NameCheckView() {
           <span>SaaS Keyword Radar</span>
         </Link>
       </div>
+
+      {/* Freemium Paywall / Auth Gate Modal */}
+      <PaywallModal
+        isOpen={!!paywallMode}
+        mode={paywallMode}
+        onClose={() => setPaywallMode(null)}
+        toolName="Is It Taken?"
+      />
     </div>
   );
 }

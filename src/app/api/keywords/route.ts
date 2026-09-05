@@ -3,6 +3,7 @@ import googleTrends from 'google-trends-api';
 import { SupabaseDB } from '@/lib/supabase/db';
 import { getSession } from '@/lib/auth';
 import { expandKeywordsWithLLM } from '@/lib/llm';
+import { checkNewToolsAccess, incrementNewToolsUsage } from '@/lib/checkNewToolsAccess';
 
 export const dynamic = 'force-dynamic';
 
@@ -41,19 +42,21 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // --- 1. User session & Rate limiting check ---
+    // --- 1. User session & Freemium Gating Check ---
     const session = await getSession();
-    const effectiveUserId = session?.userId || body.userId || 'anonymous';
-    const userPlan = session?.plan || 'free';
+    const userId = session?.userId || null;
 
-    const allowed = await checkUsageAllowed(effectiveUserId, userPlan);
-    if (!allowed) {
+    const access = await checkNewToolsAccess(userId);
+    if (!access.allowed) {
       return NextResponse.json(
         {
-          error: 'Monthly keyword research limit reached. Upgrade to Sprint Pass or Founder Pro for more lookups.',
-          rateLimited: true,
+          error:
+            access.reason === 'SIGN_IN_REQUIRED'
+              ? 'Sign in to use this tool.'
+              : 'Free scan used. Upgrade to continue.',
+          paywall: access.reason,
         },
-        { status: 429 }
+        { status: access.reason === 'SIGN_IN_REQUIRED' ? 401 : 402 }
       );
     }
 
@@ -64,7 +67,9 @@ export async function POST(req: NextRequest) {
       Date.now() - new Date(cached.fetched_at).getTime() < CACHE_TTL_HOURS * 60 * 60 * 1000;
 
     if (isFresh && cached.trend_data && cached.generated_keywords) {
-      await SupabaseDB.recordKeywordUsage(effectiveUserId);
+      if (userId) {
+        await incrementNewToolsUsage(userId);
+      }
       return NextResponse.json({
         success: true,
         seed,
@@ -108,8 +113,10 @@ export async function POST(req: NextRequest) {
       competition_signal: competitionSignal,
     });
 
-    // --- 6. Log usage for rate limiting ---
-    await SupabaseDB.recordKeywordUsage(effectiveUserId);
+    // --- 6. Increment usage on successful scan completion ---
+    if (userId) {
+      await incrementNewToolsUsage(userId);
+    }
 
     return NextResponse.json({
       success: true,
@@ -307,18 +314,4 @@ function generateFallbackTrend(seed: string): TrendPoint[] {
   return points;
 }
 
-// ============================================================================
-// RATE LIMITING / USAGE CHECKER
-// ============================================================================
 
-async function checkUsageAllowed(userId: string, plan: string): Promise<boolean> {
-  // Pro and Sprint pass users have unlimited / high allowance
-  if (plan === 'pro' || plan === 'sprint') {
-    return true;
-  }
-
-  // Free tier cap: 5 keyword lookups per calendar month
-  const monthlyCap = 5;
-  const usedThisMonth = await SupabaseDB.getKeywordUsageThisMonth(userId);
-  return usedThisMonth < monthlyCap;
-}

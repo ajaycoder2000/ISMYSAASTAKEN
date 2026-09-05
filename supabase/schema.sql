@@ -12,11 +12,12 @@ CREATE TABLE IF NOT EXISTS public.users (
     clerk_id TEXT UNIQUE NOT NULL,
     email TEXT UNIQUE NOT NULL,
     role TEXT NOT NULL DEFAULT 'user' CHECK (role IN ('user', 'admin')),
-    plan TEXT NOT NULL DEFAULT 'free' CHECK (plan IN ('free', 'pro')),
+    plan TEXT NOT NULL DEFAULT 'free' CHECK (plan IN ('free', 'pro', 'sprint_pass', 'founder_pro')),
     suspended BOOLEAN NOT NULL DEFAULT false,
     admin_notes TEXT,
     stripe_customer_id TEXT,
     scans_used_this_month INTEGER NOT NULL DEFAULT 0,
+    new_tools_scans_used INTEGER NOT NULL DEFAULT 0,
     scans_reset_date TIMESTAMPTZ NOT NULL DEFAULT (DATE_TRUNC('month', NOW()) + INTERVAL '1 month'),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()

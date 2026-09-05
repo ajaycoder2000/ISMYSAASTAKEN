@@ -136,6 +136,9 @@ export default function PricingPage() {
                 <span className="text-[hsl(145,60%,45%)]">✓</span> 3 free scans every month
               </li>
               <li className="flex items-start gap-2">
+                <span className="text-[hsl(42,95%,55%)]">✓</span> 1 combined free scan <span className="text-[hsl(40,8%,50%)]">(shared)</span>
+              </li>
+              <li className="flex items-start gap-2">
                 <span className="text-[hsl(145,60%,45%)]">✓</span> Live Google Search grounding
               </li>
               <li className="flex items-start gap-2">
@@ -181,6 +184,9 @@ export default function PricingPage() {
             <ul className="space-y-3 mb-8 text-xs text-[hsl(40,8%,70%)] font-[family-name:var(--font-inter)]">
               <li className="flex items-start gap-2">
                 <span className="text-[hsl(42,95%,55%)]">✓</span> <strong>25 deep scans</strong> for 7 days
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[hsl(42,95%,55%)]">✓</span> <strong>Unlimited</strong> Keyword Radar &amp; Is It Taken
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[hsl(42,95%,55%)]">✓</span> Strategic Pivot Moat angles
@@ -241,13 +247,16 @@ export default function PricingPage() {
                 <span className="text-[hsl(42,95%,55%)]">✓</span> <strong>Unlimited AI idea scans</strong>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-[hsl(42,95%,55%)]">✓</span> Strategic Pivot Moats & Wedges
+                <span className="text-[hsl(42,95%,55%)]">✓</span> <strong>Unlimited</strong> Keyword Radar &amp; Is It Taken
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[hsl(42,95%,55%)]">✓</span> Strategic Pivot Moats &amp; Wedges
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[hsl(42,95%,55%)]">✓</span> Executive Pitch Card PNG export
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-[hsl(42,95%,55%)]">✓</span> Saved Bookmarks & History
+                <span className="text-[hsl(42,95%,55%)]">✓</span> Saved Bookmarks &amp; History
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[hsl(42,95%,55%)]">✓</span> Priority search indexing queue
@@ -308,6 +317,129 @@ export default function PricingPage() {
           >
             Start Studio — $49/mo →
           </button>
+        </div>
+      </div>
+
+      {/* Feature Comparison Table Across Free, Sprint Pass, Founder Pro */}
+      <div className="w-full bg-[hsl(220,14%,10%)] border border-[hsl(220,10%,18%)] rounded-3xl p-5 sm:p-10 mb-20 overflow-hidden shadow-xl">
+        <div className="text-center max-w-xl mx-auto mb-8">
+          <span className="text-[10px] font-bold font-[family-name:var(--font-mono)] uppercase tracking-[0.25em] text-[hsl(42,95%,55%)] block mb-2">
+            DETAILED BREAKDOWN
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)]">
+            Feature Comparison Matrix
+          </h2>
+          <p className="mt-2 text-xs sm:text-sm text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)]">
+            Clear limits, zero hidden gotchas. Shared freemium scan quota across all discovery tools.
+          </p>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse min-w-[620px]">
+            <thead>
+              <tr className="border-b border-[hsl(220,10%,18%)]">
+                <th className="py-3.5 px-4 text-xs font-bold font-[family-name:var(--font-mono)] uppercase tracking-wider text-[hsl(40,8%,50%)]">
+                  Feature
+                </th>
+                <th className="py-3.5 px-4 text-xs font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,85%)]">
+                  Free
+                </th>
+                <th className="py-3.5 px-4 text-xs font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(145,60%,55%)]">
+                  Sprint Pass
+                </th>
+                <th className="py-3.5 px-4 text-xs font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(42,95%,55%)]">
+                  Founder Pro
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[hsl(220,10%,15%)] text-xs font-[family-name:var(--font-inter)]">
+              <tr className="hover:bg-[hsl(220,12%,12%)]/50 transition-colors">
+                <td className="py-3.5 px-4 font-medium text-[hsl(40,20%,92%)]">
+                  Idea Scanner
+                </td>
+                <td className="py-3.5 px-4 text-[hsl(40,8%,65%)] font-mono">
+                  3 scans/mo
+                </td>
+                <td className="py-3.5 px-4 text-[hsl(40,20%,90%)] font-mono">
+                  Unlimited (30 days)
+                </td>
+                <td className="py-3.5 px-4 text-[hsl(42,95%,55%)] font-bold font-mono">
+                  Unlimited
+                </td>
+              </tr>
+              <tr className="hover:bg-[hsl(220,12%,12%)]/50 transition-colors bg-[hsl(220,14%,8%)]/40">
+                <td className="py-3.5 px-4 font-medium text-[hsl(40,20%,92%)] flex items-center gap-2">
+                  <span>SaaS Keyword Radar</span>
+                  <span className="text-[9px] font-mono uppercase px-1 py-0.5 rounded bg-[hsl(145,60%,45%,0.15)] text-[hsl(145,60%,55%)] border border-[hsl(145,60%,45%,0.25)]">
+                    New
+                  </span>
+                </td>
+                <td className="py-3.5 px-4 text-[hsl(42,95%,55%)] font-mono font-medium">
+                  1 combined free scan <span className="text-[hsl(40,8%,50%)]">(shared)</span>
+                </td>
+                <td className="py-3.5 px-4 text-[hsl(145,60%,55%)] font-mono font-medium">
+                  Unlimited (30 days)
+                </td>
+                <td className="py-3.5 px-4 text-[hsl(42,95%,55%)] font-bold font-mono">
+                  Unlimited
+                </td>
+              </tr>
+              <tr className="hover:bg-[hsl(220,12%,12%)]/50 transition-colors bg-[hsl(220,14%,8%)]/40">
+                <td className="py-3.5 px-4 font-medium text-[hsl(40,20%,92%)] flex items-center gap-2">
+                  <span>Is It Taken?</span>
+                  <span className="text-[9px] font-mono uppercase px-1 py-0.5 rounded bg-[hsl(145,60%,45%,0.15)] text-[hsl(145,60%,55%)] border border-[hsl(145,60%,45%,0.25)]">
+                    New
+                  </span>
+                </td>
+                <td className="py-3.5 px-4 text-[hsl(42,95%,55%)] font-mono font-medium">
+                  1 combined free scan <span className="text-[hsl(40,8%,50%)]">(shared)</span>
+                </td>
+                <td className="py-3.5 px-4 text-[hsl(145,60%,55%)] font-mono font-medium">
+                  Unlimited (30 days)
+                </td>
+                <td className="py-3.5 px-4 text-[hsl(42,95%,55%)] font-bold font-mono">
+                  Unlimited
+                </td>
+              </tr>
+              <tr className="hover:bg-[hsl(220,12%,12%)]/50 transition-colors">
+                <td className="py-3.5 px-4 font-medium text-[hsl(40,20%,92%)]">
+                  Live Google Search Grounding
+                </td>
+                <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ Included</td>
+                <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ Included</td>
+                <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ Included</td>
+              </tr>
+              <tr className="hover:bg-[hsl(220,12%,12%)]/50 transition-colors">
+                <td className="py-3.5 px-4 font-medium text-[hsl(40,20%,92%)]">
+                  Strategic Pivot Moats &amp; Wedges
+                </td>
+                <td className="py-3.5 px-4 text-[hsl(40,8%,40%)]">✕</td>
+                <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ Included</td>
+                <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ Included</td>
+              </tr>
+              <tr className="hover:bg-[hsl(220,12%,12%)]/50 transition-colors">
+                <td className="py-3.5 px-4 font-medium text-[hsl(40,20%,92%)]">
+                  Executive Pitch Deck PNG Export
+                </td>
+                <td className="py-3.5 px-4 text-[hsl(40,8%,40%)]">✕</td>
+                <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ Included</td>
+                <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ Included</td>
+              </tr>
+              <tr className="hover:bg-[hsl(220,12%,12%)]/50 transition-colors">
+                <td className="py-3.5 px-4 font-medium text-[hsl(40,20%,92%)]">
+                  Saved Bookmarks &amp; History
+                </td>
+                <td className="py-3.5 px-4 text-[hsl(40,8%,40%)]">✕</td>
+                <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ Included</td>
+                <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ Included</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div className="mt-5 pt-4 border-t border-[hsl(220,10%,16%)] flex items-center justify-between flex-wrap gap-2 text-[11px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,50%)]">
+          <span>⚖️ <strong>Trust Transparency:</strong> The 1 free scan on Free accounts is shared across both new tools (1 scan total across either tool, not 1 each).</span>
+          <span className="text-[hsl(42,95%,55%)]">Sprint Pass &amp; Founder Pro unlock unlimited scans for both.</span>
         </div>
       </div>
 

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import KeywordTrendChart from './KeywordTrendChart';
+import PaywallModal from '@/components/PaywallModal';
 
 const SAMPLE_TREND_DATA: TrendPoint[] = [
   { date: 'Oct 2025', interest: 38 },
@@ -67,6 +68,7 @@ export default function KeywordResearchView() {
   const [rateLimited, setRateLimited] = useState(false);
   const [results, setResults] = useState<KeywordData | null>(null);
   const [copiedKeyword, setCopiedKeyword] = useState<string | null>(null);
+  const [paywallMode, setPaywallMode] = useState<'PAYWALL' | 'SIGN_IN_REQUIRED' | null>(null);
 
   const handleSearch = async (targetSeed?: string) => {
     const query = (targetSeed || seed).trim();
@@ -78,6 +80,7 @@ export default function KeywordResearchView() {
     setLoading(true);
     setError(null);
     setRateLimited(false);
+    setPaywallMode(null);
     if (targetSeed) setSeed(targetSeed);
 
     try {
@@ -90,6 +93,14 @@ export default function KeywordResearchView() {
       const data = await res.json();
 
       if (!res.ok) {
+        if (data.paywall === 'SIGN_IN_REQUIRED' || res.status === 401) {
+          setPaywallMode('SIGN_IN_REQUIRED');
+          return;
+        }
+        if (data.paywall === 'PAYWALL' || res.status === 402) {
+          setPaywallMode('PAYWALL');
+          return;
+        }
         if (res.status === 429) {
           setRateLimited(true);
         }
@@ -729,6 +740,14 @@ export default function KeywordResearchView() {
           <span>Is It Taken?</span>
         </Link>
       </div>
+
+      {/* Freemium Paywall / Auth Gate Modal */}
+      <PaywallModal
+        isOpen={!!paywallMode}
+        mode={paywallMode}
+        onClose={() => setPaywallMode(null)}
+        toolName="SaaS Keyword Radar"
+      />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 export type SaturationLevel = 'low' | 'medium' | 'high';
-export type PlanType = 'free' | 'pro';
+export type PlanType = 'free' | 'pro' | 'sprint_pass' | 'founder_pro';
 export type UserRole = 'user' | 'admin';
 export type SponsorTier = 'starter' | 'featured';
 
@@ -39,6 +39,7 @@ export interface IUserDocument {
   adminNotes?: string;
   stripeCustomerId?: string;
   scansUsedThisMonth: number;
+  new_tools_scans_used?: number;
   scansResetDate: Date;
   createdAt: Date;
 }

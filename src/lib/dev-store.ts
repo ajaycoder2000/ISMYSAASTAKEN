@@ -12,6 +12,7 @@ interface DevUser {
   adminNotes?: string;
   stripeCustomerId?: string;
   scansUsedThisMonth: number;
+  new_tools_scans_used?: number;
   scansResetDate: Date;
   createdAt: Date;
 }
@@ -242,6 +243,7 @@ export const DevStore = {
       plan: 'free',
       suspended: false,
       scansUsedThisMonth: 0,
+      new_tools_scans_used: 0,
       scansResetDate: nextReset,
       createdAt: new Date(),
     };
@@ -257,6 +259,20 @@ export const DevStore = {
     Object.assign(user, updates);
     saveState();
     return user;
+  },
+
+  getNewToolsUsage(userId: string): { plan: PlanType; used: number } | null {
+    const user = inMemoryState.users.find((u) => u._id === userId || u.email.toLowerCase() === userId.toLowerCase());
+    if (!user) return null;
+    return { plan: user.plan, used: user.new_tools_scans_used || 0 };
+  },
+
+  incrementNewToolsUsage(userId: string): void {
+    const user = inMemoryState.users.find((u) => u._id === userId || u.email.toLowerCase() === userId.toLowerCase());
+    if (user) {
+      user.new_tools_scans_used = (user.new_tools_scans_used || 0) + 1;
+      saveState();
+    }
   },
 
   getAllUsers(): DevUser[] {
