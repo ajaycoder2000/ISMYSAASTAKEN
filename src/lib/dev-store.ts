@@ -7,7 +7,9 @@ interface DevUser {
   _id: string;
   email: string;
   role: UserRole;
+  is_admin?: boolean;
   plan: PlanType;
+  plan_expires_at?: Date | string | null;
   suspended: boolean;
   adminNotes?: string;
   stripeCustomerId?: string;
@@ -107,6 +109,20 @@ export interface DevNameCheckUsage {
   used_at: string;
 }
 
+export interface DevAdminActionLog {
+  id: string;
+  admin_id?: string | null;
+  target_user_id: string;
+  action: string;
+  details?: {
+    newPlan?: string;
+    expiresAt?: string | null;
+    reason?: string;
+    [key: string]: any;
+  } | null;
+  created_at: string;
+}
+
 interface StoreState {
   users: DevUser[];
   tokens: DevMagicToken[];
@@ -119,6 +135,7 @@ interface StoreState {
   keyword_usage?: DevKeywordUsage[];
   name_check_cache?: DevNameCheckCache[];
   name_check_usage?: DevNameCheckUsage[];
+  admin_actions_log?: DevAdminActionLog[];
 }
 
 const STORE_PATH = path.join(process.cwd(), '.dev-store.json');
@@ -261,10 +278,14 @@ export const DevStore = {
     return user;
   },
 
-  getNewToolsUsage(userId: string): { plan: PlanType; used: number } | null {
+  getNewToolsUsage(userId: string): { plan: PlanType; used: number; plan_expires_at?: Date | string | null } | null {
     const user = inMemoryState.users.find((u) => u._id === userId || u.email.toLowerCase() === userId.toLowerCase());
     if (!user) return null;
-    return { plan: user.plan, used: user.new_tools_scans_used || 0 };
+    return {
+      plan: user.plan,
+      used: user.new_tools_scans_used || 0,
+      plan_expires_at: user.plan_expires_at,
+    };
   },
 
   incrementNewToolsUsage(userId: string): void {
@@ -578,5 +599,55 @@ export const DevStore = {
       if (sinceDate && new Date(u.used_at) < sinceDate) return false;
       return true;
     }).length;
+  },
+
+  overrideUserPlan(
+    userId: string,
+    newPlan: PlanType,
+    expiresAt?: string | Date | null,
+    reason?: string,
+    adminId?: string | null
+  ): DevUser | null {
+    const user = inMemoryState.users.find((u) => u._id === userId);
+    if (!user) return null;
+
+    user.plan = newPlan;
+    user.plan_expires_at = expiresAt ? new Date(expiresAt) : null;
+    if (reason) {
+      user.adminNotes = reason;
+    }
+
+    if (!inMemoryState.admin_actions_log) inMemoryState.admin_actions_log = [];
+    inMemoryState.admin_actions_log.unshift({
+      id: 'aal_' + nanoid(10),
+      admin_id: adminId || null,
+      target_user_id: userId,
+      action: 'plan_override',
+      details: { newPlan, expiresAt: expiresAt ? new Date(expiresAt).toISOString() : null, reason },
+      created_at: new Date().toISOString(),
+    });
+
+    saveState();
+    return user;
+  },
+
+  getAdminActionLogs(targetUserId?: string): DevAdminActionLog[] {
+    if (!inMemoryState.admin_actions_log) inMemoryState.admin_actions_log = [];
+    if (targetUserId) {
+      return inMemoryState.admin_actions_log.filter((log) => log.target_user_id === targetUserId);
+    }
+    return inMemoryState.admin_actions_log;
+  },
+
+  addAdminActionLog(log: Omit<DevAdminActionLog, 'id' | 'created_at'>): DevAdminActionLog {
+    if (!inMemoryState.admin_actions_log) inMemoryState.admin_actions_log = [];
+    const entry: DevAdminActionLog = {
+      ...log,
+      id: 'aal_' + nanoid(10),
+      created_at: new Date().toISOString(),
+    };
+    inMemoryState.admin_actions_log.unshift(entry);
+    saveState();
+    return entry;
   },
 };

@@ -34,7 +34,9 @@ export interface IUserDocument {
   _id: string;
   email: string;
   role: UserRole;
+  is_admin?: boolean;
   plan: PlanType;
+  plan_expires_at?: Date | string | null;
   suspended?: boolean;
   adminNotes?: string;
   stripeCustomerId?: string;
@@ -42,6 +44,20 @@ export interface IUserDocument {
   new_tools_scans_used?: number;
   scansResetDate: Date;
   createdAt: Date;
+}
+
+export interface IAdminActionLog {
+  id: string;
+  admin_id?: string | null;
+  target_user_id: string;
+  action: string;
+  details?: {
+    newPlan?: string;
+    expiresAt?: string | null;
+    reason?: string;
+    [key: string]: any;
+  } | null;
+  created_at: string;
 }
 
 export interface ISponsorDocument {

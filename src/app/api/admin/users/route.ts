@@ -1,88 +1,196 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAdminUser } from '@/lib/auth';
-import { logAdminAction } from '@/lib/admin';
+import { verifyAdminAccess } from '@/lib/adminAuth';
+import { getSupabaseAdmin } from '@/lib/supabase/admin';
+import { DevStore } from '@/lib/dev-store';
 import dbConnect from '@/lib/mongodb';
 import User from '@/models/User';
+import { logAdminAction } from '@/lib/admin';
 
 export async function GET(req: NextRequest) {
-  const admin = await getAdminUser();
-  if (!admin) {
-    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  // 1. Independent Server-side Admin Verification
+  const adminAuth = await verifyAdminAccess();
+  if (!adminAuth.isAdmin) {
+    return NextResponse.json({ error: 'Unauthorized. Admin access required.' }, { status: 403 });
   }
 
   try {
-    await dbConnect();
     const { searchParams } = new URL(req.url);
     const search = searchParams.get('search')?.trim() || '';
     const plan = searchParams.get('plan')?.trim() || '';
     const role = searchParams.get('role')?.trim() || '';
-    const suspended = searchParams.get('suspended')?.trim() || '';
-    const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
-    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '20', 10)));
+    const pageParam = parseInt(searchParams.get('page') ?? '0', 10);
+    // Support 0-indexed or 1-indexed page
+    const page = pageParam > 0 ? pageParam - 1 : Math.max(0, pageParam);
+    const pageSize = Math.min(100, Math.max(1, parseInt(searchParams.get('pageSize') || searchParams.get('limit') || '50', 10)));
 
-    const query: Record<string, unknown> = {};
+    const supabase = getSupabaseAdmin();
+
+    // 2. Try Supabase profiles or users table
+    if (supabase) {
+      let tableName: 'profiles' | 'users' = 'profiles';
+
+      // Verify if profiles table exists and has data, otherwise use users table
+      const { data: testProfiles, error: profilesErr } = await supabase
+        .from('profiles')
+        .select('id', { count: 'exact', head: true });
+
+      if (profilesErr || testProfiles === null) {
+        tableName = 'users';
+      }
+
+      let query = supabase
+        .from(tableName)
+        .select('id, email, plan, created_at, new_tools_scans_used, scans_used_this_month, plan_expires_at, is_admin, role, suspended', { count: 'exact' })
+        .order('created_at', { ascending: false })
+        .range(page * pageSize, page * pageSize + pageSize - 1);
+
+      if (search) {
+        query = query.ilike('email', `%${search}%`);
+      }
+      if (plan) {
+        query = query.eq('plan', plan);
+      }
+      if (role) {
+        query = query.eq('role', role);
+      }
+
+      const { data, count, error } = await query;
+
+      if (!error && data) {
+        const serialized = data.map((u: any) => ({
+          _id: u.id,
+          id: u.id,
+          email: u.email,
+          plan: u.plan || 'free',
+          created_at: u.created_at,
+          createdAt: u.created_at,
+          new_tools_scans_used: u.new_tools_scans_used ?? 0,
+          scans_used_this_month: u.scans_used_this_month ?? 0,
+          scansUsedThisMonth: u.scans_used_this_month ?? 0,
+          plan_expires_at: u.plan_expires_at ?? null,
+          is_admin: !!u.is_admin || u.role === 'admin',
+          role: u.role || (u.is_admin ? 'admin' : 'user'),
+          suspended: !!u.suspended,
+        }));
+
+        return NextResponse.json({
+          success: true,
+          users: serialized,
+          data: serialized,
+          total: count ?? serialized.length,
+          pagination: {
+            page: page + 1,
+            pageSize,
+            total: count ?? serialized.length,
+            totalPages: Math.ceil((count ?? serialized.length) / pageSize),
+          },
+        });
+      }
+    }
+
+    // 3. Fallback: MongoDB and DevStore
+    await dbConnect();
+    const mongoQuery: Record<string, unknown> = {};
     if (search) {
-      query.email = { $regex: search, $options: 'i' };
+      mongoQuery.email = { $regex: search, $options: 'i' };
     }
-    if (plan && ['free', 'pro'].includes(plan)) {
-      query.plan = plan;
-    }
-    if (role && ['user', 'admin'].includes(role)) {
-      query.role = role;
-    }
-    if (suspended === 'true') {
-      query.suspended = true;
-    } else if (suspended === 'false') {
-      query.suspended = { $ne: true };
+    if (plan) {
+      mongoQuery.plan = plan;
     }
 
-    const skip = (page - 1) * limit;
-    const [users, total] = await Promise.all([
-      User.find(query)
+    const [mongoUsers, mongoCount] = await Promise.all([
+      User.find(mongoQuery)
         .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
-        .lean(),
-      User.countDocuments(query),
+        .skip(page * pageSize)
+        .limit(pageSize)
+        .lean()
+        .catch(() => []),
+      User.countDocuments(mongoQuery).catch(() => 0),
     ]);
 
-    const serialized = users.map((u) => ({
-      _id: u._id.toString(),
+    if (mongoUsers.length > 0) {
+      const serialized = mongoUsers.map((u: any) => ({
+        _id: u._id.toString(),
+        id: u._id.toString(),
+        email: u.email,
+        plan: u.plan,
+        created_at: u.createdAt,
+        createdAt: u.createdAt,
+        new_tools_scans_used: u.new_tools_scans_used ?? 0,
+        scans_used_this_month: u.scansUsedThisMonth ?? 0,
+        scansUsedThisMonth: u.scansUsedThisMonth ?? 0,
+        plan_expires_at: u.plan_expires_at ?? null,
+        is_admin: u.role === 'admin',
+        role: u.role || 'user',
+        suspended: !!u.suspended,
+      }));
+
+      return NextResponse.json({
+        success: true,
+        users: serialized,
+        data: serialized,
+        total: mongoCount,
+        pagination: {
+          page: page + 1,
+          pageSize,
+          total: mongoCount,
+          totalPages: Math.ceil(mongoCount / pageSize),
+        },
+      });
+    }
+
+    // 4. DevStore Fallback
+    const devUsers = DevStore.getAllUsers();
+    let filtered = devUsers;
+    if (search) {
+      filtered = filtered.filter((u) => u.email.toLowerCase().includes(search.toLowerCase()));
+    }
+    if (plan) {
+      filtered = filtered.filter((u) => u.plan === plan);
+    }
+
+    const paginated = filtered.slice(page * pageSize, (page + 1) * pageSize);
+    const serialized = paginated.map((u) => ({
+      _id: u._id,
+      id: u._id,
       email: u.email,
-      role: u.role || 'user',
       plan: u.plan,
-      suspended: !!u.suspended,
-      adminNotes: u.adminNotes || '',
-      scansUsedThisMonth: u.scansUsedThisMonth || 0,
-      scansResetDate: u.scansResetDate,
-      stripeCustomerId: u.stripeCustomerId,
+      created_at: u.createdAt,
       createdAt: u.createdAt,
+      new_tools_scans_used: u.new_tools_scans_used ?? 0,
+      scans_used_this_month: u.scansUsedThisMonth ?? 0,
+      scansUsedThisMonth: u.scansUsedThisMonth ?? 0,
+      plan_expires_at: u.plan_expires_at ?? null,
+      is_admin: u.is_admin || u.role === 'admin',
+      role: u.role,
+      suspended: !!u.suspended,
     }));
 
     return NextResponse.json({
       success: true,
+      users: serialized,
       data: serialized,
+      total: filtered.length,
       pagination: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
+        page: page + 1,
+        pageSize,
+        total: filtered.length,
+        totalPages: Math.ceil(filtered.length / pageSize),
       },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Admin users error:', error);
-    return NextResponse.json({ error: 'Failed to fetch users' }, { status: 500 });
+    return NextResponse.json({ error: error?.message || 'Failed to fetch users' }, { status: 500 });
   }
 }
 
 export async function PATCH(req: NextRequest) {
-  const admin = await getAdminUser();
-  if (!admin) {
-    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  const adminAuth = await verifyAdminAccess();
+  if (!adminAuth.isAdmin) {
+    return NextResponse.json({ error: 'Unauthorized. Admin access required.' }, { status: 403 });
   }
 
   try {
-    await dbConnect();
     const body = await req.json();
     const { userId, plan, suspended, role, note } = body;
 
@@ -90,59 +198,48 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: 'Missing user ID' }, { status: 400 });
     }
 
-    const user = await User.findById(userId);
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
-    }
-
-    const updates: Record<string, unknown> = {};
-    const logActions: string[] = [];
-
-    // Plan override
-    if (plan && ['free', 'pro'].includes(plan) && plan !== user.plan) {
-      updates.plan = plan;
-      logActions.push(`Changed plan from ${user.plan} to ${plan}`);
-    }
-
-    // Suspension toggle
-    if (typeof suspended === 'boolean' && suspended !== user.suspended) {
-      updates.suspended = suspended;
-      logActions.push(suspended ? 'Suspended user' : 'Unsuspended user');
-    }
-
-    // Role change
-    if (role && ['user', 'admin'].includes(role) && role !== user.role) {
-      // Prevent removing own admin role by accident
-      if (user._id.toString() === admin._id.toString() && role !== 'admin') {
-        return NextResponse.json({ error: 'Cannot revoke your own admin role' }, { status: 400 });
+    const supabase = getSupabaseAdmin();
+    if (supabase) {
+      const updates: Record<string, any> = {};
+      if (plan) updates.plan = plan;
+      if (typeof suspended === 'boolean') updates.suspended = suspended;
+      if (role) {
+        updates.role = role;
+        updates.is_admin = role === 'admin';
       }
-      updates.role = role;
-      logActions.push(`Changed role to ${role}`);
+      if (note !== undefined) updates.admin_notes = note;
+
+      // Update profiles and users
+      try {
+        await supabase.from('profiles').update(updates).eq('id', userId);
+      } catch {}
+      try {
+        await supabase.from('users').update(updates).or(`id.eq.${userId},clerk_id.eq.${userId}`);
+      } catch {}
     }
 
-    // Admin notes
-    if (note !== undefined) {
-      updates.adminNotes = note;
-    }
+    // DevStore and MongoDB
+    await dbConnect();
+    const updates: Record<string, any> = {};
+    if (plan) updates.plan = plan;
+    if (typeof suspended === 'boolean') updates.suspended = suspended;
+    if (role) updates.role = role;
+    if (note !== undefined) updates.adminNotes = note;
 
-    if (Object.keys(updates).length === 0) {
-      return NextResponse.json({ success: true, data: user });
-    }
-
-    const updatedUser = await User.findByIdAndUpdate(userId, updates, { new: true });
+    await User.findByIdAndUpdate(userId, updates).catch(() => {});
 
     await logAdminAction({
-      adminUserId: admin._id.toString(),
-      adminEmail: admin.email,
+      adminUserId: adminAuth.adminId || 'admin',
+      adminEmail: adminAuth.adminEmail || 'admin@ismysaastaken.com',
       action: 'USER_UPDATE',
       targetId: userId,
       targetType: 'User',
-      note: `${logActions.join(', ')}. Admin note: ${note || 'None'}`,
+      note: note || 'User details updated by admin',
     });
 
-    return NextResponse.json({ success: true, data: updatedUser });
-  } catch (error) {
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
     console.error('Admin update user error:', error);
-    return NextResponse.json({ error: 'Failed to update user' }, { status: 500 });
+    return NextResponse.json({ error: error?.message || 'Failed to update user' }, { status: 500 });
   }
 }

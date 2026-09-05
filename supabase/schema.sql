@@ -12,7 +12,9 @@ CREATE TABLE IF NOT EXISTS public.users (
     clerk_id TEXT UNIQUE NOT NULL,
     email TEXT UNIQUE NOT NULL,
     role TEXT NOT NULL DEFAULT 'user' CHECK (role IN ('user', 'admin')),
+    is_admin BOOLEAN NOT NULL DEFAULT false,
     plan TEXT NOT NULL DEFAULT 'free' CHECK (plan IN ('free', 'pro', 'sprint_pass', 'founder_pro')),
+    plan_expires_at TIMESTAMPTZ,
     suspended BOOLEAN NOT NULL DEFAULT false,
     admin_notes TEXT,
     stripe_customer_id TEXT,
@@ -112,3 +114,21 @@ ON public.users FOR ALL USING (true) WITH CHECK (true);
 
 CREATE POLICY "Service role full access to bookmarks" 
 ON public.bookmarks FOR ALL USING (true) WITH CHECK (true);
+
+-- 7. ADMIN ACTIONS LOG TABLE (Audit Trail for Overrides & Support Actions)
+CREATE TABLE IF NOT EXISTS public.admin_actions_log (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    admin_id TEXT,
+    target_user_id TEXT NOT NULL,
+    action TEXT NOT NULL,
+    details JSONB,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_admin_actions_log_target_user_id ON public.admin_actions_log (target_user_id);
+CREATE INDEX IF NOT EXISTS idx_admin_actions_log_created_at ON public.admin_actions_log (created_at DESC);
+
+ALTER TABLE public.admin_actions_log ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Service role full access to admin_actions_log" 
+ON public.admin_actions_log FOR ALL USING (true) WITH CHECK (true);

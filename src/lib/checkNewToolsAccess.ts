@@ -29,12 +29,13 @@ export async function checkNewToolsAccess(userId: string | null): Promise<Access
       // 1. Check profiles table first (Supabase Auth default)
       const { data: profile, error: profileErr } = await supabase
         .from('profiles')
-        .select('plan, new_tools_scans_used')
+        .select('plan, new_tools_scans_used, plan_expires_at')
         .eq('id', userId)
         .maybeSingle();
 
       if (profile && !profileErr) {
-        if (profile.plan === 'sprint_pass' || profile.plan === 'founder_pro' || profile.plan === 'pro') {
+        const isExpired = profile.plan_expires_at && new Date() > new Date(profile.plan_expires_at);
+        if (!isExpired && (profile.plan === 'sprint_pass' || profile.plan === 'founder_pro' || profile.plan === 'pro')) {
           return { allowed: true };
         }
         const scansUsed = profile.new_tools_scans_used ?? 0;
@@ -47,12 +48,13 @@ export async function checkNewToolsAccess(userId: string | null): Promise<Access
       // 2. Check users table (IsMySaaSTaken synced users table)
       const { data: userRow, error: userErr } = await supabase
         .from('users')
-        .select('id, clerk_id, plan, new_tools_scans_used')
+        .select('id, clerk_id, plan, new_tools_scans_used, plan_expires_at')
         .or(`id.eq.${userId},clerk_id.eq.${userId}`)
         .maybeSingle();
 
       if (userRow && !userErr) {
-        if (userRow.plan === 'sprint_pass' || userRow.plan === 'founder_pro' || userRow.plan === 'pro') {
+        const isExpired = userRow.plan_expires_at && new Date() > new Date(userRow.plan_expires_at);
+        if (!isExpired && (userRow.plan === 'sprint_pass' || userRow.plan === 'founder_pro' || userRow.plan === 'pro')) {
           return { allowed: true };
         }
         const scansUsed = userRow.new_tools_scans_used ?? 0;
@@ -62,14 +64,15 @@ export async function checkNewToolsAccess(userId: string | null): Promise<Access
         return { allowed: true };
       }
     } catch (err) {
-      console.warn('Supabase checkNewToolsAccess query failed, falling back to DevStore:', err);
+      console.warn('checkNewToolsAccess Supabase error, falling back to DevStore:', err);
     }
   }
 
   // 3. Fallback to DevStore (local development & offline mock testing)
   const devData = DevStore.getNewToolsUsage(userId);
   if (devData) {
-    if (devData.plan === 'sprint_pass' || devData.plan === 'founder_pro' || devData.plan === 'pro') {
+    const isDevExpired = devData.plan_expires_at && new Date() > new Date(devData.plan_expires_at);
+    if (!isDevExpired && (devData.plan === 'sprint_pass' || devData.plan === 'founder_pro' || devData.plan === 'pro')) {
       return { allowed: true };
     }
     if (devData.used >= FREE_SCAN_LIMIT) {
