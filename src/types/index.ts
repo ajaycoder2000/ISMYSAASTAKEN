@@ -37,6 +37,7 @@ export interface IUserDocument {
   is_admin?: boolean;
   plan: PlanType;
   plan_expires_at?: Date | string | null;
+  bonus_scans?: number;
   suspended?: boolean;
   adminNotes?: string;
   stripeCustomerId?: string;
@@ -107,4 +108,42 @@ export interface ScanAPIResponse {
   error?: string;
   rateLimited?: boolean;
   message?: string;
+}
+
+export type ScanToolType = 'idea_scanner' | 'keyword_radar' | 'is_it_taken';
+
+export interface IScanEvent {
+  id: string;
+  user_id?: string | null;
+  tool: ScanToolType;
+  created_at: string | Date;
+}
+
+export type CouponEffectType = 'set_plan' | 'extend_plan' | 'bonus_free_scans';
+
+export interface ICouponEffectValue {
+  plan?: PlanType;
+  days?: number;
+  bonus_scans?: number;
+  [key: string]: any;
+}
+
+export interface ICoupon {
+  id: string;
+  code: string;
+  effect_type: CouponEffectType;
+  effect_value: ICouponEffectValue;
+  max_uses?: number | null;
+  uses_count: number;
+  expires_at?: string | Date | null;
+  active: boolean;
+  created_at: string | Date;
+}
+
+export interface ICouponRedemption {
+  id: string;
+  coupon_id: string;
+  user_id: string;
+  applied_by_admin_id?: string | null;
+  created_at: string | Date;
 }

@@ -96,6 +96,45 @@ export default function AdminDashboardPage() {
         </button>
       </div>
 
+      {/* Quick Navigation Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Link
+          href="/admin/analytics"
+          className="p-4 rounded-xl bg-[hsl(220,15%,8%)] hover:bg-[hsl(220,15%,10%)] border border-[hsl(220,10%,16%)] hover:border-[hsl(42,95%,55%,0.3)] transition-all flex items-center justify-between group"
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-2xl p-2 rounded-lg bg-[hsl(220,10%,14%)]">📈</span>
+            <div>
+              <h3 className="text-sm font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,92%)] group-hover:text-[hsl(42,95%,55%)] transition-colors">
+                Usage Analytics
+              </h3>
+              <p className="text-xs text-[hsl(40,8%,50%)] font-[family-name:var(--font-mono)]">
+                Cross-tool scan volume timeline and trends
+              </p>
+            </div>
+          </div>
+          <span className="text-xs font-mono text-[hsl(42,95%,55%)]">View Charts →</span>
+        </Link>
+
+        <Link
+          href="/admin/coupons"
+          className="p-4 rounded-xl bg-[hsl(220,15%,8%)] hover:bg-[hsl(220,15%,10%)] border border-[hsl(220,10%,16%)] hover:border-[hsl(42,95%,55%,0.3)] transition-all flex items-center justify-between group"
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-2xl p-2 rounded-lg bg-[hsl(220,10%,14%)]">🎟️</span>
+            <div>
+              <h3 className="text-sm font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,92%)] group-hover:text-[hsl(42,95%,55%)] transition-colors">
+                Coupons & Promotions
+              </h3>
+              <p className="text-xs text-[hsl(40,8%,50%)] font-[family-name:var(--font-mono)]">
+                Create and manage promo codes and pass grants
+              </p>
+            </div>
+          </div>
+          <span className="text-xs font-mono text-[hsl(42,95%,55%)]">Manage Coupons →</span>
+        </Link>
+      </div>
+
       {/* Metrics Row 1: Core KPIs */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Scans Card */}

@@ -29,7 +29,7 @@ export async function checkNewToolsAccess(userId: string | null): Promise<Access
       // 1. Check profiles table first (Supabase Auth default)
       const { data: profile, error: profileErr } = await supabase
         .from('profiles')
-        .select('plan, new_tools_scans_used, plan_expires_at')
+        .select('plan, new_tools_scans_used, plan_expires_at, bonus_scans')
         .eq('id', userId)
         .maybeSingle();
 
@@ -39,7 +39,8 @@ export async function checkNewToolsAccess(userId: string | null): Promise<Access
           return { allowed: true };
         }
         const scansUsed = profile.new_tools_scans_used ?? 0;
-        if (scansUsed >= FREE_SCAN_LIMIT) {
+        const limit = FREE_SCAN_LIMIT + (profile.bonus_scans ?? 0);
+        if (scansUsed >= limit) {
           return { allowed: false, reason: 'PAYWALL' };
         }
         return { allowed: true };
@@ -48,7 +49,7 @@ export async function checkNewToolsAccess(userId: string | null): Promise<Access
       // 2. Check users table (IsMySaaSTaken synced users table)
       const { data: userRow, error: userErr } = await supabase
         .from('users')
-        .select('id, clerk_id, plan, new_tools_scans_used, plan_expires_at')
+        .select('id, clerk_id, plan, new_tools_scans_used, plan_expires_at, bonus_scans')
         .or(`id.eq.${userId},clerk_id.eq.${userId}`)
         .maybeSingle();
 
@@ -58,7 +59,8 @@ export async function checkNewToolsAccess(userId: string | null): Promise<Access
           return { allowed: true };
         }
         const scansUsed = userRow.new_tools_scans_used ?? 0;
-        if (scansUsed >= FREE_SCAN_LIMIT) {
+        const limit = FREE_SCAN_LIMIT + (userRow.bonus_scans ?? 0);
+        if (scansUsed >= limit) {
           return { allowed: false, reason: 'PAYWALL' };
         }
         return { allowed: true };
@@ -75,7 +77,8 @@ export async function checkNewToolsAccess(userId: string | null): Promise<Access
     if (!isDevExpired && (devData.plan === 'sprint_pass' || devData.plan === 'founder_pro' || devData.plan === 'pro')) {
       return { allowed: true };
     }
-    if (devData.used >= FREE_SCAN_LIMIT) {
+    const limit = FREE_SCAN_LIMIT + (devData.bonus_scans ?? 0);
+    if (devData.used >= limit) {
       return { allowed: false, reason: 'PAYWALL' };
     }
     return { allowed: true };

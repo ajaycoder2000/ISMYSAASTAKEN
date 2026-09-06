@@ -132,3 +132,90 @@ ALTER TABLE public.admin_actions_log ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Service role full access to admin_actions_log" 
 ON public.admin_actions_log FOR ALL USING (true) WITH CHECK (true);
+
+-- 8. SCAN EVENTS TABLE (Unified Cross-Tool Usage Analytics)
+CREATE TABLE IF NOT EXISTS public.scan_events (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id TEXT,
+    tool TEXT NOT NULL, -- 'idea_scanner' | 'keyword_radar' | 'is_it_taken'
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_scan_events_created_at ON public.scan_events (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_scan_events_tool ON public.scan_events (tool);
+CREATE INDEX IF NOT EXISTS idx_scan_events_user_id ON public.scan_events (user_id);
+
+ALTER TABLE public.scan_events ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Service role full access to scan_events" 
+ON public.scan_events FOR ALL USING (true) WITH CHECK (true);
+
+-- Scan counts aggregation RPC
+CREATE OR REPLACE FUNCTION scan_counts_by_period(trunc_unit text)
+RETURNS TABLE(period TIMESTAMPTZ, tool TEXT, scan_count BIGINT) AS $$
+  SELECT 
+    date_trunc(trunc_unit, created_at) AS period, 
+    tool, 
+    count(*)::bigint AS scan_count
+  FROM public.scan_events
+  WHERE created_at > now() - interval '90 days'
+  GROUP BY 1, 2
+  ORDER BY 1 DESC;
+$$ LANGUAGE sql STABLE;
+
+-- 9. COUPONS TABLE (Promotions, Trials & Manual Overrides)
+CREATE TABLE IF NOT EXISTS public.coupons (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    code TEXT UNIQUE NOT NULL,
+    effect_type TEXT NOT NULL, -- 'set_plan' | 'extend_plan' | 'bonus_free_scans'
+    effect_value JSONB NOT NULL, -- e.g. {"plan": "sprint_pass", "days": 7} or {"bonus_scans": 5}
+    max_uses INTEGER DEFAULT NULL,
+    uses_count INTEGER NOT NULL DEFAULT 0,
+    expires_at TIMESTAMPTZ DEFAULT NULL,
+    active BOOLEAN NOT NULL DEFAULT true,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_coupons_code ON public.coupons (code);
+CREATE INDEX IF NOT EXISTS idx_coupons_active ON public.coupons (active);
+
+ALTER TABLE public.coupons ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Service role full access to coupons" 
+ON public.coupons FOR ALL USING (true) WITH CHECK (true);
+
+-- 10. COUPON REDEMPTIONS TABLE (Audit Trail for Applied Coupons)
+CREATE TABLE IF NOT EXISTS public.coupon_redemptions (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    coupon_id UUID NOT NULL REFERENCES public.coupons(id) ON DELETE CASCADE,
+    user_id TEXT NOT NULL,
+    applied_by_admin_id TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_coupon_redemptions_user_id ON public.coupon_redemptions (user_id);
+CREATE INDEX IF NOT EXISTS idx_coupon_redemptions_coupon_id ON public.coupon_redemptions (coupon_id);
+CREATE INDEX IF NOT EXISTS idx_coupon_redemptions_created_at ON public.coupon_redemptions (created_at DESC);
+
+ALTER TABLE public.coupon_redemptions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Service role full access to coupon_redemptions" 
+ON public.coupon_redemptions FOR ALL USING (true) WITH CHECK (true);
+
+-- 11. BONUS SCANS COLUMN & RPC
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS bonus_scans INTEGER DEFAULT 0;
+
+CREATE OR REPLACE FUNCTION add_bonus_scans(uid TEXT, amount INT)
+RETURNS VOID AS $$
+BEGIN
+  UPDATE public.users
+  SET bonus_scans = COALESCE(bonus_scans, 0) + amount
+  WHERE id::text = uid OR clerk_id = uid;
+
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'profiles') THEN
+    UPDATE public.profiles
+    SET bonus_scans = COALESCE(bonus_scans, 0) + amount
+    WHERE id::text = uid;
+  END IF;
+END;
+$$ LANGUAGE plpgsql;

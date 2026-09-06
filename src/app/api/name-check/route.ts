@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { SupabaseDB } from '@/lib/supabase/db';
 import { getSession } from '@/lib/auth';
 import { checkNewToolsAccess, incrementNewToolsUsage } from '@/lib/checkNewToolsAccess';
+import { recordScanEvent } from '@/lib/scan-events';
 
 export const dynamic = 'force-dynamic';
 
@@ -79,6 +80,7 @@ export async function POST(req: NextRequest) {
       if (userId) {
         await incrementNewToolsUsage(userId);
       }
+      await recordScanEvent('is_it_taken', userId);
       return NextResponse.json({
         success: true,
         name: cleanName,
@@ -105,6 +107,7 @@ export async function POST(req: NextRequest) {
     if (userId) {
       await incrementNewToolsUsage(userId);
     }
+    await recordScanEvent('is_it_taken', userId);
 
     return NextResponse.json({
       success: true,

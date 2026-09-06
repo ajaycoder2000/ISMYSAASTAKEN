@@ -4,6 +4,7 @@ import dbConnect from './mongodb';
 import User from '@/models/User';
 import { getSiteConfig } from '@/models/SiteConfig';
 import { DevStore } from './dev-store';
+import { getSupabaseAdmin } from '@/lib/supabase/admin';
 
 const ANON_COOKIE = 'anon_scan_used';
 
@@ -25,6 +26,7 @@ export async function checkRateLimit(): Promise<RateLimitResult> {
     let scansUsed = 0;
     let scansResetDate = new Date();
     let monthlyCap = 3;
+    let bonusScans = 0;
 
     try {
       const conn = await dbConnect();
@@ -92,16 +94,32 @@ export async function checkRateLimit(): Promise<RateLimitResult> {
         monthlyCap = DevStore.getConfig().freeTierMonthlyLimit || 3;
         scansUsed = devUser.scansUsedThisMonth || 0;
         scansResetDate = devUser.scansResetDate;
+        bonusScans = devUser.bonus_scans || 0;
       }
     }
 
-    const isPaidPlan = ['pro', 'founder_pro', 'sprint_pass', 'sprint'].includes(userPlan);
-    const remaining = isPaidPlan ? Infinity : Math.max(0, monthlyCap - scansUsed);
+    const supabase = getSupabaseAdmin();
+    if (supabase) {
+      try {
+        const { data: sbUser } = await supabase
+          .from('users')
+          .select('bonus_scans')
+          .or(`id.eq.${session.userId},clerk_id.eq.${session.userId}`)
+          .maybeSingle();
+        if (sbUser?.bonus_scans) {
+          bonusScans = Math.max(bonusScans, sbUser.bonus_scans);
+        }
+      } catch {}
+    }
 
-    if (!isPaidPlan && scansUsed >= monthlyCap) {
+    const isPaidPlan = ['pro', 'founder_pro', 'sprint_pass', 'sprint'].includes(userPlan);
+    const effectiveCap = monthlyCap + bonusScans;
+    const remaining = isPaidPlan ? Infinity : Math.max(0, effectiveCap - scansUsed);
+
+    if (!isPaidPlan && scansUsed >= effectiveCap) {
       return {
         allowed: false,
-        reason: `You've used all ${monthlyCap} free scans this month. Resets on ${new Date(scansResetDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}. Upgrade to Pro for unlimited.`,
+        reason: `You've used all ${effectiveCap} free scans this month. Resets on ${new Date(scansResetDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}. Upgrade to Pro for unlimited.`,
         isAnonymous: false,
         userId: session.userId,
         remaining: 0,

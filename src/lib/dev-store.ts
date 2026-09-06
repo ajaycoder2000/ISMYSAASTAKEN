@@ -15,6 +15,7 @@ interface DevUser {
   stripeCustomerId?: string;
   scansUsedThisMonth: number;
   new_tools_scans_used?: number;
+  bonus_scans?: number;
   scansResetDate: Date;
   createdAt: Date;
 }
@@ -123,6 +124,38 @@ export interface DevAdminActionLog {
   created_at: string;
 }
 
+export interface DevScanEvent {
+  id: string;
+  user_id?: string | null;
+  tool: 'idea_scanner' | 'keyword_radar' | 'is_it_taken';
+  created_at: string;
+}
+
+export interface DevCoupon {
+  id: string;
+  code: string;
+  effect_type: 'set_plan' | 'extend_plan' | 'bonus_free_scans';
+  effect_value: {
+    plan?: PlanType;
+    days?: number;
+    bonus_scans?: number;
+    [key: string]: any;
+  };
+  max_uses?: number | null;
+  uses_count: number;
+  expires_at?: string | null;
+  active: boolean;
+  created_at: string;
+}
+
+export interface DevCouponRedemption {
+  id: string;
+  coupon_id: string;
+  user_id: string;
+  applied_by_admin_id?: string | null;
+  created_at: string;
+}
+
 interface StoreState {
   users: DevUser[];
   tokens: DevMagicToken[];
@@ -136,6 +169,9 @@ interface StoreState {
   name_check_cache?: DevNameCheckCache[];
   name_check_usage?: DevNameCheckUsage[];
   admin_actions_log?: DevAdminActionLog[];
+  scan_events?: DevScanEvent[];
+  coupons?: DevCoupon[];
+  coupon_redemptions?: DevCouponRedemption[];
 }
 
 const STORE_PATH = path.join(process.cwd(), '.dev-store.json');
@@ -278,13 +314,14 @@ export const DevStore = {
     return user;
   },
 
-  getNewToolsUsage(userId: string): { plan: PlanType; used: number; plan_expires_at?: Date | string | null } | null {
+  getNewToolsUsage(userId: string): { plan: PlanType; used: number; plan_expires_at?: Date | string | null; bonus_scans?: number } | null {
     const user = inMemoryState.users.find((u) => u._id === userId || u.email.toLowerCase() === userId.toLowerCase());
     if (!user) return null;
     return {
       plan: user.plan,
       used: user.new_tools_scans_used || 0,
       plan_expires_at: user.plan_expires_at,
+      bonus_scans: user.bonus_scans || 0,
     };
   },
 
@@ -649,5 +686,209 @@ export const DevStore = {
     inMemoryState.admin_actions_log.unshift(entry);
     saveState();
     return entry;
+  },
+
+  recordScanEvent(tool: 'idea_scanner' | 'keyword_radar' | 'is_it_taken', userId?: string | null): DevScanEvent {
+    if (!inMemoryState.scan_events) inMemoryState.scan_events = [];
+    const event: DevScanEvent = {
+      id: 'se_' + nanoid(10),
+      user_id: userId || null,
+      tool,
+      created_at: new Date().toISOString(),
+    };
+    inMemoryState.scan_events.push(event);
+    saveState();
+    return event;
+  },
+
+  getScanEvents(sinceDate?: Date): DevScanEvent[] {
+    if (!inMemoryState.scan_events) inMemoryState.scan_events = [];
+    if (!sinceDate) return inMemoryState.scan_events;
+    return inMemoryState.scan_events.filter((e) => new Date(e.created_at) >= sinceDate);
+  },
+
+  getScanCountsByPeriod(truncUnit: 'day' | 'week' | 'month'): Array<{ period: string; tool: string; scan_count: number }> {
+    if (!inMemoryState.scan_events) inMemoryState.scan_events = [];
+    const cutoff = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
+    const validEvents = inMemoryState.scan_events.filter((e) => new Date(e.created_at) >= cutoff);
+
+    const map = new Map<string, number>();
+
+    for (const e of validEvents) {
+      const d = new Date(e.created_at);
+      let periodKey = '';
+      if (truncUnit === 'month') {
+        periodKey = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1)).toISOString();
+      } else if (truncUnit === 'week') {
+        const day = d.getUTCDay();
+        const diff = d.getUTCDate() - day + (day === 0 ? -6 : 1);
+        const weekStart = new Date(d);
+        weekStart.setUTCDate(diff);
+        weekStart.setUTCHours(0, 0, 0, 0);
+        periodKey = weekStart.toISOString();
+      } else {
+        periodKey = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())).toISOString();
+      }
+
+      const key = `${periodKey}:::${e.tool}`;
+      map.set(key, (map.get(key) || 0) + 1);
+    }
+
+    const results: Array<{ period: string; tool: string; scan_count: number }> = [];
+    map.forEach((count, key) => {
+      const [period, tool] = key.split(':::');
+      results.push({ period, tool, scan_count: count });
+    });
+
+    results.sort((a, b) => new Date(b.period).getTime() - new Date(a.period).getTime());
+    return results;
+  },
+
+  getScanAnalyticsSummary(): { totalToday: number; totalWeek: number; totalMonth: number; mostUsedTool: string } {
+    if (!inMemoryState.scan_events) inMemoryState.scan_events = [];
+    const now = new Date();
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
+    let totalToday = 0;
+    let totalWeek = 0;
+    let totalMonth = 0;
+    const toolCounts: Record<string, number> = {
+      idea_scanner: 0,
+      keyword_radar: 0,
+      is_it_taken: 0,
+    };
+
+    for (const e of inMemoryState.scan_events) {
+      const d = new Date(e.created_at);
+      if (d >= startOfToday) totalToday++;
+      if (d >= sevenDaysAgo) totalWeek++;
+      if (d >= thirtyDaysAgo) {
+        totalMonth++;
+        toolCounts[e.tool] = (toolCounts[e.tool] || 0) + 1;
+      }
+    }
+
+    let mostUsedTool = 'idea_scanner';
+    let maxCount = -1;
+    for (const [tool, count] of Object.entries(toolCounts)) {
+      if (count > maxCount) {
+        maxCount = count;
+        mostUsedTool = tool;
+      }
+    }
+
+    return { totalToday, totalWeek, totalMonth, mostUsedTool };
+  },
+
+  createCoupon(data: Omit<DevCoupon, 'id' | 'uses_count' | 'created_at'>): DevCoupon {
+    if (!inMemoryState.coupons) inMemoryState.coupons = [];
+    const code = data.code.toUpperCase().trim();
+    const existing = inMemoryState.coupons.find((c) => c.code === code);
+    if (existing) {
+      throw new Error(`Coupon code '${code}' already exists`);
+    }
+
+    const coupon: DevCoupon = {
+      ...data,
+      id: 'cpn_' + nanoid(10),
+      code,
+      uses_count: 0,
+      created_at: new Date().toISOString(),
+    };
+    inMemoryState.coupons.unshift(coupon);
+    saveState();
+    return coupon;
+  },
+
+  getAllCoupons(): DevCoupon[] {
+    if (!inMemoryState.coupons) inMemoryState.coupons = [];
+    return [...inMemoryState.coupons];
+  },
+
+  getCouponByCode(code: string): DevCoupon | null {
+    if (!inMemoryState.coupons) inMemoryState.coupons = [];
+    return inMemoryState.coupons.find((c) => c.code === code.toUpperCase().trim()) || null;
+  },
+
+  updateCoupon(couponId: string, updates: Partial<DevCoupon>): DevCoupon | null {
+    if (!inMemoryState.coupons) inMemoryState.coupons = [];
+    const coupon = inMemoryState.coupons.find((c) => c.id === couponId);
+    if (!coupon) return null;
+    Object.assign(coupon, updates);
+    saveState();
+    return coupon;
+  },
+
+  applyCouponToUser(
+    adminId: string | null,
+    userId: string,
+    couponCode: string
+  ): { success: boolean; error?: string; coupon?: DevCoupon; user?: DevUser } {
+    if (!inMemoryState.coupons) inMemoryState.coupons = [];
+    if (!inMemoryState.coupon_redemptions) inMemoryState.coupon_redemptions = [];
+
+    const coupon = inMemoryState.coupons.find((c) => c.code === couponCode.toUpperCase().trim());
+    if (!coupon || !coupon.active) {
+      return { success: false, error: 'Invalid or inactive coupon' };
+    }
+    if (coupon.expires_at && new Date(coupon.expires_at) < new Date()) {
+      return { success: false, error: 'Coupon has expired' };
+    }
+    if (coupon.max_uses !== null && coupon.max_uses !== undefined && coupon.uses_count >= coupon.max_uses) {
+      return { success: false, error: 'Coupon has reached maximum uses' };
+    }
+
+    const user = inMemoryState.users.find((u) => u._id === userId || u.email.toLowerCase() === userId.toLowerCase());
+    if (!user) {
+      return { success: false, error: 'Target user not found' };
+    }
+
+    // Apply effect
+    if (coupon.effect_type === 'set_plan') {
+      if (coupon.effect_value.plan) user.plan = coupon.effect_value.plan;
+      if (coupon.effect_value.days) {
+        user.plan_expires_at = new Date(Date.now() + coupon.effect_value.days * 24 * 60 * 60 * 1000);
+      } else {
+        user.plan_expires_at = null;
+      }
+    } else if (coupon.effect_type === 'extend_plan') {
+      const days = coupon.effect_value.days || 7;
+      const baseDate = user.plan_expires_at && new Date(user.plan_expires_at) > new Date()
+        ? new Date(user.plan_expires_at).getTime()
+        : Date.now();
+      user.plan_expires_at = new Date(baseDate + days * 24 * 60 * 60 * 1000);
+      if (coupon.effect_value.plan) user.plan = coupon.effect_value.plan;
+    } else if (coupon.effect_type === 'bonus_free_scans') {
+      const bonus = coupon.effect_value.bonus_scans || 1;
+      user.bonus_scans = (user.bonus_scans || 0) + bonus;
+    }
+
+    coupon.uses_count += 1;
+    inMemoryState.coupon_redemptions.unshift({
+      id: 'cr_' + nanoid(10),
+      coupon_id: coupon.id,
+      user_id: user._id,
+      applied_by_admin_id: adminId,
+      created_at: new Date().toISOString(),
+    });
+
+    if (!inMemoryState.admin_actions_log) inMemoryState.admin_actions_log = [];
+    inMemoryState.admin_actions_log.unshift({
+      id: 'aal_' + nanoid(10),
+      admin_id: adminId,
+      target_user_id: user._id,
+      action: 'coupon_applied',
+      details: {
+        couponCode: coupon.code,
+        effectType: coupon.effect_type,
+        effectValue: coupon.effect_value,
+      },
+      created_at: new Date().toISOString(),
+    });
+
+    saveState();
+    return { success: true, coupon, user };
   },
 };

@@ -6,6 +6,7 @@ import { validateIdeaText, generateSlug } from '@/lib/utils';
 import { checkRateLimit, recordScanUsage } from '@/lib/rate-limit';
 import { DevStore } from '@/lib/dev-store';
 import { SupabaseDB } from '@/lib/supabase/db';
+import { recordScanEvent } from '@/lib/scan-events';
 
 export async function POST(req: NextRequest) {
   try {
@@ -50,6 +51,7 @@ export async function POST(req: NextRequest) {
     // Record usage
     try {
       await recordScanUsage(rateLimit.userId);
+      await recordScanEvent('idea_scanner', rateLimit.userId);
     } catch (usageErr) {
       console.warn('Usage recording error:', (usageErr as Error).message);
     }

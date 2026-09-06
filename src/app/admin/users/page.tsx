@@ -39,6 +39,11 @@ export default function AdminUsersPage() {
   const [loadingLogs, setLoadingLogs] = useState(false);
   const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
+  // Coupon Application State
+  const [couponInput, setCouponInput] = useState('');
+  const [applyingCoupon, setApplyingCoupon] = useState(false);
+  const [couponResult, setCouponResult] = useState<{ success: boolean; message: string } | null>(null);
+
   const fetchUsers = useCallback(() => {
     setLoading(true);
     const params = new URLSearchParams({
@@ -73,6 +78,8 @@ export default function AdminUsersPage() {
     setOverridePlan(user.plan || 'free');
     setOverrideReason('');
     setStatusMsg(null);
+    setCouponInput('');
+    setCouponResult(null);
 
     if (user.plan_expires_at) {
       try {
@@ -184,6 +191,57 @@ export default function AdminUsersPage() {
       setStatusMsg({ type: 'error', text: 'Network error executing plan override.' });
     } finally {
       setSavingOverride(false);
+    }
+  };
+
+  const handleApplyCoupon = async () => {
+    if (!editingUser || !couponInput.trim()) return;
+    setApplyingCoupon(true);
+    setCouponResult(null);
+
+    const userId = editingUser.id || editingUser._id;
+    const cleanCode = couponInput.trim().toUpperCase();
+
+    try {
+      const res = await fetch('/api/admin/coupons/apply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          couponCode: cleanCode,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || data.error) {
+        setCouponResult({
+          success: false,
+          message: data.error || 'Failed to apply coupon',
+        });
+      } else {
+        setCouponResult({
+          success: true,
+          message: data.message || `Coupon '${cleanCode}' applied successfully!`,
+        });
+        setCouponInput('');
+        fetchUsers();
+
+        // Refresh audit logs for the user
+        try {
+          const logRes = await fetch(`/api/admin/override-plan?userId=${encodeURIComponent(userId)}`);
+          const logData = await logRes.json();
+          if (logData.success && Array.isArray(logData.logs)) {
+            setOverrideLogs(logData.logs);
+          }
+        } catch {}
+      }
+    } catch (err: any) {
+      setCouponResult({
+        success: false,
+        message: err.message || 'Network error applying coupon',
+      });
+    } finally {
+      setApplyingCoupon(false);
     }
   };
 
@@ -546,6 +604,42 @@ export default function AdminUsersPage() {
                   {statusMsg.text}
                 </div>
               )}
+
+              {/* Apply Coupon Section */}
+              <div className="p-3.5 bg-[hsl(220,15%,7%)] rounded-xl border border-[hsl(220,10%,16%)] space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-[11px] font-mono uppercase tracking-wider text-[hsl(40,8%,50%)] font-bold flex items-center gap-1.5">
+                    <span>🎟️</span> Apply Coupon to User
+                  </label>
+                  <span className="text-[10px] font-mono text-[hsl(40,8%,40%)]">Promos & Vouchers</span>
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="e.g. SPRINT-7DAY"
+                    value={couponInput}
+                    onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                    className="flex-1 bg-[hsl(220,15%,9%)] border border-[hsl(220,10%,20%)] rounded-lg px-3 py-1.5 text-xs font-mono text-[hsl(40,20%,90%)] uppercase tracking-wider focus:outline-none focus:border-[hsl(42,95%,55%)]"
+                  />
+                  <button
+                    type="button"
+                    disabled={applyingCoupon || !couponInput.trim()}
+                    onClick={handleApplyCoupon}
+                    className="px-3 py-1.5 bg-[hsl(220,10%,16%)] hover:bg-[hsl(220,10%,20%)] text-[hsl(42,95%,55%)] font-mono font-bold text-xs rounded-lg border border-[hsl(220,10%,22%)] disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                  >
+                    {applyingCoupon ? 'Applying...' : 'Apply Coupon'}
+                  </button>
+                </div>
+                {couponResult && (
+                  <p
+                    className={`text-[11px] font-mono ${
+                      couponResult.success ? 'text-emerald-400' : 'text-red-400'
+                    }`}
+                  >
+                    {couponResult.message}
+                  </p>
+                )}
+              </div>
 
               {/* Select New Plan */}
               <div>

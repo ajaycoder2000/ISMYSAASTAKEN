@@ -4,6 +4,7 @@ import { SupabaseDB } from '@/lib/supabase/db';
 import { getSession } from '@/lib/auth';
 import { expandKeywordsWithLLM } from '@/lib/llm';
 import { checkNewToolsAccess, incrementNewToolsUsage } from '@/lib/checkNewToolsAccess';
+import { recordScanEvent } from '@/lib/scan-events';
 
 export const dynamic = 'force-dynamic';
 
@@ -70,6 +71,7 @@ export async function POST(req: NextRequest) {
       if (userId) {
         await incrementNewToolsUsage(userId);
       }
+      await recordScanEvent('keyword_radar', userId);
       return NextResponse.json({
         success: true,
         seed,
@@ -117,6 +119,7 @@ export async function POST(req: NextRequest) {
     if (userId) {
       await incrementNewToolsUsage(userId);
     }
+    await recordScanEvent('keyword_radar', userId);
 
     return NextResponse.json({
       success: true,
