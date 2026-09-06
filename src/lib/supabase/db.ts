@@ -15,6 +15,7 @@ export const SupabaseDB = {
     email: string;
     plan: PlanType;
     role: UserRole;
+    is_admin?: boolean;
     scansUsedThisMonth: number;
     scansRemaining: number;
     scansResetDate: Date;
@@ -54,15 +55,50 @@ export const SupabaseDB = {
               .eq('id', existingUser.id);
           }
 
+          let profileIsAdmin = false;
+          try {
+            const { data: profileRow } = await supabase
+              .from('profiles')
+              .select('is_admin, role')
+              .or(`id.eq.${clerkId},email.eq.${cleanEmail}`)
+              .maybeSingle();
+            if (profileRow?.is_admin === true || profileRow?.role === 'admin') {
+              profileIsAdmin = true;
+            }
+          } catch {
+            // profiles table check optional
+          }
+
+          const adminEnv = (process.env.ADMIN_EMAIL || 'ismysaastaken@gmail.com').toLowerCase();
+          const allowedAdmins = adminEnv.split(',').map((e) => e.trim()).filter(Boolean);
+          const isAuthorizedAdmin = allowedAdmins.includes(cleanEmail) || existingUser.role === 'admin' || existingUser.is_admin || profileIsAdmin;
+
+          // If admin, auto-upgrade to founder_pro (highest tier) in both DB and response for testing
+          let currentPlan: PlanType = (existingUser.plan as PlanType) || 'free';
+          let currentRole: UserRole = (existingUser.role as UserRole) || 'user';
+
+          if (isAuthorizedAdmin) {
+            currentPlan = 'founder_pro';
+            currentRole = 'admin';
+            if (existingUser.plan !== 'founder_pro' || !existingUser.is_admin || existingUser.role !== 'admin') {
+              await supabase
+                .from('users')
+                .update({ plan: 'founder_pro', is_admin: true, role: 'admin' })
+                .eq('id', existingUser.id);
+            }
+          }
+
           const FREE_CAP = 3;
-          const remaining = existingUser.plan === 'pro' ? 9999 : Math.max(0, FREE_CAP - scansUsed);
+          const isPaid = isAuthorizedAdmin || ['pro', 'founder_pro', 'sprint_pass'].includes(currentPlan);
+          const remaining = isPaid ? 999999 : Math.max(0, FREE_CAP - scansUsed);
 
           return {
             id: existingUser.id,
             clerkId: existingUser.clerk_id || clerkId,
             email: existingUser.email,
-            plan: (existingUser.plan as PlanType) || 'free',
-            role: (existingUser.role as UserRole) || 'user',
+            plan: currentPlan,
+            role: currentRole,
+            is_admin: isAuthorizedAdmin,
             scansUsedThisMonth: scansUsed,
             scansRemaining: remaining,
             scansResetDate: resetDate,
@@ -72,7 +108,9 @@ export const SupabaseDB = {
         // 2. Create new user in Supabase
         const adminEnv = (process.env.ADMIN_EMAIL || 'ismysaastaken@gmail.com').toLowerCase();
         const allowedAdmins = adminEnv.split(',').map((e) => e.trim()).filter(Boolean);
-        const assignedRole: UserRole = allowedAdmins.includes(cleanEmail) ? 'admin' : 'user';
+        const isAdminAccount = allowedAdmins.includes(cleanEmail);
+        const assignedRole: UserRole = isAdminAccount ? 'admin' : 'user';
+        const assignedPlan: PlanType = isAdminAccount ? 'founder_pro' : 'free';
 
         const nextReset = new Date();
         nextReset.setMonth(nextReset.getMonth() + 1);
@@ -85,7 +123,8 @@ export const SupabaseDB = {
             clerk_id: clerkId,
             email: cleanEmail,
             role: assignedRole,
-            plan: 'free',
+            is_admin: isAdminAccount,
+            plan: assignedPlan,
             scans_used_this_month: 0,
             scans_reset_date: nextReset.toISOString(),
           })
@@ -104,10 +143,11 @@ export const SupabaseDB = {
             id: newUser.id,
             clerkId: newUser.clerk_id,
             email: newUser.email,
-            plan: 'free',
+            plan: assignedPlan,
             role: assignedRole,
+            is_admin: isAdminAccount,
             scansUsedThisMonth: 0,
-            scansRemaining: 3,
+            scansRemaining: isAdminAccount ? 999999 : 3,
             scansResetDate: nextReset,
           };
         }
@@ -119,21 +159,25 @@ export const SupabaseDB = {
     // DevStore Fallback
     const adminEnv = (process.env.ADMIN_EMAIL || 'ismysaastaken@gmail.com').toLowerCase();
     const allowedAdmins = adminEnv.split(',').map((e) => e.trim()).filter(Boolean);
-    const assignedRole: UserRole = allowedAdmins.includes(cleanEmail) ? 'admin' : 'user';
+    const isAdminDev = allowedAdmins.includes(cleanEmail);
+    const assignedRole: UserRole = isAdminDev ? 'admin' : 'user';
 
     let devUser = DevStore.findUserByEmail(cleanEmail);
     if (!devUser) {
       devUser = DevStore.createUser(cleanEmail, assignedRole);
     }
 
+    const isDevAdmin = isAdminDev || devUser.role === 'admin' || devUser.is_admin;
+
     return {
       id: devUser._id,
       clerkId,
       email: devUser.email,
-      plan: devUser.plan,
-      role: devUser.role,
+      plan: isDevAdmin ? 'founder_pro' : devUser.plan,
+      role: isDevAdmin ? 'admin' : devUser.role,
+      is_admin: isDevAdmin,
       scansUsedThisMonth: devUser.scansUsedThisMonth,
-      scansRemaining: devUser.plan === 'pro' ? 9999 : Math.max(0, 3 - devUser.scansUsedThisMonth),
+      scansRemaining: isDevAdmin || devUser.plan === 'pro' ? 999999 : Math.max(0, 3 - devUser.scansUsedThisMonth),
       scansResetDate: devUser.scansResetDate,
     };
   },

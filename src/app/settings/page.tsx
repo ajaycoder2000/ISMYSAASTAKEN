@@ -18,11 +18,14 @@ export default function SettingsPage() {
           router.push('/sign-in');
           return;
         }
+        const isAdmin = data.user.role === 'admin' || data.user.is_admin;
         setUserData({
           email: data.user.email,
-          plan: data.user.plan || 'free',
+          plan: isAdmin ? 'founder_pro' : (data.user.plan || 'free'),
+          role: data.user.role,
+          is_admin: data.user.is_admin,
           scansUsedThisMonth: data.user.scansUsedThisMonth || 0,
-          scansLimit: data.user.plan === 'pro' ? 9999 : 3,
+          scansLimit: isAdmin || ['pro', 'founder_pro', 'sprint_pass'].includes(data.user.plan) ? 9999 : 3,
           joinedDate: 'Aug 2026',
           notifications: {
             weeklyDigest: true,

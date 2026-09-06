@@ -5,7 +5,9 @@ import Link from 'next/link';
 
 export interface UserSettings {
   email: string;
-  plan: 'free' | 'pro' | 'sprint' | 'sprint_pass' | 'founder_pro';
+  plan: 'free' | 'pro' | 'sprint' | 'sprint_pass' | 'founder_pro' | string;
+  role?: 'user' | 'admin' | string;
+  is_admin?: boolean;
   scansUsedThisMonth: number;
   scansLimit: number;
   joinedDate: string;
@@ -27,6 +29,8 @@ interface AccountSettingsProps {
 const DEFAULT_USER: UserSettings = {
   email: 'founder@example.com',
   plan: 'free',
+  role: 'user',
+  is_admin: false,
   scansUsedThisMonth: 2,
   scansLimit: 3,
   joinedDate: 'Aug 2, 2026',
@@ -51,6 +55,8 @@ export default function AccountSettings({
   const [showDelete, setShowDelete] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState('');
   const [exporting, setExporting] = useState(false);
+
+  const isAdmin = user.role === 'admin' || user.is_admin;
 
   const toggleNotif = (key: keyof typeof notifs) => {
     setNotifs((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -120,19 +126,28 @@ export default function AccountSettings({
         <div className="flex items-center justify-between mb-4 p-4 bg-[hsl(220,13%,11%)] border border-[hsl(220,10%,18%)] rounded-xl">
           <div>
             <p className="text-xs text-[hsl(40,8%,50%)] font-[family-name:var(--font-inter)]">Current plan</p>
-            <p className="text-sm sm:text-base font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,92%)] mt-0.5">
-              {user.plan === 'pro' || user.plan === 'founder_pro'
-                ? 'Founder Pro (Unlimited)'
-                : user.plan === 'sprint' || user.plan === 'sprint_pass'
-                ? '7-Day Sprint Pass'
-                : 'Free Explorer Tier'}
-            </p>
+            <div className="flex items-center gap-2 mt-0.5">
+              <p className="text-sm sm:text-base font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,92%)]">
+                {isAdmin
+                  ? 'Founder Pro (Admin Full Access)'
+                  : user.plan === 'pro' || user.plan === 'founder_pro'
+                  ? 'Founder Pro (Unlimited)'
+                  : user.plan === 'sprint' || user.plan === 'sprint_pass'
+                  ? '7-Day Sprint Pass'
+                  : 'Free Explorer Tier'}
+              </p>
+              {isAdmin && (
+                <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 font-bold border border-emerald-500/30">
+                  ⚡ Testing Suite Active
+                </span>
+              )}
+            </div>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-[11px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,45%)] hidden sm:inline">
               Joined {user.joinedDate}
             </span>
-            {user.plan === 'free' && (
+            {!isAdmin && user.plan === 'free' && (
               <Link
                 href="/pricing"
                 className="text-xs font-bold font-[family-name:var(--font-space-grotesk)] px-3.5 py-1.5 rounded-lg bg-[hsl(42,95%,55%)] text-[hsl(220,15%,8%)] hover:bg-[hsl(42,95%,50%)] transition-all shadow-sm"

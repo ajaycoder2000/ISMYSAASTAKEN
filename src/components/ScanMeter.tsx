@@ -1,7 +1,8 @@
 "use client";
 
 interface ScanMeterProps {
-  plan?: "free" | "pro" | "sprint";
+  plan?: string;
+  role?: string;
   scansUsed?: number;
   scansLimit?: number;
   onClick?: () => void;
@@ -9,18 +10,35 @@ interface ScanMeterProps {
 
 export default function ScanMeter({
   plan = "free",
+  role = "user",
   scansUsed = 1,
   scansLimit = 3,
   onClick,
 }: ScanMeterProps) {
-  // Pro badge
-  if (plan === "pro") {
+  const isAdmin = role === "admin" || plan === "admin";
+  const isFounderPro = isAdmin || plan === "founder_pro" || plan === "pro";
+  const isSprintPass = plan === "sprint_pass" || plan === "sprint";
+
+  // Admin / Founder Pro unlimited badge
+  if (isFounderPro) {
     return (
       <div
-        onClick={onClick}
-        className="flex items-center gap-1.5 px-3 py-1.5 border border-[var(--amber-mid,#6b5a2a)] rounded-lg bg-[var(--amber-dim,#3d2c0c)] text-[var(--amber)] text-[10.5px] font-extrabold tracking-[0.5px] cursor-pointer shadow-sm"
+        className="flex items-center gap-1.5 px-3 py-1.5 border border-emerald-500/30 rounded-lg bg-emerald-500/10 text-emerald-400 text-[10.5px] font-extrabold font-[family-name:var(--font-mono)] tracking-[0.5px] shadow-sm select-none"
+        title={isAdmin ? "Admin Testing Mode: Full Founder Pro Unlimited Access" : "Founder Pro: Unlimited Access Active"}
       >
-        <span>⚡</span> PRO UNLIMITED
+        <span>⚡</span> {isAdmin ? "ADMIN • FOUNDER PRO" : "FOUNDER PRO UNLIMITED"}
+      </div>
+    );
+  }
+
+  // Sprint pass unlimited badge
+  if (isSprintPass) {
+    return (
+      <div
+        className="flex items-center gap-1.5 px-3 py-1.5 border border-amber-500/30 rounded-lg bg-amber-500/10 text-amber-400 text-[10.5px] font-extrabold font-[family-name:var(--font-mono)] tracking-[0.5px] shadow-sm select-none"
+        title="Sprint Pass Active"
+      >
+        <span>🏃</span> SPRINT PASS UNLIMITED
       </div>
     );
   }

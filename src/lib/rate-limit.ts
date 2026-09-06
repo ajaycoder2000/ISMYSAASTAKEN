@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import { getSession } from './auth';
+import { getSession, isAdminEmail } from './auth';
 import dbConnect from './mongodb';
 import User from '@/models/User';
 import { getSiteConfig } from '@/models/SiteConfig';
@@ -21,6 +21,11 @@ export async function checkRateLimit(): Promise<RateLimitResult> {
   
   // Logged-in user
   if (session?.userId) {
+    // 0. ADMIN BYPASS: Admins have full access to the highest plan (Founder Pro) for testing
+    if (session.role === 'admin' || (session as any).is_admin || isAdminEmail(session.email)) {
+      return { allowed: true, isAnonymous: false, userId: session.userId, remaining: Infinity };
+    }
+
     let userPlan = session.plan;
     let userSuspended = false;
     let scansUsed = 0;

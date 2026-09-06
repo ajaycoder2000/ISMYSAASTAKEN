@@ -11,7 +11,9 @@ import TelemetryGauge from '@/components/TelemetryGauge';
 interface UserData {
   id: string;
   email: string;
-  plan: 'free' | 'pro' | 'sprint';
+  plan: 'free' | 'pro' | 'sprint' | 'sprint_pass' | 'founder_pro' | string;
+  role?: string;
+  is_admin?: boolean;
   scansUsedThisMonth: number;
   scansRemaining: number;
   scansResetDate: string;
@@ -94,11 +96,13 @@ export default function DashboardPage() {
                 {user.email}
               </span>
               <span className={`text-xs font-[family-name:var(--font-mono)] uppercase tracking-widest px-2.5 py-0.5 rounded-full font-bold ${
-                user.plan === 'pro'
+                user.role === 'admin' || user.is_admin
+                  ? 'text-emerald-400 bg-emerald-500/15 border border-emerald-500/30'
+                  : user.plan === 'pro' || user.plan === 'founder_pro'
                   ? 'text-[hsl(42,95%,55%)] bg-[hsl(42,95%,55%,0.15)] border border-[hsl(42,95%,55%,0.3)]'
                   : 'text-[hsl(40,8%,55%)] bg-[hsl(220,10%,18%)] border border-[hsl(220,10%,24%)]'
               }`}>
-                {user.plan}
+                {user.role === 'admin' || user.is_admin ? 'FOUNDER PRO (ADMIN)' : user.plan}
               </span>
             </div>
           </div>
@@ -113,7 +117,9 @@ export default function DashboardPage() {
 
         {/* High-Tech Telemetry Usage Battery Gauge */}
         <TelemetryGauge
-          plan={user.plan === 'pro' ? 'pro' : 'free'}
+          plan={user.role === 'admin' || user.is_admin ? 'founder_pro' : user.plan}
+          role={user.role}
+          is_admin={user.is_admin}
           scansUsed={user.scansUsedThisMonth}
           scansLimit={3}
           onUpgrade={() => router.push('/pricing')}

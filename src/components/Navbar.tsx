@@ -14,7 +14,12 @@ import ScanMeter from './ScanMeter';
 import UpgradeModal from './UpgradeModal';
 
 export default function Navbar() {
-  const [userData, setUserData] = useState<{ plan: 'free' | 'pro'; role?: 'user' | 'admin'; scansUsedThisMonth: number } | null>(null);
+  const [userData, setUserData] = useState<{
+    plan: string;
+    role?: 'user' | 'admin' | string;
+    is_admin?: boolean;
+    scansUsedThisMonth: number;
+  } | null>(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -90,10 +95,15 @@ export default function Navbar() {
             {/* Signed In Scan Meter */}
             <Show when="signed-in">
               <ScanMeter
-                plan={userData?.plan || 'free'}
+                plan={userData?.role === 'admin' || userData?.is_admin ? 'founder_pro' : (userData?.plan || 'free')}
+                role={userData?.role}
                 scansUsed={userData?.scansUsedThisMonth || 0}
                 scansLimit={3}
-                onClick={() => setShowUpgradeModal(true)}
+                onClick={() => {
+                  if (userData?.role !== 'admin' && !userData?.is_admin) {
+                    setShowUpgradeModal(true);
+                  }
+                }}
               />
             </Show>
 
@@ -246,7 +256,7 @@ export default function Navbar() {
 
       {/* Upgrade Modal Triggered from Meter */}
       <UpgradeModal
-        open={showUpgradeModal}
+        open={showUpgradeModal && userData?.role !== 'admin' && !userData?.is_admin}
         scansUsed={userData?.scansUsedThisMonth || 3}
         scansLimit={3}
         onDismiss={() => setShowUpgradeModal(false)}

@@ -62,12 +62,13 @@ export async function getSession(): Promise<SessionPayload | null> {
       const email = user?.emailAddresses?.[0]?.emailAddress || `${userId}@user.clerk`;
       
       const synced = await SupabaseDB.syncUser(userId, email);
-      const isAuthorizedAdmin = isAdminEmail(email) || synced.role === 'admin';
+      const isAuthorizedAdmin = isAdminEmail(email) || synced.role === 'admin' || (synced as any).is_admin;
+      const effectivePlan: PlanType = isAuthorizedAdmin ? 'founder_pro' : synced.plan;
 
       return {
         userId,
         email: synced.email,
-        plan: synced.plan,
+        plan: effectivePlan,
         role: isAuthorizedAdmin ? 'admin' : 'user',
       };
     }
@@ -83,7 +84,11 @@ export async function getSession(): Promise<SessionPayload | null> {
 
     const decoded = jwt.verify(token, getSecret()) as SessionPayload;
     if (decoded?.email) {
-      decoded.role = isAdminEmail(decoded.email) || decoded.role === 'admin' ? 'admin' : 'user';
+      const isAuthorizedAdmin = isAdminEmail(decoded.email) || decoded.role === 'admin';
+      decoded.role = isAuthorizedAdmin ? 'admin' : 'user';
+      if (isAuthorizedAdmin) {
+        decoded.plan = 'founder_pro';
+      }
     }
     return decoded;
   } catch {

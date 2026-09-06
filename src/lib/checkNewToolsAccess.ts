@@ -1,5 +1,6 @@
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { DevStore } from '@/lib/dev-store';
+import { getSession, isAdminEmail } from '@/lib/auth';
 
 const FREE_SCAN_LIMIT = 1;
 
@@ -12,12 +13,19 @@ export interface AccessCheckResult {
  * Checks whether an account can access SaaS Keyword Radar or Is It Taken.
  *
  * Rules:
- * 1. Sign-in is required (anonymous attempts return SIGN_IN_REQUIRED).
- * 2. Free accounts get exactly 1 combined free scan shared across both tools.
- * 3. On 2nd attempt, returns PAYWALL.
- * 4. Sprint Pass ('sprint_pass') and Founder Pro ('founder_pro' / 'pro') get unlimited use.
+ * 1. Admins have unlimited full access to all features for testing (never paywalled).
+ * 2. Sign-in is required (anonymous attempts return SIGN_IN_REQUIRED).
+ * 3. Free accounts get exactly 1 combined free scan shared across both tools.
+ * 4. On 2nd attempt, returns PAYWALL.
+ * 5. Sprint Pass ('sprint_pass') and Founder Pro ('founder_pro' / 'pro') get unlimited use.
  */
 export async function checkNewToolsAccess(userId: string | null): Promise<AccessCheckResult> {
+  // 0. Check authenticated session for Admin privileges
+  const session = await getSession();
+  if (session?.role === 'admin' || (session as any)?.is_admin || isAdminEmail(session?.email)) {
+    return { allowed: true };
+  }
+
   if (!userId || userId === 'anonymous') {
     return { allowed: false, reason: 'SIGN_IN_REQUIRED' };
   }
@@ -29,11 +37,14 @@ export async function checkNewToolsAccess(userId: string | null): Promise<Access
       // 1. Check profiles table first (Supabase Auth default)
       const { data: profile, error: profileErr } = await supabase
         .from('profiles')
-        .select('plan, new_tools_scans_used, plan_expires_at, bonus_scans')
+        .select('plan, new_tools_scans_used, plan_expires_at, bonus_scans, is_admin, role, email')
         .eq('id', userId)
         .maybeSingle();
 
       if (profile && !profileErr) {
+        if (profile.is_admin || profile.role === 'admin' || isAdminEmail(profile.email)) {
+          return { allowed: true };
+        }
         const isExpired = profile.plan_expires_at && new Date() > new Date(profile.plan_expires_at);
         if (!isExpired && (profile.plan === 'sprint_pass' || profile.plan === 'founder_pro' || profile.plan === 'pro')) {
           return { allowed: true };
@@ -49,11 +60,14 @@ export async function checkNewToolsAccess(userId: string | null): Promise<Access
       // 2. Check users table (IsMySaaSTaken synced users table)
       const { data: userRow, error: userErr } = await supabase
         .from('users')
-        .select('id, clerk_id, plan, new_tools_scans_used, plan_expires_at, bonus_scans')
+        .select('id, clerk_id, plan, new_tools_scans_used, plan_expires_at, bonus_scans, is_admin, role, email')
         .or(`id.eq.${userId},clerk_id.eq.${userId}`)
         .maybeSingle();
 
       if (userRow && !userErr) {
+        if (userRow.is_admin || userRow.role === 'admin' || isAdminEmail(userRow.email)) {
+          return { allowed: true };
+        }
         const isExpired = userRow.plan_expires_at && new Date() > new Date(userRow.plan_expires_at);
         if (!isExpired && (userRow.plan === 'sprint_pass' || userRow.plan === 'founder_pro' || userRow.plan === 'pro')) {
           return { allowed: true };
@@ -71,6 +85,11 @@ export async function checkNewToolsAccess(userId: string | null): Promise<Access
   }
 
   // 3. Fallback to DevStore (local development & offline mock testing)
+  const devUser = DevStore.findUserById(userId) || DevStore.findUserByEmail(userId);
+  if (devUser && (devUser.is_admin || devUser.role === 'admin' || isAdminEmail(devUser.email))) {
+    return { allowed: true };
+  }
+
   const devData = DevStore.getNewToolsUsage(userId);
   if (devData) {
     const isDevExpired = devData.plan_expires_at && new Date() > new Date(devData.plan_expires_at);
