@@ -3,19 +3,30 @@ import dbConnect from '@/lib/mongodb';
 import Scan from '@/models/Scan';
 import { performScan } from '@/lib/llm';
 import { validateIdeaText, generateSlug } from '@/lib/utils';
-import { checkRateLimit, recordScanUsage } from '@/lib/rate-limit';
+import { getSession } from '@/lib/auth';
+import { checkEntitlement, incrementFeatureUsage } from '@/lib/checkEntitlement';
 import { DevStore } from '@/lib/dev-store';
 import { SupabaseDB } from '@/lib/supabase/db';
 import { recordScanEvent } from '@/lib/scan-events';
 
 export async function POST(req: NextRequest) {
   try {
-    // Check rate limit
-    const rateLimit = await checkRateLimit();
-    if (!rateLimit.allowed) {
+    // 1. User session & Centralized Entitlement Check
+    const session = await getSession();
+    const userId = session?.userId || null;
+
+    const access = await checkEntitlement(userId, 'ideaScans');
+    if (!access.allowed) {
       return NextResponse.json(
-        { success: false, error: rateLimit.reason, rateLimited: true },
-        { status: 429 }
+        {
+          success: false,
+          error:
+            access.reason === 'SIGN_IN_REQUIRED'
+              ? 'Sign in to scan your SaaS idea.'
+              : 'Scan limit reached. Upgrade to continue.',
+          paywall: access.reason,
+        },
+        { status: access.reason === 'SIGN_IN_REQUIRED' ? 401 : 402 }
       );
     }
 
@@ -37,9 +48,9 @@ export async function POST(req: NextRequest) {
     const shareSlug = fallbackSlug;
     const createdAt = new Date();
 
-    // 1. Save to Supabase (and fallback to DevStore / Mongo)
+    // 2. Save to Supabase (and fallback to DevStore / Mongo)
     await SupabaseDB.saveScan({
-      userId: rateLimit.userId || null,
+      userId: userId || null,
       ideaText: validation.sanitized!,
       competitors: result.competitors,
       saturationScore: result.saturationScore,
@@ -48,10 +59,12 @@ export async function POST(req: NextRequest) {
       shareSlug: fallbackSlug,
     });
 
-    // Record usage
+    // 3. Atomically record usage
     try {
-      await recordScanUsage(rateLimit.userId);
-      await recordScanEvent('idea_scanner', rateLimit.userId);
+      if (userId) {
+        await incrementFeatureUsage(userId, 'ideaScans');
+        await recordScanEvent('idea_scanner', userId);
+      }
     } catch (usageErr) {
       console.warn('Usage recording error:', (usageErr as Error).message);
     }

@@ -1,5 +1,5 @@
 /**
- * Badge Qualification and Embed Snippet Utilities
+ * Badge Qualification and Embed Snippet Utilities (Client-safe)
  */
 
 export interface BadgeEligibleScan {

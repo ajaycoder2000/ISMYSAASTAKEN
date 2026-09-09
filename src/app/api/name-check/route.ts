@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { SupabaseDB } from '@/lib/supabase/db';
 import { getSession } from '@/lib/auth';
-import { checkNewToolsAccess, incrementNewToolsUsage } from '@/lib/checkNewToolsAccess';
+import { checkEntitlement, incrementFeatureUsage } from '@/lib/checkEntitlement';
 import { recordScanEvent } from '@/lib/scan-events';
 
 export const dynamic = 'force-dynamic';
@@ -52,11 +52,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // --- 1. User session & Freemium Gating Check ---
+    // --- 1. User session & Centralized Entitlement Check ---
     const session = await getSession();
     const userId = session?.userId || null;
 
-    const access = await checkNewToolsAccess(userId);
+    const access = await checkEntitlement(userId, 'newTools');
     if (!access.allowed) {
       return NextResponse.json(
         {
@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
 
     if (isFresh && cached.results) {
       if (userId) {
-        await incrementNewToolsUsage(userId);
+        await incrementFeatureUsage(userId, 'newTools');
       }
       await recordScanEvent('is_it_taken', userId);
       return NextResponse.json({
@@ -105,7 +105,7 @@ export async function POST(req: NextRequest) {
     // --- 4. Save to Cache & Record Usage ---
     await SupabaseDB.saveNameCheckCache(cleanName, results);
     if (userId) {
-      await incrementNewToolsUsage(userId);
+      await incrementFeatureUsage(userId, 'newTools');
     }
     await recordScanEvent('is_it_taken', userId);
 

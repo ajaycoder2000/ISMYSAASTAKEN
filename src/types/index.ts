@@ -1,5 +1,5 @@
 export type SaturationLevel = 'low' | 'medium' | 'high';
-export type PlanType = 'free' | 'pro' | 'sprint_pass' | 'founder_pro';
+export type PlanType = 'free' | 'pro' | 'sprint_pass' | 'founder_pro' | 'studio';
 export type UserRole = 'user' | 'admin';
 export type SponsorTier = 'starter' | 'featured';
 

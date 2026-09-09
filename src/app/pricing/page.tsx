@@ -133,10 +133,10 @@ export default function PricingPage() {
 
             <ul className="space-y-3 mb-8 text-xs text-[hsl(40,8%,70%)] font-[family-name:var(--font-inter)]">
               <li className="flex items-start gap-2">
-                <span className="text-[hsl(145,60%,45%)]">✓</span> 3 free scans every month
+                <span className="text-[hsl(145,60%,45%)]">✓</span> 1 free scan (lifetime)
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-[hsl(42,95%,55%)]">✓</span> 1 combined free scan <span className="text-[hsl(40,8%,50%)]">(shared)</span>
+                <span className="text-[hsl(42,95%,55%)]">✓</span> 1 combined free scan <span className="text-[hsl(40,8%,50%)]">(shared Keyword Radar &amp; Is It Taken)</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[hsl(145,60%,45%)]">✓</span> Live Google Search grounding
@@ -147,8 +147,8 @@ export default function PricingPage() {
               <li className="flex items-start gap-2">
                 <span className="text-[hsl(145,60%,45%)]">✓</span> Roast Mode — blunt AI feedback on your idea <span className="text-[hsl(40,8%,50%)]">(1 scan only)</span>
               </li>
-              <li className="flex items-start gap-2">
-                <span className="text-[hsl(145,60%,45%)]">✓</span> Validated badge for your landing page <span className="text-[hsl(40,8%,50%)]">(1 scan only)</span>
+              <li className="flex items-start gap-2 text-[hsl(40,8%,45%)]">
+                <span className="text-[var(--red)] font-semibold">✕</span> No Validated Embeddable Badge <span className="text-[hsl(40,8%,50%)]">(Paid tiers only)</span>
               </li>
               <li className="flex items-start gap-2 text-[hsl(40,8%,45%)]">
                 <span className="text-[var(--red)] font-semibold">✕</span> No Pivot Moats or Pitch Deck Export

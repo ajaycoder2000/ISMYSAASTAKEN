@@ -14,6 +14,7 @@ interface DevUser {
   adminNotes?: string;
   stripeCustomerId?: string;
   scansUsedThisMonth: number;
+  idea_scans_used?: number;
   new_tools_scans_used?: number;
   bonus_scans?: number;
   scansResetDate: Date;
@@ -300,6 +301,7 @@ export const DevStore = {
       plan: 'free',
       suspended: false,
       scansUsedThisMonth: 0,
+      idea_scans_used: 0,
       new_tools_scans_used: 0,
       scansResetDate: nextReset,
       createdAt: new Date(),
@@ -316,6 +318,34 @@ export const DevStore = {
     Object.assign(user, updates);
     saveState();
     return user;
+  },
+
+  getFeatureUsage(
+    userId: string,
+    feature: 'ideaScans' | 'newTools'
+  ): { plan: PlanType; used: number; plan_expires_at?: Date | string | null; bonus_scans?: number } | null {
+    const user = inMemoryState.users.find((u) => u._id === userId || u.email.toLowerCase() === userId.toLowerCase());
+    if (!user) return null;
+    const used = feature === 'ideaScans' ? (user.idea_scans_used ?? 0) : (user.new_tools_scans_used ?? 0);
+    return {
+      plan: user.plan,
+      used,
+      plan_expires_at: user.plan_expires_at,
+      bonus_scans: user.bonus_scans || 0,
+    };
+  },
+
+  incrementFeatureUsage(userId: string, feature: 'ideaScans' | 'newTools'): void {
+    const user = inMemoryState.users.find((u) => u._id === userId || u.email.toLowerCase() === userId.toLowerCase());
+    if (user) {
+      if (feature === 'ideaScans') {
+        user.idea_scans_used = (user.idea_scans_used ?? 0) + 1;
+        user.scansUsedThisMonth = (user.scansUsedThisMonth || 0) + 1;
+      } else {
+        user.new_tools_scans_used = (user.new_tools_scans_used ?? 0) + 1;
+      }
+      saveState();
+    }
   },
 
   getNewToolsUsage(userId: string): { plan: PlanType; used: number; plan_expires_at?: Date | string | null; bonus_scans?: number } | null {

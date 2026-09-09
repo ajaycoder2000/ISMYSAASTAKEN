@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { SupabaseDB } from '@/lib/supabase/db';
 import { DevStore } from '@/lib/dev-store';
 import { isBadgeEligible } from '@/lib/badge';
+import { isScanOwnerBadgeEntitled } from '@/lib/checkEntitlement';
 import SignalBars from '@/components/SignalBars';
 
 interface Props {
@@ -18,7 +19,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       scan = DevStore.findScanByIdOrSlug(scanId) as any;
     }
 
-    if (!scan || !isBadgeEligible(scan)) {
+    const contentEligible = Boolean(scan && isBadgeEligible(scan));
+    const planEligible = scan && contentEligible
+      ? await isScanOwnerBadgeEntitled(scan.userId || (scan as any).user_id)
+      : false;
+
+    if (!scan || !contentEligible || !planEligible) {
       return { title: 'Market Validation Certificate — Is My SaaS Taken?' };
     }
 
@@ -57,7 +63,11 @@ export default async function BadgeVerificationPage({ params }: Props) {
     // ignore
   }
 
-  const eligible = scan && isBadgeEligible(scan);
+  const contentEligible = Boolean(scan && isBadgeEligible(scan));
+  const planEligible = scan && contentEligible
+    ? await isScanOwnerBadgeEntitled(scan.userId || (scan as any).user_id)
+    : false;
+  const eligible = Boolean(scan && contentEligible && planEligible);
 
   if (!scan || !eligible) {
     return (

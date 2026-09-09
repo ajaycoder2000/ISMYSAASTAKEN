@@ -9,6 +9,7 @@ interface ScanFormProps {
   onResult?: (data: IScanDocument) => void;
   onError: (message: string) => void;
   onRateLimited: (message: string) => void;
+  onPaywall?: (mode: 'PAYWALL' | 'SIGN_IN_REQUIRED') => void;
   disabled?: boolean;
 }
 
@@ -18,6 +19,7 @@ export default function ScanForm({
   onResult,
   onError,
   onRateLimited,
+  onPaywall,
   disabled,
 }: ScanFormProps) {
   const [ideaText, setIdeaText] = useState('');
@@ -49,12 +51,23 @@ export default function ScanForm({
 
       const data = await res.json();
 
-      if (res.status === 429) {
-        onRateLimited(data.error || 'Rate limit reached.');
-        return;
-      }
-
       if (!res.ok || !data.success) {
+        if (data.paywall === 'SIGN_IN_REQUIRED' || res.status === 401) {
+          if (onPaywall) {
+            onPaywall('SIGN_IN_REQUIRED');
+            return;
+          }
+        }
+        if (data.paywall === 'PAYWALL' || res.status === 402) {
+          if (onPaywall) {
+            onPaywall('PAYWALL');
+            return;
+          }
+        }
+        if (res.status === 429) {
+          onRateLimited(data.error || 'Rate limit reached.');
+          return;
+        }
         onError(data.error || 'Something went wrong.');
         return;
       }
@@ -116,7 +129,7 @@ export default function ScanForm({
           <span><strong>100% Confidential:</strong> Ideas are analyzed live in real-time and never used for public AI training.</span>
         </div>
         <div className="flex items-center gap-2 font-[family-name:var(--font-mono)] text-[hsl(40,8%,40%)]">
-          <span>✓ 3 Free Monthly Scans</span>
+          <span>✓ 1 Free Lifetime Scan</span>
           <span>•</span>
           <span>✓ Zero Credit Card Needed</span>
         </div>

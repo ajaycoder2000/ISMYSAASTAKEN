@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { ImageResponse } from 'next/og';
 import { SupabaseDB } from '@/lib/supabase/db';
 import { isBadgeEligible } from '@/lib/badge';
+import { isScanOwnerBadgeEntitled } from '@/lib/checkEntitlement';
 
 export const runtime = 'nodejs';
 export const contentType = 'image/png';
@@ -18,7 +19,8 @@ export async function GET(
   try {
     const scan = await SupabaseDB.getScanByIdOrSlug(scanId);
     if (scan && isBadgeEligible(scan)) {
-      eligible = true;
+      const planAllowsBadge = await isScanOwnerBadgeEntitled(scan.userId || (scan as any).user_id);
+      eligible = planAllowsBadge;
     }
   } catch (err) {
     console.warn('Badge lookup failed:', err);

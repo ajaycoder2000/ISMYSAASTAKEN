@@ -18,6 +18,7 @@ import MarketPlaybook from '@/components/MarketPlaybook';
 import WeeklyGapSignup from '@/components/WeeklyGapSignup';
 import HeroBackground from '@/components/HeroBackground';
 import TypewriterHeadline from '@/components/TypewriterHeadline';
+import PaywallModal from '@/components/PaywallModal';
 import { IScanDocument } from '@/types';
 
 export default function HomePage() {
@@ -28,6 +29,7 @@ export default function HomePage() {
   const pendingResultRef = useRef<IScanDocument | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [rateLimitMsg, setRateLimitMsg] = useState<string | null>(null);
+  const [paywallMode, setPaywallMode] = useState<'PAYWALL' | 'SIGN_IN_REQUIRED' | null>(null);
 
   const handleScanStart = () => {
     setScanning(true);
@@ -102,6 +104,7 @@ export default function HomePage() {
               onScanSuccess={handleScanSuccess}
               onError={handleError}
               onRateLimited={handleRateLimited}
+              onPaywall={(mode) => setPaywallMode(mode)}
               disabled={scanning}
             />
 
@@ -209,7 +212,7 @@ export default function HomePage() {
             Ready to validate your next startup idea?
           </h3>
           <p className="text-xs sm:text-sm text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] max-w-lg mx-auto mb-6 relative z-10">
-            Start with 3 free scans every month, or explore our $9 Sprint Pass and unlimited Founder Pro plans.
+            Start with 1 free scan, or explore our $9 Sprint Pass and unlimited Founder Pro plans.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 relative z-10">
             <Link
@@ -226,6 +229,14 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
+
+        {/* Freemium Paywall / Auth Gate Modal */}
+        <PaywallModal
+          isOpen={!!paywallMode}
+          mode={paywallMode}
+          onClose={() => setPaywallMode(null)}
+          toolName="SaaS Idea Scanner"
+        />
 
         {/* Bottom spacer */}
         <div className="pb-16" />

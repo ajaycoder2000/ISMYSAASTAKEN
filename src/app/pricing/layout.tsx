@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Pricing & Plans — Is My SaaS Taken?',
   description:
-    'Flexible pricing for founders and indie hackers. Start with 3 free scans every month, or upgrade to Sprint Pass and Founder Pro for unlimited validation.',
+    'Flexible pricing for founders and indie hackers. Start with 1 free scan, or upgrade to Sprint Pass and Founder Pro for unlimited validation.',
   alternates: {
     canonical: '/pricing',
   },

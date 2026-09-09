@@ -115,7 +115,7 @@ export default function PaywallModal({
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-[hsl(145,60%,55%)] font-bold">✓</span>
-                <span>3 free AI idea scans every calendar month</span>
+                <span>1 free AI idea scan (lifetime)</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-[hsl(145,60%,55%)] font-bold">✓</span>
