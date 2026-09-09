@@ -104,6 +104,23 @@ export default function HomePage() {
               onRateLimited={handleRateLimited}
               disabled={scanning}
             />
+
+            {!result && (
+              <div className="mt-3.5 flex items-center justify-center">
+                <Link
+                  href="/roast"
+                  className="group inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-orange-950/40 via-red-950/30 to-amber-950/40 border border-orange-500/25 hover:border-orange-500/60 transition-all text-xs font-[family-name:var(--font-inter)] text-orange-200/90 shadow-sm hover:shadow-orange-950/30"
+                >
+                  <span className="text-sm group-hover:scale-110 transition-transform">🔥</span>
+                  <span>
+                    Want brutally honest feedback?{' '}
+                    <span className="font-semibold text-orange-400 group-hover:underline underline-offset-4 font-[family-name:var(--font-mono)]">
+                      Try Idea Roast Mode &rarr;
+                    </span>
+                  </span>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
 

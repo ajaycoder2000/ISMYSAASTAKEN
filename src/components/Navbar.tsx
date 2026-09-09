@@ -86,6 +86,15 @@ export default function Navbar() {
               </span>
             </Link>
             <Link
+              href="/roast"
+              className="text-xs sm:text-sm text-orange-400/90 hover:text-orange-300 transition-colors font-[family-name:var(--font-inter)] flex items-center gap-1 font-medium"
+            >
+              <span>🔥 Roast</span>
+              <span className="text-[9px] font-[family-name:var(--font-mono)] uppercase px-1 py-0.5 bg-orange-950/60 text-orange-400 rounded border border-orange-800/60 font-bold">
+                HOT
+              </span>
+            </Link>
+            <Link
               href="/pricing"
               className="text-xs sm:text-sm text-[hsl(40,8%,55%)] hover:text-[hsl(40,20%,92%)] transition-colors font-[family-name:var(--font-inter)]"
             >
@@ -207,6 +216,16 @@ export default function Navbar() {
                 <span>Is It Taken?</span>
                 <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 bg-[hsl(145,60%,45%,0.15)] text-[hsl(145,60%,55%)] rounded font-bold border border-[hsl(145,60%,45%,0.3)]">
                   NEW
+                </span>
+              </Link>
+              <Link
+                href="/roast"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2 rounded-lg text-orange-400 hover:bg-[hsl(220,12%,14%)] flex items-center justify-between font-medium"
+              >
+                <span>🔥 Roast Mode</span>
+                <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 bg-orange-950/60 text-orange-400 rounded font-bold border border-orange-800/60">
+                  HOT
                 </span>
               </Link>
               <Link
