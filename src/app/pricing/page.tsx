@@ -145,10 +145,10 @@ export default function PricingPage() {
                 <span className="text-[hsl(145,60%,45%)]">✓</span> Market saturation signal bars
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-[hsl(145,60%,45%)]">✓</span> Roast Mode — blunt AI feedback on your idea
+                <span className="text-[hsl(145,60%,45%)]">✓</span> Roast Mode — blunt AI feedback on your idea <span className="text-[hsl(40,8%,50%)]">(1 scan only)</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-[hsl(145,60%,45%)]">✓</span> Validated badge for your landing page (on qualifying scans)
+                <span className="text-[hsl(145,60%,45%)]">✓</span> Validated badge for your landing page <span className="text-[hsl(40,8%,50%)]">(1 scan only)</span>
               </li>
               <li className="flex items-start gap-2 text-[hsl(40,8%,45%)]">
                 <span className="text-[var(--red)] font-semibold">✕</span> No Pivot Moats or Pitch Deck Export
@@ -468,7 +468,7 @@ export default function PricingPage() {
                     Hot
                   </span>
                 </td>
-                <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ Included</td>
+                <td className="py-3.5 px-4 text-[hsl(42,95%,55%)] font-mono font-medium">1 scan only</td>
                 <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ Included</td>
                 <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ Included</td>
               </tr>
@@ -479,7 +479,7 @@ export default function PricingPage() {
                     Seal
                   </span>
                 </td>
-                <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ (qualifying scans)</td>
+                <td className="py-3.5 px-4 text-[hsl(42,95%,55%)] font-mono font-medium">1 scan only <span className="text-[hsl(40,8%,50%)]">(qualifying)</span></td>
                 <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ (qualifying scans)</td>
                 <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ (qualifying scans)</td>
               </tr>
