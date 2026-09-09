@@ -38,6 +38,10 @@ interface DevScan {
   gapAnalysis: string;
   shareSlug: string;
   featured: boolean;
+  roast?: {
+    lines: string[];
+    takeaway: string;
+  };
   createdAt: Date;
 }
 
@@ -398,6 +402,20 @@ export const DevStore = {
 
   findScanBySlug(slug: string): DevScan | null {
     return inMemoryState.scans.find((s) => s.shareSlug === slug) || null;
+  },
+
+  findScanByIdOrSlug(idOrSlug: string): DevScan | null {
+    return (
+      inMemoryState.scans.find((s) => s.shareSlug === idOrSlug || s._id === idOrSlug) || null
+    );
+  },
+
+  saveRoast(idOrSlug: string, roast: { lines: string[]; takeaway: string }): void {
+    const scan = inMemoryState.scans.find((s) => s.shareSlug === idOrSlug || s._id === idOrSlug);
+    if (scan) {
+      scan.roast = roast;
+      saveState();
+    }
   },
 
   getAllScans(): DevScan[] {

@@ -313,14 +313,266 @@ Return ONLY a valid JSON array of strings, nothing else. Example: ["keyword 1", 
   return [
     `best ${seed} software`,
     `how to build ${seed}`,
-    `${seed} alternatives`,
+    `best ${seed} alternatives`,
     `open source ${seed}`,
-    `${seed} for small business`,
     `is ${seed} worth building`,
+    `${seed} for small business`,
     `${seed} api pricing`,
     `${seed} tools for founders`,
     `why do ${seed} tools fail`,
     `${seed} vs competitors`,
   ];
+}
+
+/**
+ * ============================================================================
+ * IDEA ROAST ENGINE & INPUT MODERATION
+ * ============================================================================
+ */
+
+export interface RoastResult {
+  lines: string[];
+  takeaway: string;
+}
+
+/**
+ * Lightweight input moderation check for Roast Mode.
+ * Ensures the submitted input is a legitimate software/product idea and not
+ * hateful, harassing, sexual, violent, or abusive text.
+ */
+export async function checkIdeaAppropriate(
+  ideaText: string
+): Promise<{ appropriate: boolean; reason?: string }> {
+  const clean = (ideaText || '').trim();
+  if (clean.length < 3) {
+    return { appropriate: false, reason: 'Concept text is too short' };
+  }
+
+  // Fast heuristic check for prohibited toxic/harassing/violent patterns
+  const toxicPatterns = [
+    /\b(nigg|fagg|kike|chink|spic|cunt|retard)\b/i,
+    /\b(kill\s+(yourself|them|all)|commit\s+suicide|shoot\s+up)\b/i,
+    /\b(child\s*porn|cp\b|rape|incest|beheading)\b/i,
+    /\b(fuck\s+you|hate\s+(jews|blacks|muslims|gays))\b/i,
+  ];
+
+  for (const pattern of toxicPatterns) {
+    if (pattern.test(clean)) {
+      return { appropriate: false, reason: 'Prohibited abusive or harassing content' };
+    }
+  }
+
+  // Fast Gemini classification for non-idea spam/junk or borderline toxicity
+  const apiKey = process.env.GEMINI_API_KEY || GEMINI_API_KEY;
+  if (!apiKey) {
+    return { appropriate: true };
+  }
+
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 6000);
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify({
+          contents: [
+            {
+              role: 'user',
+              parts: [
+                {
+                  text: `Evaluate this user submission for a SaaS platform: "${clean}"
+
+Determine if this is a good-faith software, digital product, or business idea.
+Return appropriate: false if it contains hateful harassment, slurs, sexually explicit content, violence, or pure non-idea gibberish.
+Return ONLY valid JSON: {"appropriate": boolean, "reason": string}`,
+                },
+              ],
+            },
+          ],
+          generationConfig: {
+            temperature: 0.1,
+            maxOutputTokens: 256,
+          },
+        }),
+      }
+    );
+
+    clearTimeout(timeoutId);
+
+    if (response.ok) {
+      const data = await response.json();
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (text) {
+        const cleaned = text.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '');
+        const parsed = JSON.parse(cleaned);
+        if (typeof parsed.appropriate === 'boolean') {
+          return { appropriate: parsed.appropriate, reason: parsed.reason };
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('Moderation LLM check error, defaulting to heuristic:', err);
+  }
+
+  return { appropriate: true };
+}
+
+/**
+ * Generate a blunt, witty comedy-roast critique of the SaaS idea grounded in crawl data.
+ * Adheres strictly to the guardrails: roasts the idea & market reality, NEVER the person.
+ */
+export async function generateRoast(scanData: {
+  ideaText: string;
+  competitors: any[];
+  saturationScore: string;
+  gapAnalysis: string;
+}): Promise<RoastResult> {
+  const apiKey = process.env.GEMINI_API_KEY || GEMINI_API_KEY;
+
+  const competitorsSummary = (scanData.competitors || [])
+    .slice(0, 6)
+    .map((c: any) => `${c.name} (${c.pricing || 'Paid'} - ${c.description || ''})`)
+    .join('; ') || 'Several active market alternatives';
+
+  const roastSystemPrompt = `You are the roast persona for IsMySaaSTaken, a tool that gives blunt, funny, no-BS feedback on SaaS ideas to underdog and first-time founders.
+
+Your job: roast the IDEA — its market saturation, its generic positioning, its timing, its lack of differentiation, its crowded competition — using sharp, witty, comedy-roast-style humor. Think "a sharp friend who respects you enough to be honest," not "an anonymous troll."
+
+STRICT RULES — NEVER VIOLATE THESE:
+1. Never insult, mock, or make any comment about the PERSON submitting the idea — their intelligence, worth, appearance, or any personal characteristic. You know nothing about them. Roast the idea, the market, the positioning. Never the human.
+2. Never use slurs, hate speech, or jokes that target race, gender, religion, disability, sexual orientation, nationality, or any protected characteristic — even glancingly, even as a "joke."
+3. Never make false or defamatory factual claims about real, named competitor companies. You can note a competitor is strong/dominant (that's a fact from the scan data) but do not fabricate negative claims about them or their products.
+4. Never be cruel for cruelty's sake — every burn should be grounded in a real signal from the scan data (e.g. "there are already 14 tools doing this" is fair game; a generic insult with no basis is not).
+5. End every roast with one genuinely useful, constructive observation — a real angle, gap, or pivot worth considering. The roast should leave someone fired up to improve the idea, not just deflated.
+6. If the submitted idea itself contains hateful, harassing, sexual, violent, or otherwise inappropriate content, do NOT attempt to roast it. Instead return a short, in-brand refusal.
+7. Keep language sharp but not obscene — brand voice is blunt and witty, not vulgar.
+
+Scan data for this idea:
+Idea text: "${scanData.ideaText}"
+Competitors found: ${competitorsSummary}
+Saturation level: ${scanData.saturationScore.toUpperCase()}
+Identified gap / opportunity: "${scanData.gapAnalysis}"
+
+Output format:
+Return ONLY a valid JSON object in this exact shape, with no markdown fences, no preamble, and no extra keys:
+{
+  "lines": [
+    "Punchy roast burn line 1",
+    "Punchy roast burn line 2",
+    "Punchy roast burn line 3",
+    "Punchy roast burn line 4"
+  ],
+  "takeaway": "The actual takeaway: A specific, constructive sentence detailing a viable angle or wedge."
+}`;
+
+  if (apiKey) {
+    const models = ['gemini-2.5-flash', 'gemini-1.5-flash'];
+    for (const model of models) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 14000);
+
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            signal: controller.signal,
+            body: JSON.stringify({
+              contents: [
+                {
+                  role: 'user',
+                  parts: [{ text: `Roast this SaaS idea based on the scan data:\n\n${scanData.ideaText}` }],
+                },
+              ],
+              systemInstruction: { parts: [{ text: roastSystemPrompt }] },
+              generationConfig: {
+                temperature: 0.7,
+                maxOutputTokens: 1024,
+              },
+            }),
+          }
+        );
+
+        clearTimeout(timeoutId);
+
+        if (response.ok) {
+          const data = await response.json();
+          const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (text) {
+            let cleaned = text.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '');
+            const firstBrace = cleaned.indexOf('{');
+            const lastBrace = cleaned.lastIndexOf('}');
+            if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+              cleaned = cleaned.substring(firstBrace, lastBrace + 1);
+            }
+            const parsed = JSON.parse(cleaned);
+            if (Array.isArray(parsed?.lines) && parsed.lines.length >= 2 && parsed?.takeaway) {
+              return {
+                lines: parsed.lines.map((l: any) => String(l).trim()).filter(Boolean),
+                takeaway: String(parsed.takeaway).trim(),
+              };
+            }
+          }
+        }
+      } catch (err) {
+        console.warn(`Gemini roast generation on ${model} failed:`, err);
+      }
+    }
+  }
+
+  // Fallback roast grounded in scan data
+  return generateFallbackRoast(scanData);
+}
+
+/**
+ * High-quality fallback roast generator grounded in actual scan metrics
+ */
+function generateFallbackRoast(scanData: {
+  ideaText: string;
+  competitors: any[];
+  saturationScore: string;
+  gapAnalysis: string;
+}): RoastResult {
+  const compCount = scanData.competitors?.length || 0;
+  const firstComp = scanData.competitors?.[0]?.name || 'established market giants';
+  const score = scanData.saturationScore?.toLowerCase() || 'medium';
+
+  if (score === 'high') {
+    return {
+      lines: [
+        `Building this in 2026 is like opening a lemonade stand in the middle of a hurricane.`,
+        `There are already ${compCount} venture-backed gorillas (like ${firstComp}) solving this, and half of them give away your entire feature set for free.`,
+        `The market here is so saturated that even your landing page will need a queue system just to explain why you exist.`,
+        `You aren't discovering an open ocean here; you're doing cannonballs into a kiddie pool already packed with ${compCount} other bootstrappers.`,
+      ],
+      takeaway: `The actual takeaway: Stop trying to build an all-in-one suite against ${firstComp}; instead, focus solely on ${scanData.gapAnalysis}`,
+    };
+  }
+
+  if (score === 'low') {
+    return {
+      lines: [
+        `Low saturation could mean you're a visionary ahead of the curve — or it means 15 other founders tried this, lost money, and quietly moved on.`,
+        `You don't have competitors yet because nobody has figured out how to convince anyone to pull out a credit card for this.`,
+        `Your biggest competitor isn't another software company; it's the fact that people currently solve this with a messy spreadsheet and literally do not care.`,
+      ],
+      takeaway: `The actual takeaway: The wedge here is real, but validate willingness-to-pay immediately before writing code: ${scanData.gapAnalysis}`,
+    };
+  }
+
+  return {
+    lines: [
+      `It's not completely dead on arrival, but you're stepping into a crowded room wearing yesterday's buzzwords.`,
+      `Competitors like ${firstComp} have a multi-year head start and actual distribution. Hope isn't a go-to-market strategy.`,
+      `If you pitch this as "the Uber of this space," even your early beta testers are going to hit "unsubscribe" before onboarding finishes.`,
+      `You're one generic landing page redesign away from looking identical to every Product Hunt launch from last Tuesday.`,
+    ],
+    takeaway: `The actual takeaway: Carve out a defensible moat by doubling down on: ${scanData.gapAnalysis}`,
+  };
 }
 

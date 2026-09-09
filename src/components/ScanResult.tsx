@@ -8,6 +8,7 @@ import ShareVerdictCard from './ShareVerdictCard';
 import BookmarkButton from './BookmarkButton';
 import LandscapeMap from './LandscapeMap';
 import CommunityPoll from './CommunityPoll';
+import RoastCard from './RoastCard';
 
 interface ScanResultProps {
   data: IScanDocument;
@@ -94,7 +95,20 @@ export default function ScanResult({ data }: ScanResultProps) {
         </div>
       </section>
 
-      {/* Section 5: Interactive Strategic Pivot Wedges */}
+      {/* Section 5: Idea Roast Mode (Opt-In Comedy Critique) */}
+      <section>
+        <RoastCard
+          ideaText={data.ideaText}
+          competitors={data.competitors}
+          saturationScore={data.saturationScore}
+          gapAnalysis={data.gapAnalysis}
+          scanId={data._id}
+          shareSlug={data.shareSlug}
+          initialRoast={data.roast}
+        />
+      </section>
+
+      {/* Section 6: Interactive Strategic Pivot Wedges */}
       <section>
         <PivotAngles
           ideaText={data.ideaText}

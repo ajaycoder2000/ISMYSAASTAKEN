@@ -270,6 +270,7 @@ export const SupabaseDB = {
             gapAnalysis: data.gap_analysis,
             shareSlug: data.share_slug,
             featured: data.featured,
+            roast: data.roast,
             createdAt: new Date(data.created_at),
           } as unknown as IScanDocument;
         }
@@ -307,6 +308,71 @@ export const SupabaseDB = {
     } catch {
       return null;
     }
+  },
+
+  /**
+   * Get scan by ID or shareSlug
+   */
+  async getScanByIdOrSlug(idOrSlug: string): Promise<IScanDocument | null> {
+    const supabase = getSupabaseAdmin();
+
+    if (supabase) {
+      try {
+        const { data } = await supabase
+          .from('scans')
+          .select('*')
+          .or(`id.eq.${idOrSlug},share_slug.eq.${idOrSlug}`)
+          .maybeSingle();
+
+        if (data) {
+          return {
+            _id: data.id,
+            userId: data.user_id,
+            ideaText: data.idea_text,
+            competitors: data.competitors,
+            saturationScore: data.saturation_score,
+            saturationReasoning: data.saturation_reasoning,
+            gapAnalysis: data.gap_analysis,
+            shareSlug: data.share_slug,
+            featured: data.featured,
+            roast: data.roast,
+            createdAt: new Date(data.created_at),
+          } as unknown as IScanDocument;
+        }
+      } catch {
+        // Continue to fallback
+      }
+    }
+
+    const devScan = DevStore.findScanByIdOrSlug(idOrSlug);
+    if (devScan) {
+      return devScan as unknown as IScanDocument;
+    }
+
+    return this.getScanBySlug(idOrSlug);
+  },
+
+  /**
+   * Save or update roast data for a scan
+   */
+  async saveRoast(
+    idOrSlug: string,
+    roast: { lines: string[]; takeaway: string }
+  ): Promise<void> {
+    const supabase = getSupabaseAdmin();
+
+    if (supabase) {
+      try {
+        await supabase
+          .from('scans')
+          .update({ roast })
+          .or(`id.eq.${idOrSlug},share_slug.eq.${idOrSlug}`);
+      } catch (err) {
+        console.warn('Supabase saveRoast failed:', err);
+      }
+    }
+
+    DevStore.saveRoast(idOrSlug, roast);
   },
 
   /**

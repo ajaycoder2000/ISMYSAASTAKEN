@@ -17,6 +17,11 @@ export interface ScanResult {
   gapAnalysis: string;
 }
 
+export interface IRoastData {
+  lines: string[];
+  takeaway: string;
+}
+
 export interface IScanDocument {
   _id: string;
   userId: string | null;
@@ -27,6 +32,7 @@ export interface IScanDocument {
   gapAnalysis: string;
   shareSlug: string;
   featured?: boolean;
+  roast?: IRoastData;
   createdAt: Date;
 }
 
