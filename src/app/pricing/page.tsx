@@ -144,6 +144,12 @@ export default function PricingPage() {
               <li className="flex items-start gap-2">
                 <span className="text-[hsl(145,60%,45%)]">✓</span> Market saturation signal bars
               </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[hsl(145,60%,45%)]">✓</span> Roast Mode — blunt AI feedback on your idea
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[hsl(145,60%,45%)]">✓</span> Validated badge for your landing page (on qualifying scans)
+              </li>
               <li className="flex items-start gap-2 text-[hsl(40,8%,45%)]">
                 <span className="text-[var(--red)] font-semibold">✕</span> No Pivot Moats or Pitch Deck Export
               </li>
@@ -193,6 +199,12 @@ export default function PricingPage() {
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[hsl(42,95%,55%)]">✓</span> Executive Pitch Card PNG export
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[hsl(42,95%,55%)]">✓</span> Roast Mode — blunt AI feedback on your idea
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[hsl(42,95%,55%)]">✓</span> Validated badge for your landing page (on qualifying scans)
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[hsl(42,95%,55%)]">✓</span> Zero recurring subscription fear
@@ -254,6 +266,12 @@ export default function PricingPage() {
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[hsl(42,95%,55%)]">✓</span> Executive Pitch Card PNG export
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[hsl(42,95%,55%)]">✓</span> Roast Mode — blunt AI feedback on your idea
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[hsl(42,95%,55%)]">✓</span> Validated badge for your landing page (on qualifying scans)
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[hsl(42,95%,55%)]">✓</span> Saved scan history &amp; bookmarks
@@ -442,6 +460,28 @@ export default function PricingPage() {
                 <td className="py-3.5 px-4 text-[var(--red)] font-semibold">✕</td>
                 <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ Included</td>
                 <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ Included</td>
+              </tr>
+              <tr className="hover:bg-[hsl(220,12%,12%)]/50 transition-colors">
+                <td className="py-3.5 px-4 font-medium text-[hsl(40,20%,92%)] flex items-center gap-2">
+                  <span>Idea Roast Mode</span>
+                  <span className="text-[9px] font-mono uppercase px-1 py-0.5 rounded bg-orange-950/60 text-orange-400 border border-orange-800/60">
+                    Hot
+                  </span>
+                </td>
+                <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ Included</td>
+                <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ Included</td>
+                <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ Included</td>
+              </tr>
+              <tr className="hover:bg-[hsl(220,12%,12%)]/50 transition-colors">
+                <td className="py-3.5 px-4 font-medium text-[hsl(40,20%,92%)] flex items-center gap-2">
+                  <span>Validated Embeddable Badge</span>
+                  <span className="text-[9px] font-mono uppercase px-1 py-0.5 rounded bg-emerald-950/60 text-emerald-400 border border-emerald-500/30">
+                    Seal
+                  </span>
+                </td>
+                <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ (qualifying scans)</td>
+                <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ (qualifying scans)</td>
+                <td className="py-3.5 px-4 text-[hsl(145,60%,55%)]">✓ (qualifying scans)</td>
               </tr>
             </tbody>
           </table>
