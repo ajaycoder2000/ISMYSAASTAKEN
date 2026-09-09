@@ -9,6 +9,7 @@ import BookmarkButton from './BookmarkButton';
 import LandscapeMap from './LandscapeMap';
 import CommunityPoll from './CommunityPoll';
 import RoastCard from './RoastCard';
+import EmbeddableBadgeCard from './EmbeddableBadgeCard';
 
 interface ScanResultProps {
   data: IScanDocument;
@@ -122,7 +123,12 @@ export default function ScanResult({ data }: ScanResultProps) {
         <CommunityPoll scanId={data._id} />
       </section>
 
-      {/* Section 7: Share / Export Executive Card */}
+      {/* Section 7: Validated Embeddable Trust Badge */}
+      <section className="pt-2">
+        <EmbeddableBadgeCard scan={data} />
+      </section>
+
+      {/* Section 8: Share / Export Executive Card */}
       <section className="pt-2">
         <ShareVerdictCard
           ideaText={data.ideaText}
