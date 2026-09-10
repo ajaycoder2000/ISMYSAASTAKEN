@@ -37,18 +37,53 @@ export default function PaywallModal({
 
   if (!isOpen || !mode) return null;
 
+  const resolveDodoProductId = (key: string) => {
+    if (key === 'price_sprint_9' || key === 'sprint_pass') {
+      return process.env.NEXT_PUBLIC_DODO_SPRINT_PASS_PRODUCT_ID || 'pdt_0NnJVAdQ1ALuw6XvK1Rje';
+    }
+    return process.env.NEXT_PUBLIC_DODO_FOUNDER_PRO_PRODUCT_ID || 'pdt_0NnJVsQ5qEml9FppiJH7v';
+  };
+
   const handleCheckout = async (priceId: string) => {
     setCheckoutLoading(priceId);
     try {
-      const res = await fetch('/api/stripe/checkout', {
+      // 1. Get current user session
+      let user: { id: string; email?: string; name?: string } | null = null;
+      try {
+        const sessionRes = await fetch('/api/auth/session');
+        if (sessionRes.ok) {
+          const sessionData = await sessionRes.json();
+          user = sessionData?.user || null;
+        }
+      } catch {
+        // proceed with guest redirect if session check fails
+      }
+
+      if (!user) {
+        router.push('/sign-in');
+        return;
+      }
+
+      const productId = resolveDodoProductId(priceId);
+
+      const res = await fetch('/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ priceId }),
+        body: JSON.stringify({
+          product_cart: [{ product_id: productId, quantity: 1 }],
+          customer: {
+            email: user.email || '',
+            name: user.name || (user.email ? user.email.split('@')[0] : 'Founder'),
+          },
+          metadata: {
+            userId: user.id,
+          },
+        }),
       });
 
       const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
+      if (data.checkout_url) {
+        window.location.href = data.checkout_url;
       } else {
         router.push('/pricing');
       }

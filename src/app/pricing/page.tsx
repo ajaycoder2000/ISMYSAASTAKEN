@@ -5,8 +5,27 @@ import Link from 'next/link';
 import AnimatedPriceCounter from '@/components/AnimatedPriceCounter';
 
 interface UserSession {
+  id: string;
+  email?: string;
+  name?: string;
   plan: string;
 }
+
+const resolveDodoProductId = (key: string) => {
+  if (key === 'price_sprint_9' || key === 'sprint_pass') {
+    return process.env.NEXT_PUBLIC_DODO_SPRINT_PASS_PRODUCT_ID || 'pdt_0NnJVAdQ1ALuw6XvK1Rje';
+  }
+  if (key === 'price_pro_yearly' || key === 'founder_pro_annual') {
+    return process.env.NEXT_PUBLIC_DODO_FOUNDER_PRO_ANNUAL_PRODUCT_ID || 'pdt_0NnJaTRdnDi9VvdxutDF0';
+  }
+  if (key === 'price_pro_monthly' || key === 'founder_pro') {
+    return process.env.NEXT_PUBLIC_DODO_FOUNDER_PRO_PRODUCT_ID || 'pdt_0NnJVsQ5qEml9FppiJH7v';
+  }
+  if (key === 'price_studio_49' || key === 'studio') {
+    return process.env.NEXT_PUBLIC_DODO_STUDIO_PRODUCT_ID || 'pdt_0NnJW4Mykqa4cSzBJXKib';
+  }
+  return process.env.NEXT_PUBLIC_DODO_FOUNDER_PRO_PRODUCT_ID || 'pdt_0NnJVsQ5qEml9FppiJH7v';
+};
 
 export default function PricingPage() {
   const [user, setUser] = useState<UserSession | null>(null);
@@ -28,17 +47,36 @@ export default function PricingPage() {
     }
 
     setLoading(planKey);
+    const productId = resolveDodoProductId(planKey);
+
     try {
-      const res = await fetch('/api/stripe/checkout', {
+      const res = await fetch('/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ priceId: planKey }),
+        body: JSON.stringify({
+          product_cart: [{ product_id: productId, quantity: 1 }],
+          customer: {
+            email: user.email || '',
+            name: user.name || (user.email ? user.email.split('@')[0] : 'Founder'),
+          },
+          metadata: {
+            userId: user.id,
+          },
+        }),
       });
+
       const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
+      if (data.checkout_url) {
+        window.location.href = data.checkout_url;
+        return;
       }
-    } catch {
+      if (data.error) {
+        console.error('Dodo checkout error:', data.error);
+        alert(data.error);
+      }
+    } catch (err) {
+      console.error('Checkout error:', err);
+    } finally {
       setLoading(null);
     }
   };
