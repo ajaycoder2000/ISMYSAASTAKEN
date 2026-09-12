@@ -13,18 +13,18 @@ interface UserSession {
 
 const resolveDodoProductId = (key: string) => {
   if (key === 'price_sprint_9' || key === 'sprint_pass') {
-    return process.env.NEXT_PUBLIC_DODO_SPRINT_PASS_PRODUCT_ID || 'pdt_0NnJVAdQ1ALuw6XvK1Rje';
+    return process.env.NEXT_PUBLIC_DODO_SPRINT_PASS_PRODUCT_ID || 'pdt_0NnMyu4e7QVSBFRVyfgTG';
   }
   if (key === 'price_pro_yearly' || key === 'founder_pro_annual') {
-    return process.env.NEXT_PUBLIC_DODO_FOUNDER_PRO_ANNUAL_PRODUCT_ID || 'pdt_0NnJaTRdnDi9VvdxutDF0';
+    return process.env.NEXT_PUBLIC_DODO_FOUNDER_PRO_ANNUAL_PRODUCT_ID || 'pdt_0NnMytpeAfTAkzo2P45pE';
   }
   if (key === 'price_pro_monthly' || key === 'founder_pro') {
-    return process.env.NEXT_PUBLIC_DODO_FOUNDER_PRO_PRODUCT_ID || 'pdt_0NnJVsQ5qEml9FppiJH7v';
+    return process.env.NEXT_PUBLIC_DODO_FOUNDER_PRO_PRODUCT_ID || 'pdt_0NnMytX9JyLRoQljhwwmj';
   }
   if (key === 'price_studio_49' || key === 'studio') {
-    return process.env.NEXT_PUBLIC_DODO_STUDIO_PRODUCT_ID || 'pdt_0NnJW4Mykqa4cSzBJXKib';
+    return process.env.NEXT_PUBLIC_DODO_STUDIO_PRODUCT_ID || 'pdt_0NnMytHDvd9MYJIXYfCwq';
   }
-  return process.env.NEXT_PUBLIC_DODO_FOUNDER_PRO_PRODUCT_ID || 'pdt_0NnJVsQ5qEml9FppiJH7v';
+  return process.env.NEXT_PUBLIC_DODO_FOUNDER_PRO_PRODUCT_ID || 'pdt_0NnMytX9JyLRoQljhwwmj';
 };
 
 export default function PricingPage() {
@@ -36,46 +36,59 @@ export default function PricingPage() {
   useEffect(() => {
     fetch('/api/auth/session')
       .then((r) => r.json())
-      .then((data) => setUser(data.user))
+      .then((data) => setUser(data?.user || null))
       .catch(() => {});
   }, []);
 
   const handleCheckout = async (planKey: string) => {
-    if (!user) {
-      window.location.href = '/sign-in';
-      return;
-    }
-
     setLoading(planKey);
     const productId = resolveDodoProductId(planKey);
 
     try {
+      const bodyPayload: Record<string, any> = {
+        product_cart: [{ product_id: productId, quantity: 1 }],
+      };
+
+      if (user?.email && user.email.includes('@')) {
+        bodyPayload.customer = {
+          email: user.email,
+          name: user.name || (user.email ? user.email.split('@')[0] : 'Founder'),
+        };
+      }
+
+      if (user?.id) {
+        bodyPayload.metadata = {
+          userId: user.id,
+        };
+      }
+
       const res = await fetch('/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          product_cart: [{ product_id: productId, quantity: 1 }],
-          customer: {
-            email: user.email || '',
-            name: user.name || (user.email ? user.email.split('@')[0] : 'Founder'),
-          },
-          metadata: {
-            userId: user.id,
-          },
-        }),
+        body: JSON.stringify(bodyPayload),
       });
 
-      const data = await res.json();
+      const text = await res.text();
+      let data: any = {};
+      try {
+        data = JSON.parse(text);
+      } catch {
+        data = { error: text };
+      }
+
       if (data.checkout_url) {
         window.location.href = data.checkout_url;
         return;
       }
-      if (data.error) {
-        console.error('Dodo checkout error:', data.error);
-        alert(data.error);
+
+      if (data.error || !res.ok) {
+        const errorMsg = data.message || data.error || text || 'Failed to initialize checkout';
+        console.error('Dodo checkout error:', errorMsg);
+        alert(typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg));
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Checkout error:', err);
+      alert(err?.message || 'Network error during checkout initialization.');
     } finally {
       setLoading(null);
     }

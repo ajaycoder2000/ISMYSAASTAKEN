@@ -39,15 +39,15 @@ export default function PaywallModal({
 
   const resolveDodoProductId = (key: string) => {
     if (key === 'price_sprint_9' || key === 'sprint_pass') {
-      return process.env.NEXT_PUBLIC_DODO_SPRINT_PASS_PRODUCT_ID || 'pdt_0NnJVAdQ1ALuw6XvK1Rje';
+      return process.env.NEXT_PUBLIC_DODO_SPRINT_PASS_PRODUCT_ID || 'pdt_0NnMyu4e7QVSBFRVyfgTG';
     }
-    return process.env.NEXT_PUBLIC_DODO_FOUNDER_PRO_PRODUCT_ID || 'pdt_0NnJVsQ5qEml9FppiJH7v';
+    return process.env.NEXT_PUBLIC_DODO_FOUNDER_PRO_PRODUCT_ID || 'pdt_0NnMytX9JyLRoQljhwwmj';
   };
 
   const handleCheckout = async (priceId: string) => {
     setCheckoutLoading(priceId);
     try {
-      // 1. Get current user session
+      // 1. Get current user session if available
       let user: { id: string; email?: string; name?: string } | null = null;
       try {
         const sessionRes = await fetch('/api/auth/session');
@@ -56,39 +56,54 @@ export default function PaywallModal({
           user = sessionData?.user || null;
         }
       } catch {
-        // proceed with guest redirect if session check fails
-      }
-
-      if (!user) {
-        router.push('/sign-in');
-        return;
+        // proceed with guest checkout if session check fails
       }
 
       const productId = resolveDodoProductId(priceId);
+      const bodyPayload: Record<string, any> = {
+        product_cart: [{ product_id: productId, quantity: 1 }],
+      };
+
+      if (user?.email && user.email.includes('@')) {
+        bodyPayload.customer = {
+          email: user.email,
+          name: user.name || (user.email ? user.email.split('@')[0] : 'Founder'),
+        };
+      }
+
+      if (user?.id) {
+        bodyPayload.metadata = {
+          userId: user.id,
+        };
+      }
 
       const res = await fetch('/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          product_cart: [{ product_id: productId, quantity: 1 }],
-          customer: {
-            email: user.email || '',
-            name: user.name || (user.email ? user.email.split('@')[0] : 'Founder'),
-          },
-          metadata: {
-            userId: user.id,
-          },
-        }),
+        body: JSON.stringify(bodyPayload),
       });
 
-      const data = await res.json();
+      const text = await res.text();
+      let data: any = {};
+      try {
+        data = JSON.parse(text);
+      } catch {
+        data = { error: text };
+      }
+
       if (data.checkout_url) {
         window.location.href = data.checkout_url;
-      } else {
-        router.push('/pricing');
+        return;
       }
-    } catch {
-      router.push('/pricing');
+
+      if (data.error || !res.ok) {
+        const errorMsg = data.message || data.error || text || 'Failed to initialize checkout';
+        console.error('Dodo checkout error:', errorMsg);
+        alert(typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg));
+      }
+    } catch (err: any) {
+      console.error('Checkout error:', err);
+      alert(err?.message || 'Network error during checkout initialization.');
     } finally {
       setCheckoutLoading(null);
     }

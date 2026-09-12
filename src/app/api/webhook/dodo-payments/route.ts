@@ -8,16 +8,28 @@ import { PlanType } from '@/types';
 
 export const dynamic = 'force-dynamic';
 
-const SPRINT_PASS_ID = process.env.DODO_SPRINT_PASS_PRODUCT_ID || 'pdt_0NnJVAdQ1ALuw6XvK1Rje';
-const FOUNDER_PRO_ID = process.env.DODO_FOUNDER_PRO_PRODUCT_ID || 'pdt_0NnJVsQ5qEml9FppiJH7v';
-const FOUNDER_PRO_ANNUAL_ID = process.env.DODO_FOUNDER_PRO_ANNUAL_PRODUCT_ID || 'pdt_0NnJaTRdnDi9VvdxutDF0';
-const STUDIO_ID = process.env.DODO_STUDIO_PRODUCT_ID || 'pdt_0NnJW4Mykqa4cSzBJXKib';
+// Live product IDs
+const LIVE_SPRINT_PASS = 'pdt_0NnMyu4e7QVSBFRVyfgTG';
+const LIVE_FOUNDER_PRO = 'pdt_0NnMytX9JyLRoQljhwwmj';
+const LIVE_FOUNDER_PRO_ANNUAL = 'pdt_0NnMytpeAfTAkzo2P45pE';
+const LIVE_STUDIO = 'pdt_0NnMytHDvd9MYJIXYfCwq';
+
+// Test product IDs
+const TEST_SPRINT_PASS = 'pdt_0NnJVAdQ1ALuw6XvK1Rje';
+const TEST_FOUNDER_PRO = 'pdt_0NnJVsQ5qEml9FppiJH7v';
+const TEST_FOUNDER_PRO_ANNUAL = 'pdt_0NnJaTRdnDi9VvdxutDF0';
+const TEST_STUDIO = 'pdt_0NnJW4Mykqa4cSzBJXKib';
+
+const SPRINT_PASS_IDS = [process.env.DODO_SPRINT_PASS_PRODUCT_ID, LIVE_SPRINT_PASS, TEST_SPRINT_PASS].filter(Boolean);
+const FOUNDER_PRO_IDS = [process.env.DODO_FOUNDER_PRO_PRODUCT_ID, LIVE_FOUNDER_PRO, TEST_FOUNDER_PRO].filter(Boolean);
+const FOUNDER_PRO_ANNUAL_IDS = [process.env.DODO_FOUNDER_PRO_ANNUAL_PRODUCT_ID, LIVE_FOUNDER_PRO_ANNUAL, TEST_FOUNDER_PRO_ANNUAL].filter(Boolean);
+const STUDIO_IDS = [process.env.DODO_STUDIO_PRODUCT_ID, LIVE_STUDIO, TEST_STUDIO].filter(Boolean);
 
 function resolvePlanFromProductId(productId?: string | null): PlanType {
   if (!productId) return 'founder_pro';
-  if (productId === SPRINT_PASS_ID) return 'sprint_pass';
-  if (productId === STUDIO_ID) return 'studio';
-  if (productId === FOUNDER_PRO_ID || productId === FOUNDER_PRO_ANNUAL_ID) return 'founder_pro';
+  if (SPRINT_PASS_IDS.includes(productId)) return 'sprint_pass';
+  if (STUDIO_IDS.includes(productId)) return 'studio';
+  if (FOUNDER_PRO_IDS.includes(productId) || FOUNDER_PRO_ANNUAL_IDS.includes(productId)) return 'founder_pro';
   return 'founder_pro';
 }
 
@@ -114,9 +126,11 @@ async function provisionUserPlan({
 }
 
 let cachedWebhookHandler: ((req: NextRequest) => Promise<NextResponse<unknown>>) | null = null;
+let lastWebhookKey = '';
 
 function getWebhookHandler(webhookKey: string) {
-  if (!cachedWebhookHandler) {
+  if (!cachedWebhookHandler || lastWebhookKey !== webhookKey) {
+    lastWebhookKey = webhookKey;
     cachedWebhookHandler = Webhooks({
       webhookKey,
       onPayload: async (payload) => {
