@@ -1,5 +1,3 @@
-'use client';
-
 export default function HeroBackground() {
   return (
     <div
@@ -21,7 +19,7 @@ export default function HeroBackground() {
       {/* 2. Radar Sweep Layer */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div
-          className="w-[180%] sm:w-[150%] aspect-square rounded-full animate-radar-spin pointer-events-none"
+          className="w-[180%] sm:w-[150%] aspect-square rounded-full animate-radar-spin pointer-events-none will-change-transform"
           style={{
             background: 'conic-gradient(from 0deg, transparent 0deg, hsl(42 95% 55% / 0.14) 25deg, transparent 60deg)',
             mixBlendMode: 'screen',

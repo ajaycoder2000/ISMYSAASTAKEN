@@ -198,6 +198,83 @@ body {
     animation: none !important;
     opacity: 0 !important;
   }
+  .typewriter-cursor::after {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+}
+
+/* Disable continuous background-position animation on mobile to eliminate repaint jank */
+@media (max-width: 640px) {
+  .animate-grid-drift {
+    animation: none !important;
+  }
+}
+
+/* Pure CSS Blinking Cursor for Hero Headline (Compositor-only, zero React re-renders) */
+.typewriter-cursor::after {
+  content: '|';
+  animation: blink 1s step-end infinite;
+  color: hsl(42, 95%, 55%);
+  margin-left: 0.08em;
+  font-weight: 300;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* Fluid Typography Scale (Tailwind v4 @utility + standard classes) */
+@utility text-display {
+  font-size: clamp(1.75rem, 5vw, 2.75rem);
+  line-height: 1.15;
+  font-weight: 700;
+}
+
+@utility text-subhead {
+  font-size: clamp(0.875rem, 2.5vw, 1.0625rem);
+  line-height: 1.5;
+}
+
+@utility text-body {
+  font-size: clamp(0.8125rem, 2vw, 0.9375rem);
+  line-height: 1.5;
+}
+
+@utility text-meta {
+  font-size: clamp(0.6875rem, 1.5vw, 0.75rem);
+  line-height: 1.4;
+}
+
+@utility text-button {
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  font-weight: 600;
+}
+
+.text-display {
+  font-size: clamp(1.75rem, 5vw, 2.75rem);
+  line-height: 1.15;
+  font-weight: 700;
+}
+
+.text-subhead {
+  font-size: clamp(0.875rem, 2.5vw, 1.0625rem);
+  line-height: 1.5;
+}
+
+.text-body {
+  font-size: clamp(0.8125rem, 2vw, 0.9375rem);
+  line-height: 1.5;
+}
+
+.text-meta {
+  font-size: clamp(0.6875rem, 1.5vw, 0.75rem);
+  line-height: 1.4;
+}
+
+.text-button {
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  font-weight: 600;
 }
 
 /* Stagger children animations */

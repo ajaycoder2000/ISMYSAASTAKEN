@@ -36,7 +36,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="w-full border-b border-[hsl(220,10%,14%)] bg-[hsl(220,15%,8%,0.92)] backdrop-blur-md sticky top-0 z-50">
+      <nav className="w-full border-b border-[hsl(220,10%,14%)] bg-[hsl(220,15%,8%)] sm:bg-[hsl(220,15%,8%,0.92)] sm:backdrop-blur-md sticky top-0 z-50">
         <div className="w-full max-w-[1780px] mx-auto px-3 sm:px-5 lg:px-8 h-14 flex items-center justify-between">
           <Link
             href="/"

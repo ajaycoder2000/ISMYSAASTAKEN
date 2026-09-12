@@ -130,16 +130,16 @@ export default function KeywordResearchView() {
     <div className="min-h-[calc(100vh-3.5rem)] px-3 sm:px-6 py-8 sm:py-14 max-w-6xl mx-auto space-y-8">
       {/* Header telemetry brief */}
       <div className="text-center max-w-2xl mx-auto space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[hsl(145,60%,45%,0.1)] border border-[hsl(145,60%,45%,0.25)] text-[11px] font-[family-name:var(--font-mono)] text-[hsl(145,60%,55%)]">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[hsl(145,60%,45%,0.1)] border border-[hsl(145,60%,45%,0.25)] text-meta font-[family-name:var(--font-mono)] text-[hsl(145,60%,55%)]">
           <span className="w-1.5 h-1.5 rounded-full bg-[hsl(145,60%,55%)] animate-pulse" />
           FREE-TIER SEO TELEMETRY
         </div>
 
-        <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)] tracking-tight">
+        <h1 className="text-display font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)] tracking-tight">
           SaaS Keyword Radar
         </h1>
 
-        <p className="text-xs sm:text-sm text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] leading-relaxed">
+        <p className="text-subhead text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] leading-relaxed">
           Ground your product hypothesis in real search behavior. Search interest trajectory (0–100 scale), live Google autocomplete queries, and SERP competition signals.
         </p>
       </div>
@@ -163,12 +163,12 @@ export default function KeywordResearchView() {
               onChange={(e) => setSeed(e.target.value)}
               placeholder="e.g. ai meeting notes, linear alternative, postgres backup saas..."
               disabled={loading}
-              className="w-full pl-9 pr-28 py-3.5 bg-[hsl(220,16%,7%)] border border-[hsl(220,10%,20%)] focus:border-[hsl(145,60%,55%)] focus:ring-1 focus:ring-[hsl(145,60%,55%)] rounded-xl text-xs sm:text-sm text-[hsl(40,20%,95%)] placeholder:text-[hsl(40,8%,40%)] font-[family-name:var(--font-mono)] outline-none transition-all"
+              className="w-full pl-9 pr-28 py-3.5 bg-[hsl(220,16%,7%)] border border-[hsl(220,10%,20%)] focus:border-[hsl(145,60%,55%)] focus:ring-1 focus:ring-[hsl(145,60%,55%)] rounded-xl text-body text-[hsl(40,20%,95%)] placeholder:text-[hsl(40,8%,40%)] font-[family-name:var(--font-mono)] outline-none transition-all"
             />
             <button
               type="submit"
               disabled={loading || !seed.trim()}
-              className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-[hsl(145,60%,45%)] hover:bg-[hsl(145,60%,50%)] disabled:opacity-40 disabled:hover:bg-[hsl(145,60%,45%)] text-[hsl(220,15%,8%)] font-bold text-xs rounded-lg transition-all font-[family-name:var(--font-space-grotesk)] flex items-center gap-1.5 shadow-md cursor-pointer"
+              className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-[hsl(145,60%,45%)] hover:bg-[hsl(145,60%,50%)] disabled:opacity-40 disabled:hover:bg-[hsl(145,60%,45%)] text-[hsl(220,15%,8%)] text-button rounded-lg transition-all font-[family-name:var(--font-space-grotesk)] flex items-center gap-1.5 shadow-md cursor-pointer"
             >
               {loading ? (
                 <>
@@ -186,7 +186,7 @@ export default function KeywordResearchView() {
 
           {/* Quick seed suggestions */}
           <div className="flex flex-wrap items-center gap-1.5 pt-1">
-            <span className="text-[10px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,45%)] uppercase tracking-wider mr-1">
+            <span className="text-meta font-[family-name:var(--font-mono)] text-[hsl(40,8%,45%)] uppercase tracking-wider mr-1">
               Try Seed:
             </span>
             {SAMPLE_SEEDS.map((s) => (

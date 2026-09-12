@@ -101,16 +101,16 @@ export default function NameCheckView() {
     <div className="min-h-[calc(100vh-3.5rem)] px-3 sm:px-6 py-8 sm:py-14 max-w-5xl mx-auto space-y-8">
       {/* Header telemetry brief */}
       <div className="text-center max-w-2xl mx-auto space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[hsl(42,95%,55%,0.1)] border border-[hsl(42,95%,55%,0.25)] text-[11px] font-[family-name:var(--font-mono)] text-[hsl(42,95%,55%)] font-bold">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[hsl(42,95%,55%,0.1)] border border-[hsl(42,95%,55%,0.25)] text-meta font-[family-name:var(--font-mono)] text-[hsl(42,95%,55%)] font-bold">
           <span className="w-1.5 h-1.5 rounded-full bg-[hsl(42,95%,55%)] animate-pulse" />
           FOUNDER IDENTITY RADAR // IS IT TAKEN?
         </div>
 
-        <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)] tracking-tight">
+        <h1 className="text-display font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)] tracking-tight">
           Is It Taken?
         </h1>
 
-        <p className="text-xs sm:text-sm text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] leading-relaxed">
+        <p className="text-subhead text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] leading-relaxed">
           Check if your startup name is taken across .com, .io, .co, .app domains (via official RDAP protocol) and X, GitHub, Instagram, and TikTok — all in one search.
         </p>
       </div>
@@ -134,12 +134,12 @@ export default function NameCheckView() {
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. supastack, promptkit, linearflow..."
               disabled={loading}
-              className="w-full pl-9 pr-28 py-3.5 bg-[hsl(220,16%,7%)] border border-[hsl(220,10%,20%)] focus:border-[hsl(42,95%,55%)] focus:ring-1 focus:ring-[hsl(42,95%,55%)] rounded-xl text-xs sm:text-sm text-[hsl(40,20%,95%)] placeholder:text-[hsl(40,8%,40%)] font-[family-name:var(--font-mono)] outline-none transition-all"
+              className="w-full pl-9 pr-28 py-3.5 bg-[hsl(220,16%,7%)] border border-[hsl(220,10%,20%)] focus:border-[hsl(42,95%,55%)] focus:ring-1 focus:ring-[hsl(42,95%,55%)] rounded-xl text-body text-[hsl(40,20%,95%)] placeholder:text-[hsl(40,8%,40%)] font-[family-name:var(--font-mono)] outline-none transition-all"
             />
             <button
               type="submit"
               disabled={loading || !cleanInput}
-              className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-[hsl(42,95%,55%)] hover:bg-[hsl(42,95%,50%)] disabled:opacity-40 disabled:hover:bg-[hsl(42,95%,55%)] text-[hsl(220,15%,8%)] font-bold text-xs rounded-lg transition-all font-[family-name:var(--font-space-grotesk)] flex items-center gap-1.5 shadow-md cursor-pointer"
+              className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-[hsl(42,95%,55%)] hover:bg-[hsl(42,95%,50%)] disabled:opacity-40 disabled:hover:bg-[hsl(42,95%,55%)] text-[hsl(220,15%,8%)] text-button rounded-lg transition-all font-[family-name:var(--font-space-grotesk)] flex items-center gap-1.5 shadow-md cursor-pointer"
             >
               {loading ? (
                 <>
@@ -157,7 +157,7 @@ export default function NameCheckView() {
 
           {/* Clean name indicator */}
           {cleanInput && (
-            <div className="text-[11px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,50%)] flex items-center gap-1.5">
+            <div className="text-meta font-[family-name:var(--font-mono)] text-[hsl(40,8%,50%)] flex items-center gap-1.5">
               <span>Checking handle handle slug:</span>
               <span className="text-[hsl(42,95%,55%)] font-bold">@{cleanInput}</span>
             </div>

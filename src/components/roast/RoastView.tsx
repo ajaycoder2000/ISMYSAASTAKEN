@@ -123,11 +123,11 @@ export default function RoastView({ initialScan }: { initialScan?: IScanDocument
           <span>IDEA ROAST MODE</span>
         </div>
 
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,95%)] tracking-tight">
+        <h1 className="text-display font-extrabold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,95%)] tracking-tight">
           Get Your SaaS Idea <span className="text-orange-500">Roasted</span>
         </h1>
 
-        <p className="text-sm sm:text-base text-[hsl(40,8%,65%)] font-[family-name:var(--font-inter)] leading-relaxed">
+        <p className="text-subhead text-[hsl(40,8%,65%)] font-[family-name:var(--font-inter)] leading-relaxed">
           Blunt, witty, comedy-roast feedback on your market reality. We critique crowded
           competition, buzzwords, and generic positioning — never the person. Always ends
           on a real, actionable wedge.
@@ -157,7 +157,7 @@ export default function RoastView({ initialScan }: { initialScan?: IScanDocument
               onChange={(e) => setIdeaText(e.target.value)}
               placeholder="e.g. AI meeting notes that sync directly to Notion, or a micro-CRM for freelance designers..."
               disabled={loading}
-              className="w-full bg-[hsl(220,15%,6%)] border border-orange-500/30 focus:border-orange-500 rounded-xl p-3.5 sm:p-4 text-sm text-[hsl(40,20%,94%)] placeholder-zinc-600 focus:outline-none transition-colors leading-relaxed font-[family-name:var(--font-inter)] resize-none"
+              className="w-full bg-[hsl(220,15%,6%)] border border-orange-500/30 focus:border-orange-500 rounded-xl p-3.5 sm:p-4 text-body text-[hsl(40,20%,94%)] placeholder-zinc-600 focus:outline-none transition-colors leading-relaxed font-[family-name:var(--font-inter)] resize-none"
             />
           </div>
 
@@ -175,7 +175,7 @@ export default function RoastView({ initialScan }: { initialScan?: IScanDocument
           )}
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-1">
-            <div className="text-[11px] text-zinc-500 font-mono flex items-center gap-2">
+            <div className="text-meta text-zinc-500 font-mono flex items-center gap-2">
               <span>✦ Grounded in real competitors</span>
               <span>•</span>
               <span>✦ Free &amp; shareable</span>
@@ -184,7 +184,7 @@ export default function RoastView({ initialScan }: { initialScan?: IScanDocument
             <button
               type="submit"
               disabled={loading || ideaText.trim().length < 8}
-              className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold text-xs sm:text-sm font-[family-name:var(--font-mono)] transition-all shadow-lg shadow-orange-950/40 hover:scale-[1.01] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white text-button font-[family-name:var(--font-mono)] transition-all shadow-lg shadow-orange-950/40 hover:scale-[1.01] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
               {loading ? (
                 <>

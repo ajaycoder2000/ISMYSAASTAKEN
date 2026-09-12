@@ -1,5 +1,3 @@
-'use client';
-
 interface ComparisonPair {
   aspect: string;
   theirLabel: string;

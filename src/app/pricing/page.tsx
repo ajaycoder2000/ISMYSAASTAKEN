@@ -123,13 +123,13 @@ export default function PricingPage() {
     <div className="min-h-[calc(100vh-3.5rem)] px-3 sm:px-6 py-12 sm:py-20 w-full max-w-[1500px] mx-auto">
       {/* Header */}
       <div className="text-center mb-12 sm:mb-16">
-        <span className="text-[11px] font-[family-name:var(--font-mono)] uppercase tracking-[0.25em] text-[hsl(42,95%,55%)] font-bold block mb-2">
+        <span className="text-meta font-[family-name:var(--font-mono)] uppercase tracking-[0.25em] text-[hsl(42,95%,55%)] font-bold block mb-2">
           TRANSPARENT FOUNDER PRICING
         </span>
-        <h1 className="text-3xl sm:text-5xl font-bold font-[family-name:var(--font-space-grotesk)] tracking-tight text-[hsl(40,20%,94%)]">
+        <h1 className="text-display font-[family-name:var(--font-space-grotesk)] tracking-tight text-[hsl(40,20%,94%)]">
           Validate Before You Build
         </h1>
-        <p className="mt-3 text-sm sm:text-base text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] max-w-xl mx-auto">
+        <p className="mt-3 text-subhead text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] max-w-xl mx-auto">
           Every scan performs live web search grounding and deep competitive moat analysis. Start free, buy an ideation sprint pass, or unlock unlimited founder access.
         </p>
 
@@ -215,7 +215,7 @@ export default function PricingPage() {
 
           <Link
             href="/"
-            className="block w-full text-center py-2.5 bg-[hsl(220,10%,16%)] hover:bg-[hsl(220,10%,22%)] border border-[hsl(220,10%,25%)] text-[hsl(40,20%,90%)] rounded-xl text-xs font-bold transition-all font-[family-name:var(--font-space-grotesk)]"
+            className="block w-full text-center py-2.5 bg-[hsl(220,10%,16%)] hover:bg-[hsl(220,10%,22%)] border border-[hsl(220,10%,25%)] text-[hsl(40,20%,90%)] rounded-xl text-button transition-all font-[family-name:var(--font-space-grotesk)]"
           >
             Start scanning free →
           </Link>
@@ -228,7 +228,7 @@ export default function PricingPage() {
               <h3 className="text-lg font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,92%)]">
                 Sprint Pass
               </h3>
-              <span className="text-[10px] font-[family-name:var(--font-mono)] text-[hsl(145,60%,55%)] px-2 py-0.5 rounded bg-[hsl(145,60%,45%,0.1)] border border-[hsl(145,60%,45%,0.2)] font-bold">
+              <span className="text-meta font-[family-name:var(--font-mono)] text-[hsl(145,60%,55%)] px-2 py-0.5 rounded bg-[hsl(145,60%,45%,0.1)] border border-[hsl(145,60%,45%,0.2)] font-bold">
                 7 Days Access
               </span>
             </div>
@@ -271,7 +271,7 @@ export default function PricingPage() {
 
           <button
             onClick={() => handleCheckout('price_sprint_9')}
-            className="w-full py-2.5 bg-[hsl(220,12%,16%)] hover:bg-[hsl(220,12%,22%)] border border-[hsl(220,10%,28%)] text-[hsl(40,20%,92%)] hover:text-[hsl(42,95%,55%)] rounded-xl text-xs font-bold transition-all font-[family-name:var(--font-space-grotesk)] cursor-pointer"
+            className="w-full py-2.5 bg-[hsl(220,12%,16%)] hover:bg-[hsl(220,12%,22%)] border border-[hsl(220,10%,28%)] text-[hsl(40,20%,92%)] hover:text-[hsl(42,95%,55%)] rounded-xl text-button transition-all font-[family-name:var(--font-space-grotesk)] cursor-pointer"
           >
             Get 7-Day Pass — $9 →
           </button>
@@ -341,7 +341,7 @@ export default function PricingPage() {
 
           <button
             onClick={() => handleCheckout(billingPeriod === 'monthly' ? 'price_pro_monthly' : 'price_pro_yearly')}
-            className="w-full py-3 bg-[hsl(42,95%,55%)] hover:bg-[hsl(42,95%,50%)] text-[hsl(220,15%,8%)] rounded-xl text-xs sm:text-sm font-bold transition-all shadow-md font-[family-name:var(--font-space-grotesk)] cursor-pointer"
+            className="w-full py-3 bg-[hsl(42,95%,55%)] hover:bg-[hsl(42,95%,50%)] text-[hsl(220,15%,8%)] rounded-xl text-button transition-all shadow-md font-[family-name:var(--font-space-grotesk)] cursor-pointer"
           >
             Upgrade to Pro ({billingPeriod === 'monthly' ? '$19/mo' : '$12/mo'}) →
           </button>
@@ -388,7 +388,7 @@ export default function PricingPage() {
 
           <button
             onClick={() => handleCheckout('price_studio_49')}
-            className="w-full py-2.5 bg-[hsl(220,12%,16%)] hover:bg-[hsl(220,12%,22%)] border border-[hsl(220,10%,28%)] text-[hsl(40,20%,92%)] rounded-xl text-xs font-bold transition-all font-[family-name:var(--font-space-grotesk)] cursor-pointer"
+            className="w-full py-2.5 bg-[hsl(220,12%,16%)] hover:bg-[hsl(220,12%,22%)] border border-[hsl(220,10%,28%)] text-[hsl(40,20%,92%)] rounded-xl text-button transition-all font-[family-name:var(--font-space-grotesk)] cursor-pointer"
           >
             Start Studio — $49/mo →
           </button>

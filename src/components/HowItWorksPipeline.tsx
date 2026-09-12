@@ -1,5 +1,3 @@
-'use client';
-
 export default function HowItWorksPipeline() {
   const steps = [
     {

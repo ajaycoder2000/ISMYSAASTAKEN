@@ -86,7 +86,7 @@ export default function HomePage() {
           {!result && (
             <div className="mb-7 sm:mb-8 animate-fade-in relative z-10">
               <TypewriterHeadline />
-              <p className="mt-3 sm:mt-3.5 text-sm sm:text-base text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] leading-relaxed max-w-xl">
+              <p className="mt-3 sm:mt-3.5 text-subhead text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] leading-relaxed max-w-xl">
                 Describe your idea. We&apos;ll search the web for real competitors, 
                 tell you how crowded the space is, and find the gap you could 
                 actually build toward.
