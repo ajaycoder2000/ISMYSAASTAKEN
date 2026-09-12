@@ -69,7 +69,7 @@ export default function Navbar() {
             </Link>
             <Link
               href="/keywords"
-              className="text-xs sm:text-sm text-[hsl(40,8%,55%)] hover:text-[hsl(40,20%,92%)] transition-colors font-[family-name:var(--font-inter)] flex items-center gap-1.5"
+              className="hidden lg:flex text-xs sm:text-sm text-[hsl(40,8%,55%)] hover:text-[hsl(40,20%,92%)] transition-colors font-[family-name:var(--font-inter)] items-center gap-1.5"
             >
               <span>Keywords</span>
               <span className="text-[9px] font-[family-name:var(--font-mono)] uppercase px-1.5 py-0.5 bg-[hsl(145,60%,45%,0.15)] text-[hsl(145,60%,55%)] rounded border border-[hsl(145,60%,45%,0.3)] font-bold">
@@ -78,7 +78,7 @@ export default function Navbar() {
             </Link>
             <Link
               href="/is-it-taken"
-              className="text-xs sm:text-sm text-[hsl(40,8%,55%)] hover:text-[hsl(40,20%,92%)] transition-colors font-[family-name:var(--font-inter)] flex items-center gap-1.5"
+              className="hidden lg:flex text-xs sm:text-sm text-[hsl(40,8%,55%)] hover:text-[hsl(40,20%,92%)] transition-colors font-[family-name:var(--font-inter)] items-center gap-1.5"
             >
               <span>Is It Taken?</span>
               <span className="text-[9px] font-[family-name:var(--font-mono)] uppercase px-1.5 py-0.5 bg-[hsl(145,60%,45%,0.15)] text-[hsl(145,60%,55%)] rounded border border-[hsl(145,60%,45%,0.3)] font-bold">
@@ -87,7 +87,7 @@ export default function Navbar() {
             </Link>
             <Link
               href="/roast"
-              className="text-xs sm:text-sm text-orange-400/90 hover:text-orange-300 transition-colors font-[family-name:var(--font-inter)] flex items-center gap-1 font-medium"
+              className="hidden md:flex text-xs sm:text-sm text-orange-400/90 hover:text-orange-300 transition-colors font-[family-name:var(--font-inter)] items-center gap-1 font-medium"
             >
               <span>🔥 Roast</span>
               <span className="text-[9px] font-[family-name:var(--font-mono)] uppercase px-1 py-0.5 bg-orange-950/60 text-orange-400 rounded border border-orange-800/60 font-bold">
@@ -96,7 +96,7 @@ export default function Navbar() {
             </Link>
             <Link
               href="/pricing"
-              className="text-xs sm:text-sm text-[hsl(40,8%,55%)] hover:text-[hsl(40,20%,92%)] transition-colors font-[family-name:var(--font-inter)]"
+              className="hidden sm:inline text-xs sm:text-sm text-[hsl(40,8%,55%)] hover:text-[hsl(40,20%,92%)] transition-colors font-[family-name:var(--font-inter)]"
             >
               Pricing
             </Link>
@@ -159,10 +159,10 @@ export default function Navbar() {
               </div>
             </Show>
 
-            {/* Mobile Hamburger Toggle Button */}
+            {/* Mobile / Tablet Hamburger Toggle Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="sm:hidden p-1.5 text-[hsl(40,8%,60%)] hover:text-[hsl(40,20%,95%)] transition-colors rounded-lg bg-[hsl(220,12%,12%)] border border-[hsl(220,10%,18%)]"
+              className="lg:hidden p-1.5 text-[hsl(40,8%,60%)] hover:text-[hsl(40,20%,95%)] transition-colors rounded-lg bg-[hsl(220,12%,12%)] border border-[hsl(220,10%,18%)] cursor-pointer"
               aria-label="Toggle Mobile Menu"
             >
               {mobileMenuOpen ? (
@@ -180,7 +180,7 @@ export default function Navbar() {
 
         {/* Mobile Dropdown Drawer */}
         {mobileMenuOpen && (
-          <div className="sm:hidden border-t border-[hsl(220,10%,16%)] bg-[hsl(220,15%,9%)] px-4 py-4 space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="lg:hidden border-t border-[hsl(220,10%,16%)] bg-[hsl(220,15%,9%)] px-4 py-4 space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
             <div className="flex flex-col space-y-2 text-sm font-[family-name:var(--font-inter)]">
               <Link
                 href="/#recent-scans"

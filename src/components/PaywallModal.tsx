@@ -115,7 +115,7 @@ export default function PaywallModal({
       <div className="absolute inset-0" onClick={onClose} />
 
       {/* Modal Card */}
-      <div className="relative w-full max-w-xl bg-[hsl(220,15%,10%)] border border-[hsl(220,10%,22%)] rounded-2xl shadow-2xl p-5 sm:p-8 z-10 overflow-hidden space-y-6">
+      <div className="relative w-full max-w-xl max-h-[92vh] overflow-y-auto bg-[hsl(220,15%,10%)] border border-[hsl(220,10%,22%)] rounded-2xl shadow-2xl p-5 sm:p-8 z-10 space-y-6">
         {/* Subtle accent glow */}
         <div className="absolute -top-24 -right-24 w-48 h-48 bg-[hsl(42,95%,55%,0.08)] rounded-full blur-3xl pointer-events-none" />
 

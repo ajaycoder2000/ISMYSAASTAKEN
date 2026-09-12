@@ -44,7 +44,7 @@ export default function UpgradeModal({
       onClick={onDismiss}
     >
       <div
-        className="bg-[hsl(220,15%,10%)] border border-[var(--border)] rounded-2xl max-w-[420px] w-full overflow-hidden shadow-2xl"
+        className="bg-[hsl(220,15%,10%)] border border-[var(--border)] rounded-2xl max-w-[420px] w-full max-h-[92vh] overflow-y-auto shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top section */}
