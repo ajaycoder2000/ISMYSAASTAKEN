@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useUser } from '@clerk/nextjs';
 
 export interface PaywallModalProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ export default function PaywallModal({
   toolName = 'this tool',
 }: PaywallModalProps) {
   const router = useRouter();
+  const { user: clerkUser } = useUser();
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
 
   // Close on Escape key
@@ -64,16 +66,20 @@ export default function PaywallModal({
         product_cart: [{ product_id: productId, quantity: 1 }],
       };
 
-      if (user?.email && user.email.includes('@')) {
+      const userEmail = clerkUser?.primaryEmailAddress?.emailAddress || user?.email;
+      const userName = clerkUser?.fullName || clerkUser?.firstName || user?.name || (userEmail ? userEmail.split('@')[0] : 'Founder');
+      const userId = clerkUser?.id || user?.id;
+
+      if (userEmail && userEmail.includes('@')) {
         bodyPayload.customer = {
-          email: user.email,
-          name: user.name || (user.email ? user.email.split('@')[0] : 'Founder'),
+          email: userEmail,
+          name: userName,
         };
       }
 
-      if (user?.id) {
+      if (userId) {
         bodyPayload.metadata = {
-          userId: user.id,
+          userId,
         };
       }
 

@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSession } from '@/lib/auth';
+import { auth } from '@clerk/nextjs/server';
 import { SupabaseDB } from '@/lib/supabase/db';
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await getSession();
-    if (!session) {
+    const { userId } = await auth();
+    if (!userId) {
       return NextResponse.json({ error: 'Sign in to bookmark ideas' }, { status: 401 });
     }
 
@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing scanId' }, { status: 400 });
     }
 
-    const result = await SupabaseDB.toggleBookmark(session.userId, scanId);
+    const result = await SupabaseDB.toggleBookmark(userId, scanId);
     return NextResponse.json({ success: true, ...result });
   } catch (error) {
     console.error('Bookmark error:', error);

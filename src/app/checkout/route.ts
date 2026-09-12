@@ -1,4 +1,5 @@
 import { Checkout } from '@dodopayments/nextjs';
+import { auth } from '@clerk/nextjs/server';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
@@ -63,8 +64,36 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
+
+  // Derive userId securely from Clerk session — prevent client-side spoofing
+  const { userId } = await auth();
+
+  let body: any = {};
+  try {
+    body = await req.json();
+  } catch {
+    body = {};
+  }
+
+  // Stamp the server-verified Clerk userId into metadata
+  const metadata = { ...(body.metadata || {}) };
+  if (userId) {
+    metadata.userId = userId;
+  } else {
+    // If unauthenticated, do not allow arbitrary client-supplied userId
+    delete metadata.userId;
+  }
+  body.metadata = metadata;
+
+  // Cloned NextRequest with sanitized body for Dodo handler
+  const sanitizedReq = new NextRequest(req.url, {
+    method: 'POST',
+    headers: req.headers,
+    body: JSON.stringify(body),
+  });
+
   const handler = getSessionHandler(apiKey);
-  return handler(req);
+  return handler(sanitizedReq);
 }
 
 export async function GET(req: NextRequest) {

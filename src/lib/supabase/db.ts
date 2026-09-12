@@ -88,6 +88,23 @@ export const SupabaseDB = {
             }
           }
 
+          // Also ensure profiles table has current Clerk record
+          try {
+            await supabase.from('profiles').upsert(
+              {
+                id: clerkId,
+                email: existingUser.email,
+                plan: currentPlan,
+                role: currentRole,
+                is_admin: isAuthorizedAdmin,
+                updated_at: new Date().toISOString(),
+              },
+              { onConflict: 'id' }
+            );
+          } catch (profUpsertErr) {
+            console.warn('Sync profiles table error:', profUpsertErr);
+          }
+
           const FREE_CAP = 3;
           const isPaid = isAuthorizedAdmin || ['pro', 'founder_pro', 'sprint_pass'].includes(currentPlan);
           const remaining = isPaid ? 999999 : Math.max(0, FREE_CAP - scansUsed);
@@ -132,6 +149,26 @@ export const SupabaseDB = {
           .single();
 
         if (newUser) {
+          // Auto-upsert into profiles table
+          try {
+            await supabase.from('profiles').upsert(
+              {
+                id: clerkId,
+                email: cleanEmail,
+                plan: assignedPlan,
+                role: assignedRole,
+                is_admin: isAdminAccount,
+                idea_scans_used: 0,
+                new_tools_scans_used: 0,
+                bonus_scans: 0,
+                updated_at: new Date().toISOString(),
+              },
+              { onConflict: 'id' }
+            );
+          } catch (profErr) {
+            console.warn('Sync new user profile error:', profErr);
+          }
+
           // Auto-subscribe new user to The Weekly SaaS Gap Report
           try {
             await SupabaseDB.addSubscriber(cleanEmail);

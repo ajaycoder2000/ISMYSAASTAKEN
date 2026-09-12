@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
 import dbConnect from '@/lib/mongodb';
 import Scan from '@/models/Scan';
 import { performScan } from '@/lib/llm';
 import { validateIdeaText, generateSlug } from '@/lib/utils';
-import { getSession } from '@/lib/auth';
 import { checkEntitlement, incrementFeatureUsage } from '@/lib/checkEntitlement';
 import { DevStore } from '@/lib/dev-store';
 import { SupabaseDB } from '@/lib/supabase/db';
@@ -11,9 +11,8 @@ import { recordScanEvent } from '@/lib/scan-events';
 
 export async function POST(req: NextRequest) {
   try {
-    // 1. User session & Centralized Entitlement Check
-    const session = await getSession();
-    const userId = session?.userId || null;
+    // 1. User session & Centralized Entitlement Check via Clerk
+    const { userId } = await auth();
 
     const access = await checkEntitlement(userId, 'ideaScans');
     if (!access.allowed) {

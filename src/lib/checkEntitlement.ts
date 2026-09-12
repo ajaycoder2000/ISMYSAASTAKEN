@@ -1,6 +1,7 @@
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { DevStore } from '@/lib/dev-store';
 import { getSession, isAdminEmail } from '@/lib/auth';
+import { currentUser } from '@clerk/nextjs/server';
 import { PLAN_ENTITLEMENTS, type FeatureKey, type PlanId } from './entitlements';
 
 export interface EntitlementCheckResult {
@@ -76,20 +77,29 @@ export async function checkEntitlement(
   }
 
   // 2. Admin privileges bypass all paywalls
-  const session = await getSession();
-  if (
-    session?.role === 'admin' ||
-    (session as any)?.is_admin ||
-    isAdminEmail(session?.email)
-  ) {
-    return { allowed: true, plan: 'founder_pro' };
+  try {
+    const clerkUser = await currentUser();
+    const email = clerkUser?.emailAddresses?.[0]?.emailAddress;
+    if (isAdminEmail(email)) {
+      return { allowed: true, plan: 'founder_pro' };
+    }
+  } catch {
+    // Fallback to legacy session check
+    const session = await getSession();
+    if (
+      session?.role === 'admin' ||
+      (session as any)?.is_admin ||
+      isAdminEmail(session?.email)
+    ) {
+      return { allowed: true, plan: 'founder_pro' };
+    }
   }
 
   const supabase = getSupabaseAdmin();
 
   if (supabase) {
     try {
-      // 3a. Check profiles table first (Supabase Auth default)
+      // 3a. Check profiles table first (with Clerk userId)
       const { data: profile, error: profileErr } = await supabase
         .from('profiles')
         .select('plan, plan_expires_at, idea_scans_used, new_tools_scans_used, bonus_scans, is_admin, role, email')
@@ -102,6 +112,41 @@ export async function checkEntitlement(
         }
 
         return evaluatePlanRules(profile, feature);
+      }
+
+      // If profile not yet created for this signed-in Clerk user, auto-create it
+      try {
+        const clerkUser = await currentUser();
+        const userEmail = clerkUser?.emailAddresses?.[0]?.emailAddress || `${userId}@user.clerk`;
+        const isAuthorizedAdmin = isAdminEmail(userEmail);
+        const initialPlan = isAuthorizedAdmin ? 'founder_pro' : 'free';
+
+        const { data: newProfile } = await supabase
+          .from('profiles')
+          .upsert(
+            {
+              id: userId,
+              email: userEmail,
+              plan: initialPlan,
+              is_admin: isAuthorizedAdmin,
+              role: isAuthorizedAdmin ? 'admin' : 'user',
+              idea_scans_used: 0,
+              new_tools_scans_used: 0,
+              bonus_scans: 0,
+            },
+            { onConflict: 'id' }
+          )
+          .select()
+          .maybeSingle();
+
+        if (newProfile) {
+          if (newProfile.is_admin || newProfile.role === 'admin' || isAdminEmail(newProfile.email)) {
+            return { allowed: true, plan: 'founder_pro' };
+          }
+          return evaluatePlanRules(newProfile, feature);
+        }
+      } catch {
+        // Fall back to users table
       }
 
       // 3b. Check users table (synced users table)

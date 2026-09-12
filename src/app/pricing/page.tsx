@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useUser } from '@clerk/nextjs';
 import AnimatedPriceCounter from '@/components/AnimatedPriceCounter';
 
 interface UserSession {
@@ -28,6 +29,7 @@ const resolveDodoProductId = (key: string) => {
 };
 
 export default function PricingPage() {
+  const { user: clerkUser } = useUser();
   const [user, setUser] = useState<UserSession | null>(null);
   const [loading, setLoading] = useState<string | null>(null);
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>('monthly');
@@ -49,16 +51,20 @@ export default function PricingPage() {
         product_cart: [{ product_id: productId, quantity: 1 }],
       };
 
-      if (user?.email && user.email.includes('@')) {
+      const userEmail = clerkUser?.primaryEmailAddress?.emailAddress || user?.email;
+      const userName = clerkUser?.fullName || clerkUser?.firstName || user?.name || (userEmail ? userEmail.split('@')[0] : 'Founder');
+      const userId = clerkUser?.id || user?.id;
+
+      if (userEmail && userEmail.includes('@')) {
         bodyPayload.customer = {
-          email: user.email,
-          name: user.name || (user.email ? user.email.split('@')[0] : 'Founder'),
+          email: userEmail,
+          name: userName,
         };
       }
 
-      if (user?.id) {
+      if (userId) {
         bodyPayload.metadata = {
-          userId: user.id,
+          userId,
         };
       }
 

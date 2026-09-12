@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
 import googleTrends from 'google-trends-api';
 import { SupabaseDB } from '@/lib/supabase/db';
-import { getSession } from '@/lib/auth';
 import { expandKeywordsWithLLM } from '@/lib/llm';
 import { checkEntitlement, incrementFeatureUsage } from '@/lib/checkEntitlement';
 import { recordScanEvent } from '@/lib/scan-events';
@@ -43,9 +43,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // --- 1. User session & Centralized Entitlement Check ---
-    const session = await getSession();
-    const userId = session?.userId || null;
+    // --- 1. User session & Centralized Entitlement Check via Clerk ---
+    const { userId } = await auth();
 
     const access = await checkEntitlement(userId, 'newTools');
     if (!access.allowed) {

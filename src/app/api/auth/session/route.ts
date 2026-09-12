@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { getSession, isAdminEmail } from '@/lib/auth';
 import dbConnect from '@/lib/mongodb';
 import User from '@/models/User';
@@ -10,15 +11,30 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const session = await getSession();
-    
-    if (!session?.userId) {
+    const { userId: clerkUserId } = await auth();
+    let clerkEmail = '';
+    let clerkName = '';
+
+    if (clerkUserId) {
+      try {
+        const clerkUser = await currentUser();
+        clerkEmail = clerkUser?.emailAddresses?.[0]?.emailAddress || '';
+        clerkName = clerkUser?.fullName || clerkUser?.firstName || '';
+      } catch {
+        // ignore
+      }
+    }
+
+    const session = !clerkUserId ? await getSession() : null;
+    const activeUserId = clerkUserId || session?.userId;
+
+    if (!activeUserId) {
       return NextResponse.json({ user: null });
     }
-    
-    let userEmail = session.email;
-    let userPlan = session.plan;
-    let userRole = session.role || 'user';
+
+    let userEmail = clerkEmail || session?.email || '';
+    let userPlan = session?.plan || 'free';
+    let userRole = session?.role || 'user';
     let userSuspended = false;
     let scansUsed = 0;
     let scansResetDate = new Date();
@@ -33,7 +49,7 @@ export async function GET() {
         const { data: userRow } = await supabase
           .from('users')
           .select('*')
-          .or(`clerk_id.eq.${session.userId},id.eq.${session.userId},email.eq.${userEmail}`)
+          .or(`clerk_id.eq.${activeUserId},id.eq.${activeUserId},email.eq.${userEmail}`)
           .maybeSingle();
 
         if (userRow) {
@@ -55,7 +71,7 @@ export async function GET() {
         const { data: profileRow } = await supabase
           .from('profiles')
           .select('*')
-          .or(`id.eq.${session.userId},email.eq.${userEmail}`)
+          .or(`id.eq.${activeUserId},email.eq.${userEmail}`)
           .maybeSingle();
 
         if (profileRow) {
@@ -75,7 +91,12 @@ export async function GET() {
     try {
       const conn = await dbConnect();
       if (conn) {
-        const userDoc = await User.findById(session.userId).lean();
+        let userDoc = null;
+        try {
+          userDoc = await User.findOne({ $or: [{ _id: activeUserId }, { clerkId: activeUserId }, { email: userEmail }] }).lean();
+        } catch {
+          // ignore id cast errors
+        }
         if (userDoc) {
           userEmail = userDoc.email || userEmail;
           if (userDoc.role === 'admin' || (userDoc as any).is_admin || isAdminEmail(userEmail)) {
@@ -93,7 +114,7 @@ export async function GET() {
           monthlyCap = config.freeTierMonthlyLimit;
         }
       } else {
-        const devUser = DevStore.findUserById(session.userId) || DevStore.findUserByEmail(userEmail);
+        const devUser = DevStore.findUserById(activeUserId) || DevStore.findUserByEmail(userEmail);
         if (devUser) {
           userEmail = devUser.email;
           if (devUser.role === 'admin' || devUser.is_admin || isAdminEmail(userEmail)) {
@@ -109,7 +130,7 @@ export async function GET() {
         monthlyCap = devConfig.freeTierMonthlyLimit || 3;
       }
     } catch {
-      const devUser = DevStore.findUserById(session.userId) || DevStore.findUserByEmail(userEmail);
+      const devUser = DevStore.findUserById(activeUserId) || DevStore.findUserByEmail(userEmail);
       if (devUser) {
         userEmail = devUser.email;
         if (devUser.role === 'admin' || devUser.is_admin || isAdminEmail(userEmail)) {
@@ -135,7 +156,7 @@ export async function GET() {
     
     return NextResponse.json({
       user: {
-        id: session.userId,
+        id: activeUserId,
         email: userEmail,
         plan: userPlan,
         role: userRole,
