@@ -14,10 +14,13 @@
     "@dodopayments/nextjs": "^0.3.9",
     "@supabase/ssr": "^0.12.5",
     "@supabase/supabase-js": "^2.112.4",
+    "clsx": "^2.1.1",
     "cookie": "^2.0.1",
+    "framer-motion": "^13.3.0",
     "google-trends-api": "^4.9.2",
     "html-to-image": "^1.11.13",
     "jsonwebtoken": "^9.0.3",
+    "lucide-react": "^1.46.0",
     "mongoose": "^9.9.3",
     "nanoid": "^3.3.18",
     "next": "16.3.1",
@@ -25,7 +28,8 @@
     "react-dom": "19.2.8",
     "recharts": "^3.10.1",
     "stripe": "^22.5.0",
-    "svix": "^2.5.0"
+    "svix": "^2.5.0",
+    "tailwind-merge": "^3.7.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

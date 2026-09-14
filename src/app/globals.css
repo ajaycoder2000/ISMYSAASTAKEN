@@ -31,11 +31,29 @@
   --green-mid: hsl(145, 60%, 45%, 0.3);
   --amber-dim: hsl(42, 95%, 55%, 0.1);
   --amber-mid: hsl(42, 95%, 55%, 0.3);
+
+  /* Button AI & shadcn theme tokens */
+  --primary: hsl(42, 95%, 55%);
+  --primary-foreground: hsl(220, 15%, 8%);
+  --card: hsl(220, 12%, 12%);
+  --card-foreground: hsl(40, 20%, 92%);
+  --muted-foreground: hsl(40, 8%, 65%);
+  --accent-foreground: hsl(42, 95%, 55%);
+  --chart-2: hsl(35, 95%, 60%);
+  --ring: hsl(42, 95%, 55%);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
   --font-sans: var(--font-inter);
   --font-mono: var(--font-jetbrains-mono);
 }

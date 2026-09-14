@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { IScanDocument } from '@/types';
-import ScanningIndicator from './ScanningIndicator';
+import ButtonAI from './ButtonAI';
 
 interface ScanFormProps {
   onScanStart?: () => void;
@@ -106,20 +106,14 @@ export default function ScanForm({
           <span>Live Web Search Grounded • 100% Private</span>
         </div>
 
-        <button
+        <ButtonAI
           type="submit"
           disabled={!ideaText.trim() || loading || disabled}
-          className="w-full sm:w-auto px-7 py-3 bg-[hsl(42,95%,55%)] hover:bg-[hsl(42,95%,50%)] text-[hsl(220,15%,8%)] text-button rounded-xl transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-[family-name:var(--font-space-grotesk)] shadow-lg shadow-[rgba(245,166,35,0.15)] cursor-pointer"
-        >
-          {loading || disabled ? (
-            <>
-              <ScanningIndicator size="sm" />
-              <span>Scanning live market...</span>
-            </>
-          ) : (
-            'Scan this idea →'
-          )}
-        </button>
+          loading={loading || disabled}
+          idleText="Scan this idea →"
+          thinkingText="Scanning market..."
+          className="w-full sm:w-auto font-[family-name:var(--font-space-grotesk)]"
+        />
       </div>
 
       {/* Trust & Privacy Guarantee Banner */}
