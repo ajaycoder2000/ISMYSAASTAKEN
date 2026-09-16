@@ -18,7 +18,6 @@ import MarketPlaybook from '@/components/MarketPlaybook';
 import WeeklyGapSignup from '@/components/WeeklyGapSignup';
 import HeroBackground from '@/components/HeroBackground';
 import TypewriterHeadline from '@/components/TypewriterHeadline';
-import WhyValidationMattersSection from '@/components/WhyValidationMattersSection';
 import PaywallModal from '@/components/PaywallModal';
 import { IScanDocument } from '@/types';
 
@@ -179,11 +178,6 @@ export default function HomePage() {
         {/* 3. Why This Exists (ChatGPT vs This Tool) */}
         <div className="w-full pt-8 sm:pt-12 border-t border-[hsl(220,10%,15%)]">
           <WhyThisExists />
-        </div>
-
-        {/* 4. Why Idea Validation Matters — Interactive Risk Self-Check & Failure Chart */}
-        <div className="w-full pt-8 sm:pt-12 border-t border-[hsl(220,10%,15%)]">
-          <WhyValidationMattersSection />
         </div>
 
         {/* 4. Search Demand & Keyword Radar Feature Showcase */}

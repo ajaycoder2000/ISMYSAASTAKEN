@@ -8,13 +8,11 @@ export function WhyValidationMattersSection() {
   const [topRisk, setTopRisk] = useState<FailureKey | null>(null);
 
   const handleScrollToScan = (e: React.MouseEvent) => {
-    e.preventDefault();
     const el = document.getElementById('scan-input') || document.getElementById('scan-form');
     if (el) {
+      e.preventDefault();
       el.scrollIntoView({ behavior: 'smooth', block: 'center' });
       el.focus();
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 

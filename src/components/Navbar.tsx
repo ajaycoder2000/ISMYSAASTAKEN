@@ -95,6 +95,15 @@ export default function Navbar() {
               </span>
             </Link>
             <Link
+              href="/why-validation-matters"
+              className="hidden xl:flex text-xs sm:text-sm text-[hsl(40,8%,55%)] hover:text-[hsl(40,20%,92%)] transition-colors font-[family-name:var(--font-inter)] items-center gap-1.5"
+            >
+              <span>Why Validate?</span>
+              <span className="text-[9px] font-[family-name:var(--font-mono)] uppercase px-1.5 py-0.5 bg-[hsl(42,95%,55%,0.15)] text-[hsl(42,95%,55%)] rounded border border-[hsl(42,95%,55%,0.3)] font-bold">
+                QUIZ
+              </span>
+            </Link>
+            <Link
               href="/pricing"
               className="hidden sm:inline text-xs sm:text-sm text-[hsl(40,8%,55%)] hover:text-[hsl(40,20%,92%)] transition-colors font-[family-name:var(--font-inter)]"
             >
@@ -226,6 +235,16 @@ export default function Navbar() {
                 <span>🔥 Roast Mode</span>
                 <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 bg-orange-950/60 text-orange-400 rounded font-bold border border-orange-800/60">
                   HOT
+                </span>
+              </Link>
+              <Link
+                href="/why-validation-matters"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2 rounded-lg text-[hsl(40,20%,90%)] hover:bg-[hsl(220,12%,14%)] flex items-center justify-between"
+              >
+                <span>Why Validation Matters</span>
+                <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 bg-[hsl(42,95%,55%,0.15)] text-[hsl(42,95%,55%)] rounded font-bold border border-[hsl(42,95%,55%,0.3)]">
+                  QUIZ
                 </span>
               </Link>
               <Link
