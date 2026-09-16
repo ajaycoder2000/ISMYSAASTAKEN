@@ -85,9 +85,10 @@ export default function ScanForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full mx-auto">
+    <form id="scan-form" onSubmit={handleSubmit} className="w-full mx-auto">
       <div className="relative">
         <textarea
+          id="scan-input"
           value={ideaText}
           onChange={(e) => setIdeaText(e.target.value.slice(0, 500))}
           placeholder="Describe your SaaS idea in plain English (e.g. AI tool that turns Figma designs into clean React & Tailwind components with live AST parsing)..."
