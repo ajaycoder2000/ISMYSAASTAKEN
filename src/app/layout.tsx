@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -124,6 +125,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <head>
@@ -132,12 +134,14 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="min-h-full flex flex-col bg-[hsl(220,15%,8%)] text-[hsl(40,20%,92%)]">
-        <ClerkProvider>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </ClerkProvider>
+      <body className="min-h-full flex flex-col bg-[var(--bg-primary)] text-[var(--text-primary)] antialiased transition-colors duration-200">
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          <ClerkProvider>
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </ClerkProvider>
+        </ThemeProvider>
         {/* Lightweight Vercel Analytics */}
         <Script
           src="https://va.vercel-scripts.com/v1/script.js"

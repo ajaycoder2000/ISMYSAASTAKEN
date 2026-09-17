@@ -17,7 +17,14 @@ export default function Footer() {
                 alt="IsMySaaSTaken"
                 width={180}
                 height={22}
-                className="h-5 sm:h-6 w-auto object-contain"
+                className="h-5 sm:h-6 w-auto object-contain hidden dark:block"
+              />
+              <Image
+                src="/logo-light.png"
+                alt="IsMySaaSTaken"
+                width={180}
+                height={22}
+                className="h-5 sm:h-6 w-auto object-contain block dark:hidden"
               />
             </Link>
             <p className="mt-1 text-xs text-[hsl(40,8%,45%)] font-[family-name:var(--font-inter)]">

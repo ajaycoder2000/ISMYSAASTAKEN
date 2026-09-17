@@ -12,6 +12,7 @@ import {
 import NotificationCenter from './NotificationCenter';
 import ScanMeter from './ScanMeter';
 import UpgradeModal from './UpgradeModal';
+import ThemeToggle from './ThemeToggle';
 
 export default function Navbar() {
   const [userData, setUserData] = useState<{
@@ -36,7 +37,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="w-full border-b border-[hsl(220,10%,14%)] bg-[hsl(220,15%,8%)] sm:bg-[hsl(220,15%,8%,0.92)] sm:backdrop-blur-md sticky top-0 z-50">
+      <nav className="w-full border-b border-[var(--border)] bg-[var(--bg-primary)] sm:bg-[var(--bg-primary)]/95 sm:backdrop-blur-md sticky top-0 z-50 transition-colors duration-200">
         <div className="w-full max-w-[1780px] mx-auto px-3 sm:px-5 lg:px-8 h-14 flex items-center justify-between">
           <Link
             href="/"
@@ -50,7 +51,15 @@ export default function Navbar() {
               width={200}
               height={24}
               priority
-              className="h-6 sm:h-7 w-auto object-contain"
+              className="h-6 sm:h-7 w-auto object-contain hidden dark:block"
+            />
+            <Image
+              src="/logo-light.png"
+              alt="IsMySaaSTaken"
+              width={200}
+              height={24}
+              priority
+              className="h-6 sm:h-7 w-auto object-contain block dark:hidden"
             />
           </Link>
           
@@ -128,6 +137,9 @@ export default function Navbar() {
             {/* Market Alerts & Notifications */}
             <NotificationCenter />
 
+            {/* Light / Dark Theme Toggle */}
+            <ThemeToggle className="hidden sm:flex" />
+
             {/* Signed Out Controls */}
             <Show when="signed-out">
               <div className="hidden sm:flex items-center gap-2">
@@ -168,6 +180,9 @@ export default function Navbar() {
               </div>
             </Show>
 
+            {/* Mobile Light / Dark Theme Toggle */}
+            <ThemeToggle className="lg:hidden" />
+
             {/* Mobile / Tablet Hamburger Toggle Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -189,7 +204,7 @@ export default function Navbar() {
 
         {/* Mobile Dropdown Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-[hsl(220,10%,16%)] bg-[hsl(220,15%,9%)] px-4 py-4 space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="lg:hidden border-t border-[var(--border)] bg-[var(--bg-surface)] px-4 py-4 space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
             <div className="flex flex-col space-y-2 text-sm font-[family-name:var(--font-inter)]">
               <Link
                 href="/#recent-scans"
@@ -254,6 +269,11 @@ export default function Navbar() {
               >
                 Pricing &amp; Passes
               </Link>
+
+              <div className="px-3 py-2 rounded-lg flex items-center justify-between">
+                <span className="text-xs font-mono uppercase tracking-wider text-[var(--text-secondary)]">Theme Mode</span>
+                <ThemeToggle />
+              </div>
 
               <Show when="signed-in">
                 <Link
