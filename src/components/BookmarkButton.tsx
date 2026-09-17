@@ -36,8 +36,8 @@ export default function BookmarkButton({ scanId, initialBookmarked = false }: Bo
       disabled={loading}
       className={`px-3 py-1.5 rounded-lg border text-xs font-[family-name:var(--font-mono)] transition-all flex items-center gap-1.5 cursor-pointer ${
         bookmarked
-          ? 'bg-[hsl(42,95%,55%,0.15)] border-[hsl(42,95%,55%,0.4)] text-[hsl(42,95%,55%)] font-bold shadow-sm'
-          : 'bg-[hsl(220,12%,12%)] border-[hsl(220,10%,20%)] text-[hsl(40,8%,60%)] hover:text-[hsl(40,20%,90%)] hover:border-[hsl(220,10%,30%)]'
+          ? 'bg-[var(--accent-amber)]/15 border-[var(--accent-amber)]/40 text-[var(--accent-amber)] font-bold shadow-sm'
+          : 'bg-[var(--bg-surface)] border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
       }`}
       title={bookmarked ? 'Saved to Bookmarks' : 'Save to Bookmarks'}
     >

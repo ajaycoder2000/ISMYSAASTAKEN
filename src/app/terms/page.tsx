@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="text-base sm:text-lg font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)] mt-8 mb-3 tracking-tight">
+    <h2 className="text-base sm:text-lg font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)] mt-8 mb-3 tracking-tight">
       {children}
     </h2>
   );
@@ -19,7 +19,7 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
 
 function Paragraph({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-xs sm:text-sm text-[hsl(40,8%,60%)] font-[family-name:var(--font-inter)] leading-relaxed mb-4">
+    <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-[family-name:var(--font-inter)] leading-relaxed mb-4">
       {children}
     </p>
   );
@@ -29,17 +29,17 @@ export default function TermsPage() {
   return (
     <div className="min-h-[calc(100vh-3.5rem)] px-4 sm:px-6 lg:px-8 py-10 sm:py-16 max-w-3xl mx-auto">
       {/* Header */}
-      <div className="mb-8 pb-6 border-b border-[hsl(220,10%,16%)]">
+      <div className="mb-8 pb-6 border-b border-[var(--border)]">
         <Link
           href="/"
-          className="text-xs font-[family-name:var(--font-mono)] text-[hsl(42,95%,55%)] hover:underline mb-3 inline-block"
+          className="text-xs font-[family-name:var(--font-mono)] text-[var(--accent-amber)] hover:underline mb-3 inline-block"
         >
           ← Back to Is My SaaS Taken?
         </Link>
-        <h1 className="text-2xl sm:text-4xl font-extrabold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,95%)] tracking-tight mb-2">
+        <h1 className="text-2xl sm:text-4xl font-extrabold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)] tracking-tight mb-2">
           Terms of Service
         </h1>
-        <p className="text-xs font-[family-name:var(--font-mono)] text-[hsl(40,8%,45%)]">
+        <p className="text-xs font-[family-name:var(--font-mono)] text-[var(--text-muted)]">
           Last updated: August 27, 2026
         </p>
       </div>
@@ -78,7 +78,7 @@ export default function TermsPage() {
 
         <SectionHeading>7. Contact Information</SectionHeading>
         <Paragraph>
-          For questions regarding these terms, privacy inquiries, or commercial sponsorships, please contact us at <a href="mailto:ismysaastaken@gmail.com" className="text-[hsl(42,95%,55%)] hover:underline font-mono">ismysaastaken@gmail.com</a>.
+          For questions regarding these terms, privacy inquiries, or commercial sponsorships, please contact us at <a href="mailto:ismysaastaken@gmail.com" className="text-[var(--accent-amber)] hover:underline font-mono">ismysaastaken@gmail.com</a>.
         </Paragraph>
       </div>
     </div>

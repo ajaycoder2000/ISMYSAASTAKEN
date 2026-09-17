@@ -138,16 +138,16 @@ export default function ExpandedResultShowcase() {
     <section className="w-full pt-6 sm:pt-10">
       {/* Section Header */}
       <div className="text-center sm:text-left mb-6">
-        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-[hsl(42,95%,55%,0.1)] border border-[hsl(42,95%,55%,0.2)] mb-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-[hsl(42,95%,55%)] animate-pulse" />
-          <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-[hsl(42,95%,55%)] font-bold">
+        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-[var(--accent-amber)]/10 border border-[var(--accent-amber)]/20 mb-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-amber)] animate-pulse" />
+          <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-[var(--accent-amber)] font-bold">
             Interactive Inspector
           </span>
         </div>
-        <h2 className="text-2xl sm:text-3xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,92%)] tracking-tight">
+        <h2 className="text-2xl sm:text-3xl font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)] tracking-tight">
           See how the scanner deconstructs an idea
         </h2>
-        <p className="mt-1 text-xs sm:text-sm text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] max-w-xl">
+        <p className="mt-1 text-xs sm:text-sm text-[var(--text-secondary)] font-[family-name:var(--font-inter)] max-w-xl">
           Pick a sample scenario below to see real live market intelligence, competitive positioning matrix, and strategic opportunity wedges.
         </p>
       </div>
@@ -158,10 +158,10 @@ export default function ExpandedResultShowcase() {
           const isActive = sc.id === activeScenarioId;
           const badgeColor =
             sc.badgeType === 'gap'
-              ? 'text-[hsl(42,95%,55%)] bg-[hsl(42,95%,55%,0.12)] border-[hsl(42,95%,55%,0.3)]'
+              ? 'text-[var(--accent-amber)] bg-[var(--accent-amber)]/10 border-[var(--accent-amber)]/30'
               : sc.badgeType === 'wedge'
-              ? 'text-[hsl(35,85%,55%)] bg-[hsl(35,85%,55%,0.12)] border-[hsl(35,85%,55%,0.3)]'
-              : 'text-[hsl(0,72%,55%)] bg-[hsl(0,72%,55%,0.12)] border-[hsl(0,72%,55%,0.3)]';
+              ? 'text-[var(--accent-amber)] bg-[var(--accent-amber)]/10 border-[var(--accent-amber)]/30'
+              : 'text-red-500 bg-red-500/10 border-red-500/30';
 
           return (
             <button
@@ -169,8 +169,8 @@ export default function ExpandedResultShowcase() {
               onClick={() => setActiveScenarioId(sc.id)}
               className={`px-3 py-2.5 rounded-lg text-xs font-[family-name:var(--font-mono)] transition-all flex items-center justify-center sm:justify-start gap-2 cursor-pointer border w-full text-left ${
                 isActive
-                  ? 'bg-[hsl(220,12%,14%)] text-[hsl(40,20%,95%)] border-[hsl(42,95%,55%,0.5)] shadow-[0_0_12px_rgba(245,166,35,0.1)]'
-                  : 'bg-[hsl(220,12%,10%)] text-[hsl(40,8%,50%)] border-[hsl(220,10%,18%)] hover:text-[hsl(40,20%,85%)] hover:border-[hsl(220,10%,25%)]'
+                  ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] border-[var(--accent-amber)] shadow-[0_0_12px_rgba(245,166,35,0.1)]'
+                  : 'bg-[var(--bg-surface-alt)] text-[var(--text-muted)] border-[var(--border)] hover:text-[var(--text-primary)] hover:border-[var(--text-dim)]'
               }`}
             >
               <span className={`text-[9px] uppercase px-1.5 py-0.5 rounded font-bold border flex-shrink-0 ${badgeColor}`}>
@@ -183,71 +183,71 @@ export default function ExpandedResultShowcase() {
       </div>
 
       {/* 2-Column Inspector Canvas */}
-      <div className="bg-[hsl(220,15%,9%)] border border-[hsl(220,10%,18%)] rounded-2xl overflow-hidden shadow-2xl scanline-card">
+      <div className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl overflow-hidden shadow-2xl scanline-card">
         {/* Window Chrome Titlebar */}
-        <div className="px-4 py-2.5 bg-[hsl(220,13%,11%)] border-b border-[hsl(220,10%,16%)] flex items-center justify-between text-xs text-[hsl(40,8%,45%)] font-[family-name:var(--font-mono)]">
+        <div className="px-4 py-2.5 bg-[var(--bg-surface-alt)] border-b border-[var(--border)] flex items-center justify-between text-xs text-[var(--text-muted)] font-[family-name:var(--font-mono)]">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-[hsl(0,72%,50%,0.7)]" />
             <span className="w-2.5 h-2.5 rounded-full bg-[hsl(42,95%,50%,0.7)]" />
             <span className="w-2.5 h-2.5 rounded-full bg-[hsl(145,60%,45%,0.7)]" />
-            <span className="ml-2 text-[11px] text-[hsl(40,8%,60%)] hidden sm:inline">
+            <span className="ml-2 text-[11px] text-[var(--text-secondary)] hidden sm:inline">
               intel_dossier::{scenario.id}.json
             </span>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-[10px] text-[hsl(42,95%,55%)] bg-[hsl(42,95%,55%,0.1)] px-2 py-0.5 rounded">
+            <span className="text-[10px] text-[var(--accent-amber)] bg-[var(--accent-amber)]/10 px-2 py-0.5 rounded font-bold">
               LLM + Web Crawl
             </span>
-            <span className="text-[10px] text-[hsl(40,8%,40%)]">0.82s</span>
+            <span className="text-[10px] text-[var(--text-dim)]">0.82s</span>
           </div>
         </div>
 
         {/* 2-Column Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 divide-y lg:divide-y-0 lg:divide-x divide-[hsl(220,10%,16%)]">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 divide-y lg:divide-y-0 lg:divide-x divide-[var(--border)]">
           {/* LEFT COLUMN: The Idea Anatomy (5 cols) */}
-          <div className="lg:col-span-5 p-5 sm:p-6 bg-[hsl(220,14%,10%)] flex flex-col justify-between space-y-6">
+          <div className="lg:col-span-5 p-5 sm:p-6 bg-[var(--bg-surface)] flex flex-col justify-between space-y-6">
             <div className="space-y-4">
               <div>
-                <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-[hsl(40,8%,40%)] block mb-1.5 font-semibold">
+                <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-[var(--text-dim)] block mb-1.5 font-semibold">
                   01 // Input Idea
                 </span>
-                <p className="text-sm sm:text-base text-[hsl(40,20%,95%)] font-[family-name:var(--font-space-grotesk)] font-medium leading-snug border-l-2 border-[hsl(42,95%,55%)] pl-3">
+                <p className="text-sm sm:text-base text-[var(--text-primary)] font-[family-name:var(--font-space-grotesk)] font-medium leading-snug border-l-2 border-[var(--accent-amber)] pl-3">
                   &ldquo;{scenario.ideaText}&rdquo;
                 </p>
               </div>
 
               {/* Extracted Anatomy Pills */}
               <div className="space-y-2 pt-2">
-                <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.18em] text-[hsl(40,8%,40%)] block font-medium">
+                <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.18em] text-[var(--text-dim)] block font-medium">
                   Extracted Attributes
                 </span>
 
-                <div className="bg-[hsl(220,12%,12%)] border border-[hsl(220,10%,18%)] rounded-lg p-3 space-y-2 text-xs">
+                <div className="bg-[var(--bg-surface-alt)] border border-[var(--border)] rounded-lg p-3 space-y-2 text-xs">
                   <div>
-                    <span className="text-[10px] text-[hsl(40,8%,45%)] font-[family-name:var(--font-mono)] block">
+                    <span className="text-[10px] text-[var(--text-muted)] font-[family-name:var(--font-mono)] block">
                       Target ICP
                     </span>
-                    <span className="text-[hsl(40,20%,88%)] font-medium font-[family-name:var(--font-inter)]">
+                    <span className="text-[var(--text-primary)] font-medium font-[family-name:var(--font-inter)]">
                       {scenario.targetAudience}
                     </span>
                   </div>
 
-                  <div className="pt-1.5 border-t border-[hsl(220,10%,16%)] flex items-center justify-between">
+                  <div className="pt-1.5 border-t border-[var(--border)] flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] text-[hsl(40,8%,45%)] font-[family-name:var(--font-mono)] block">
+                      <span className="text-[10px] text-[var(--text-muted)] font-[family-name:var(--font-mono)] block">
                         Viable Price Tier
                       </span>
-                      <span className="text-[hsl(42,95%,55%)] font-[family-name:var(--font-mono)] font-bold">
+                      <span className="text-[var(--accent-amber)] font-[family-name:var(--font-mono)] font-bold">
                         {scenario.pricePoint}
                       </span>
                     </div>
                   </div>
 
-                  <div className="pt-1.5 border-t border-[hsl(220,10%,16%)]">
-                    <span className="text-[10px] text-[hsl(40,8%,45%)] font-[family-name:var(--font-mono)] block">
+                  <div className="pt-1.5 border-t border-[var(--border)]">
+                    <span className="text-[10px] text-[var(--text-muted)] font-[family-name:var(--font-mono)] block">
                       Core Wedge Angle
                     </span>
-                    <span className="text-[hsl(40,20%,85%)] text-[11px] font-[family-name:var(--font-inter)] leading-snug block mt-0.5">
+                    <span className="text-[var(--text-secondary)] text-[11px] font-[family-name:var(--font-inter)] leading-snug block mt-0.5">
                       {scenario.coreAngle}
                     </span>
                   </div>
@@ -259,7 +259,7 @@ export default function ExpandedResultShowcase() {
             <div className="pt-2">
               <button
                 onClick={handleFillIdea}
-                className="w-full py-2.5 px-3 bg-[hsl(220,10%,16%)] hover:bg-[hsl(42,95%,55%)] text-[hsl(40,20%,90%)] hover:text-[hsl(220,15%,8%)] text-xs font-bold rounded-lg transition-all font-[family-name:var(--font-space-grotesk)] flex items-center justify-center gap-1.5 group cursor-pointer border border-[hsl(220,10%,24%)] hover:border-[hsl(42,95%,55%)]"
+                className="w-full py-2.5 px-3 bg-[var(--bg-surface-alt)] hover:bg-[var(--accent-amber)] text-[var(--text-primary)] hover:text-black text-xs font-bold rounded-lg transition-all font-[family-name:var(--font-space-grotesk)] flex items-center justify-center gap-1.5 group cursor-pointer border border-[var(--border)] hover:border-[var(--accent-amber)]"
               >
                 <span>Test this idea yourself</span>
                 <span className="transition-transform group-hover:-translate-y-0.5 font-[family-name:var(--font-mono)]">↑</span>
@@ -268,54 +268,54 @@ export default function ExpandedResultShowcase() {
           </div>
 
           {/* RIGHT COLUMN: Market Matrix & Blueprint (7 cols) */}
-          <div className="lg:col-span-7 p-5 sm:p-6 bg-[hsl(220,15%,9%)] space-y-5">
+          <div className="lg:col-span-7 p-5 sm:p-6 bg-[var(--bg-surface-alt)] space-y-5">
             {/* Saturation Header */}
-            <div className="flex items-center justify-between bg-[hsl(220,12%,12%)] border border-[hsl(220,10%,18%)] rounded-lg px-3.5 py-2.5">
+            <div className="flex items-center justify-between bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg px-3.5 py-2.5">
               <div>
-                <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.18em] text-[hsl(40,8%,45%)] block">
+                <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.18em] text-[var(--text-muted)] block">
                   Market Saturation
                 </span>
                 <SignalBars score={scenario.saturationScore} size="sm" className="mt-1" />
               </div>
               <div className="text-right">
-                <span className="text-[10px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,40%)] block">
+                <span className="text-[10px] font-[family-name:var(--font-mono)] text-[var(--text-dim)] block">
                   Discovered Competitors
                 </span>
-                <span className="text-xs font-bold font-[family-name:var(--font-mono)] text-[hsl(40,20%,90%)]">
+                <span className="text-xs font-bold font-[family-name:var(--font-mono)] text-[var(--text-primary)]">
                   {scenario.competitors.length} live players
                 </span>
               </div>
             </div>
 
             {/* 2×2 Positioning Matrix Visual Chart */}
-            <div className="bg-[hsl(220,13%,11%)] border border-[hsl(220,10%,18%)] rounded-xl p-4 relative">
+            <div className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl p-4 relative shadow-sm">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.18em] text-[hsl(40,8%,50%)] font-bold">
+                <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.18em] text-[var(--text-muted)] font-bold">
                   2×2 Competitive Positioning Matrix
                 </span>
-                <span className="text-[9px] font-[family-name:var(--font-mono)] text-[hsl(42,95%,55%)] flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[hsl(42,95%,55%)] animate-ping" />
+                <span className="text-[9px] font-[family-name:var(--font-mono)] text-[var(--accent-amber)] flex items-center gap-1 font-semibold">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-amber)] animate-ping" />
                   Your Unclaimed Sweet Spot
                 </span>
               </div>
 
               {/* Matrix Canvas Box */}
-              <div className="h-44 w-full bg-[hsl(220,16%,8%)] border border-[hsl(220,10%,20%)] rounded-lg relative overflow-hidden flex items-center justify-center">
+              <div className="h-44 w-full bg-[var(--bg-surface-alt)] border border-[var(--border)] rounded-lg relative overflow-hidden flex items-center justify-center">
                 {/* Grid Axes Lines */}
-                <div className="absolute inset-x-0 top-1/2 h-[1px] bg-[hsl(220,10%,20%)] border-t border-dashed border-[hsl(220,10%,25%)]" />
-                <div className="absolute inset-y-0 left-1/2 w-[1px] bg-[hsl(220,10%,20%)] border-l border-dashed border-[hsl(220,10%,25%)]" />
+                <div className="absolute inset-x-0 top-1/2 h-[1px] bg-[var(--border)] border-t border-dashed border-[var(--border)]" />
+                <div className="absolute inset-y-0 left-1/2 w-[1px] bg-[var(--border)] border-l border-dashed border-[var(--border)]" />
 
                 {/* Subtle Quadrant Labels */}
-                <span className="absolute top-2 left-2 text-[8px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,30%)] uppercase tracking-wider">
+                <span className="absolute top-2 left-2 text-[8px] font-[family-name:var(--font-mono)] text-[var(--text-dim)] uppercase tracking-wider">
                   Niche / Expensive
                 </span>
-                <span className="absolute top-2 right-2 text-[8px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,30%)] uppercase tracking-wider">
+                <span className="absolute top-2 right-2 text-[8px] font-[family-name:var(--font-mono)] text-[var(--text-dim)] uppercase tracking-wider">
                   Crowded Enterprise
                 </span>
-                <span className="absolute bottom-2 left-2 text-[8px] font-[family-name:var(--font-mono)] text-[hsl(42,95%,55%,0.6)] uppercase tracking-wider font-semibold">
+                <span className="absolute bottom-2 left-2 text-[8px] font-[family-name:var(--font-mono)] text-[var(--accent-amber)] uppercase tracking-wider font-semibold">
                   ★ Low-Barrier Wedge
                 </span>
-                <span className="absolute bottom-2 right-2 text-[8px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,30%)] uppercase tracking-wider">
+                <span className="absolute bottom-2 right-2 text-[8px] font-[family-name:var(--font-mono)] text-[var(--text-dim)] uppercase tracking-wider">
                   Complex Suite
                 </span>
 
@@ -323,11 +323,11 @@ export default function ExpandedResultShowcase() {
                 {scenario.quadrantConfig.competitorsPosition.map((cp, idx) => (
                   <div
                     key={idx}
-                    className="absolute transform -translate-x-1/2 -translate-y-1/2 flex items-center gap-1 bg-[hsl(220,12%,14%)] border border-[hsl(220,10%,26%)] px-1.5 py-0.5 rounded shadow-sm transition-all hover:scale-105 z-10"
+                    className="absolute transform -translate-x-1/2 -translate-y-1/2 flex items-center gap-1 bg-[var(--bg-surface)] border border-[var(--border)] px-1.5 py-0.5 rounded shadow-sm transition-all hover:scale-105 z-10"
                     style={{ left: `${cp.x}%`, top: `${cp.y}%` }}
                   >
-                    <span className="w-1 h-1 rounded-full bg-[hsl(40,8%,50%)]" />
-                    <span className="text-[9px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,70%)] whitespace-nowrap">
+                    <span className="w-1 h-1 rounded-full bg-[var(--text-muted)]" />
+                    <span className="text-[9px] font-[family-name:var(--font-mono)] text-[var(--text-secondary)] whitespace-nowrap font-medium">
                       {cp.name}
                     </span>
                   </div>
@@ -335,13 +335,13 @@ export default function ExpandedResultShowcase() {
 
                 {/* Plotted "Your Idea" Beacon */}
                 <div
-                  className="absolute transform -translate-x-1/2 -translate-y-1/2 flex items-center gap-1.5 bg-[hsl(42,95%,55%)] text-[hsl(220,15%,8%)] font-bold px-2 py-0.5 rounded-full shadow-[0_0_16px_hsl(42,95%,55%,0.5)] z-20 animate-bounce"
+                  className="absolute transform -translate-x-1/2 -translate-y-1/2 flex items-center gap-1.5 bg-[var(--accent-amber)] text-black font-bold px-2 py-0.5 rounded-full shadow-[0_0_16px_rgba(245,166,35,0.4)] z-20 animate-bounce"
                   style={{
                     left: `${scenario.quadrantConfig.yourIdeaPosition.x}%`,
                     top: `${scenario.quadrantConfig.yourIdeaPosition.y}%`,
                   }}
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-[hsl(220,15%,8%)]" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-black" />
                   <span className="text-[10px] font-[family-name:var(--font-space-grotesk)] font-bold whitespace-nowrap">
                     YOUR WEDGE
                   </span>
@@ -349,7 +349,7 @@ export default function ExpandedResultShowcase() {
               </div>
 
               {/* Axis Labels */}
-              <div className="flex justify-between text-[9px] text-[hsl(40,8%,40%)] font-[family-name:var(--font-mono)] mt-2 px-1">
+              <div className="flex justify-between text-[9px] text-[var(--text-dim)] font-[family-name:var(--font-mono)] mt-2 px-1">
                 <span>← {scenario.quadrantConfig.xAxisLabel.split('→')[0]}</span>
                 <span>{scenario.quadrantConfig.xAxisLabel.split('→')[1]} →</span>
               </div>
@@ -360,17 +360,17 @@ export default function ExpandedResultShowcase() {
               {scenario.competitors.map((comp, idx) => (
                 <div
                   key={idx}
-                  className="bg-[hsl(220,12%,12%)] border border-[hsl(220,10%,18%)] rounded-lg p-2.5 flex flex-col justify-between hover:border-[hsl(220,10%,26%)] transition-colors"
+                  className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-2.5 flex flex-col justify-between hover:border-[var(--accent-amber)]/30 transition-colors shadow-sm"
                 >
                   <div className="flex items-center justify-between gap-1 mb-1">
-                    <span className="text-xs font-bold text-[hsl(40,20%,92%)] font-[family-name:var(--font-space-grotesk)] truncate">
+                    <span className="text-xs font-bold text-[var(--text-primary)] font-[family-name:var(--font-space-grotesk)] truncate">
                       {comp.name}
                     </span>
-                    <span className="text-[9px] font-[family-name:var(--font-mono)] text-[hsl(42,95%,55%)] bg-[hsl(42,95%,55%,0.1)] px-1 rounded whitespace-nowrap">
+                    <span className="text-[9px] font-[family-name:var(--font-mono)] text-[var(--accent-amber)] bg-[var(--accent-amber)]/10 px-1 rounded whitespace-nowrap font-semibold">
                       {comp.pricing}
                     </span>
                   </div>
-                  <p className="text-[10px] text-[hsl(40,8%,50%)] line-clamp-2 leading-tight font-[family-name:var(--font-inter)]">
+                  <p className="text-[10px] text-[var(--text-muted)] line-clamp-2 leading-tight font-[family-name:var(--font-inter)]">
                     {comp.desc}
                   </p>
                 </div>
@@ -378,15 +378,15 @@ export default function ExpandedResultShowcase() {
             </div>
 
             {/* The Opportunity Wedge Payoff */}
-            <div className="bg-[hsl(220,14%,10%)] border-l-2 border-l-[hsl(42,95%,55%)] border-r border-t border-b border-r-[hsl(220,10%,16%)] border-t-[hsl(220,10%,16%)] border-b-[hsl(220,10%,16%)] rounded-lg p-3.5 sm:p-4">
-              <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.18em] text-[hsl(42,95%,55%)] block mb-1.5 font-bold">
+            <div className="bg-[var(--bg-surface)] border-l-2 border-l-[var(--accent-amber)] border-r border-t border-b border-[var(--border)] rounded-lg p-3.5 sm:p-4 shadow-sm">
+              <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.18em] text-[var(--accent-amber)] block mb-1.5 font-bold">
                 ★ The Winning Angle (Gap Analysis)
               </span>
               <DecryptText
                 key={scenario.id}
                 text={scenario.gapAnalysis}
                 durationMs={850}
-                className="text-xs text-[hsl(40,20%,90%)] font-[family-name:var(--font-inter)] leading-relaxed"
+                className="text-xs text-[var(--text-primary)] font-[family-name:var(--font-inter)] leading-relaxed font-medium"
               />
             </div>
           </div>

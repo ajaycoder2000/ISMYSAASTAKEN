@@ -65,12 +65,12 @@ export default function WeeklyGapSignup({
   };
 
   return (
-    <div className="w-full bg-[hsl(220,14%,10%)] border border-[hsl(220,10%,18%)] rounded-2xl overflow-hidden shadow-2xl relative">
+    <div className="w-full bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl overflow-hidden shadow-2xl relative">
       {/* Top gradient accent bar */}
       <div
         className="h-[3px] w-full"
         style={{
-          background: "linear-gradient(90deg, hsl(42,95%,55%), #b967ff, hsl(42,95%,55%))",
+          background: "linear-gradient(90deg, var(--accent-amber), #b967ff, var(--accent-amber))",
           backgroundSize: "200% 100%",
         }}
       />
@@ -81,16 +81,16 @@ export default function WeeklyGapSignup({
           <div className="lg:col-span-7">
             <div className="flex items-center gap-2 mb-3">
               <span className="text-xl">📡</span>
-              <span className="text-[10px] font-bold font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-[hsl(42,95%,55%)]">
+              <span className="text-[10px] font-bold font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-[var(--accent-amber)]">
                 FOUNDER MARKET INTELLIGENCE
               </span>
             </div>
 
-            <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,95%)] mb-2">
+            <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)] mb-2">
               The Weekly SaaS Gap Report
             </h3>
 
-            <p className="text-xs sm:text-sm text-[hsl(40,8%,60%)] font-[family-name:var(--font-inter)] leading-relaxed mb-6 max-w-lg">
+            <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-[family-name:var(--font-inter)] leading-relaxed mb-6 max-w-lg">
               Every Monday: we distill real scan telemetry into the top 5 defensible startup wedges and underserved market gaps. 100% signal, zero fluff.
             </p>
 
@@ -103,12 +103,12 @@ export default function WeeklyGapSignup({
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="founder@example.com"
                 disabled={status === "loading"}
-                className="flex-1 bg-[hsl(220,15%,8%)] border border-[hsl(220,10%,20%)] rounded-xl px-4 py-2.5 text-[hsl(40,20%,92%)] font-[family-name:var(--font-inter)] text-xs outline-none focus:border-[hsl(42,95%,55%)] disabled:opacity-50"
+                className="flex-1 bg-[var(--bg-surface-alt)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-[var(--text-primary)] font-[family-name:var(--font-inter)] text-xs outline-none focus:border-[var(--accent-amber)] disabled:opacity-50"
               />
               <button
                 type="submit"
                 disabled={status === "loading"}
-                className="bg-[hsl(42,95%,55%)] hover:bg-[hsl(42,95%,50%)] text-[hsl(220,15%,8%)] px-5 py-2.5 rounded-xl text-xs font-bold font-[family-name:var(--font-space-grotesk)] whitespace-nowrap transition-all shadow-md disabled:opacity-50 cursor-pointer"
+                className="bg-[var(--accent-amber)] hover:opacity-90 text-black px-5 py-2.5 rounded-xl text-xs font-bold font-[family-name:var(--font-space-grotesk)] whitespace-nowrap transition-all shadow-md disabled:opacity-50 cursor-pointer"
               >
                 {status === "loading" ? "Subscribing..." : "Get Free Report →"}
               </button>
@@ -118,27 +118,27 @@ export default function WeeklyGapSignup({
               <div
                 className={`mt-3 p-3 rounded-xl text-xs font-[family-name:var(--font-mono)] max-w-md animate-fade-in ${
                   status === "done"
-                    ? "bg-[hsl(145,60%,45%,0.1)] border border-[hsl(145,60%,45%,0.3)] text-[hsl(145,60%,55%)]"
-                    : "bg-[hsl(0,72%,55%,0.1)] border border-[hsl(0,72%,55%,0.3)] text-[hsl(0,72%,65%)]"
+                    ? "bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400"
+                    : "bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400"
                 }`}
               >
                 {message}
               </div>
             )}
 
-            <p className="text-[11px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,45%)] mt-3">
+            <p className="text-[11px] font-[family-name:var(--font-mono)] text-[var(--text-muted)] mt-3">
               🔒 Join {subscriberCount.toLocaleString()} founders • Unsubscribe anytime with 1 click
             </p>
           </div>
 
           {/* Right Column: Preview Card */}
           <div className="lg:col-span-5">
-            <div className="bg-[hsl(220,12%,12%)] border border-[hsl(220,10%,18%)] rounded-xl p-4 sm:p-5">
-              <div className="flex items-center justify-between mb-3 border-b border-[hsl(220,10%,16%)] pb-2.5">
-                <span className="text-[9.5px] font-bold font-[family-name:var(--font-mono)] text-[hsl(40,8%,45%)] tracking-[0.2em] uppercase">
+            <div className="bg-[var(--bg-surface-alt)] border border-[var(--border)] rounded-xl p-4 sm:p-5 shadow-sm">
+              <div className="flex items-center justify-between mb-3 border-b border-[var(--border)] pb-2.5">
+                <span className="text-[9.5px] font-bold font-[family-name:var(--font-mono)] text-[var(--text-muted)] tracking-[0.2em] uppercase">
                   PREVIEW: LATEST IDENTIFIED GAPS
                 </span>
-                <span className="text-[9px] font-bold font-[family-name:var(--font-mono)] text-[hsl(145,60%,55%)] bg-[hsl(145,60%,45%,0.1)] px-1.5 py-0.5 rounded border border-[hsl(145,60%,45%,0.2)]">
+                <span className="text-[9px] font-bold font-[family-name:var(--font-mono)] text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/25">
                   LIVE ISSUE
                 </span>
               </div>
@@ -147,17 +147,17 @@ export default function WeeklyGapSignup({
                 {previewItems.map((item, i) => (
                   <div
                     key={i}
-                    className="p-2.5 rounded-lg bg-[hsl(220,14%,9%)] border border-[hsl(220,10%,16%)] flex items-start justify-between gap-3 text-xs"
+                    className="p-2.5 rounded-lg bg-[var(--bg-surface)] border border-[var(--border)] flex items-start justify-between gap-3 text-xs shadow-sm"
                   >
                     <div className="min-w-0 flex-1">
-                      <span className="text-[hsl(40,20%,90%)] font-medium block truncate">
+                      <span className="text-[var(--text-primary)] font-medium block truncate">
                         &ldquo;{item.idea}&rdquo;
                       </span>
-                      <span className="text-[10px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,45%)]">
+                      <span className="text-[10px] font-[family-name:var(--font-mono)] text-[var(--text-muted)]">
                         {item.category}
                       </span>
                     </div>
-                    <span className="text-[9px] font-bold font-[family-name:var(--font-mono)] px-2 py-0.5 rounded bg-[hsl(42,95%,55%,0.12)] text-[hsl(42,95%,55%)] border border-[hsl(42,95%,55%,0.25)] flex-shrink-0">
+                    <span className="text-[9px] font-bold font-[family-name:var(--font-mono)] px-2 py-0.5 rounded bg-[var(--accent-amber)]/10 text-[var(--accent-amber)] border border-[var(--accent-amber)]/30 flex-shrink-0">
                       {item.verdict}
                     </span>
                   </div>

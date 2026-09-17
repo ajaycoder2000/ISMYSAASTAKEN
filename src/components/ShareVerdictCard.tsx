@@ -77,50 +77,50 @@ export default function ShareVerdictCard({
       {/* Visual Pitch Deck Card (Exportable Canvas) */}
       <div
         ref={cardRef}
-        className="w-full bg-[hsl(220,15%,9%)] border border-[hsl(220,10%,20%)] rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden text-left"
+        className="w-full bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden text-left"
       >
         {/* Subtle grid background */}
         <div
           className="absolute inset-0 opacity-[0.03] pointer-events-none"
           style={{
-            backgroundImage: `linear-gradient(to right, #f5a623 1px, transparent 1px), linear-gradient(to bottom, #f5a623 1px, transparent 1px)`,
+            backgroundImage: `linear-gradient(to right, var(--accent-amber) 1px, transparent 1px), linear-gradient(to bottom, var(--accent-amber) 1px, transparent 1px)`,
             backgroundSize: '24px 24px',
           }}
         />
 
         {/* Brand header */}
-        <div className="flex items-center justify-between pb-4 mb-4 border-b border-[hsl(220,10%,16%)] relative z-10">
+        <div className="flex items-center justify-between pb-4 mb-4 border-b border-[var(--border)] relative z-10">
           <div className="flex items-center gap-2">
             <Image src="/icon.png" alt="Logo" width={20} height={20} className="rounded" />
-            <span className="font-[family-name:var(--font-space-grotesk)] font-bold text-[hsl(40,20%,92%)] text-sm tracking-tight">
-              ismysaas<span className="text-[hsl(42,95%,55%)]">taken</span><span className="text-[hsl(145,60%,55%)]">?</span>
+            <span className="font-[family-name:var(--font-space-grotesk)] font-bold text-[var(--text-primary)] text-sm tracking-tight">
+              ismysaas<span className="text-[var(--accent-amber)]">taken</span><span className="text-emerald-500">?</span>
             </span>
           </div>
-          <span className="text-[10px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,50%)] uppercase tracking-widest">
+          <span className="text-[10px] font-[family-name:var(--font-mono)] text-[var(--text-muted)] uppercase tracking-widest">
             Executive Summary
           </span>
         </div>
 
         {/* Idea prompt */}
         <div className="mb-5 relative z-10">
-          <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-widest text-[hsl(40,8%,45%)] block mb-1">
+          <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-widest text-[var(--text-dim)] block mb-1 font-semibold">
             TARGET CONCEPT
           </span>
-          <p className="text-base sm:text-lg font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,95%)] leading-snug">
+          <p className="text-base sm:text-lg font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)] leading-snug">
             &ldquo;{ideaText}&rdquo;
           </p>
         </div>
 
         {/* Verdict stats row */}
-        <div className="grid grid-cols-2 gap-3 mb-5 p-3.5 bg-[hsl(220,12%,12%)] border border-[hsl(220,10%,18%)] rounded-xl relative z-10">
+        <div className="grid grid-cols-2 gap-3 mb-5 p-3.5 bg-[var(--bg-surface-alt)] border border-[var(--border)] rounded-xl relative z-10">
           <div>
-            <span className="text-[10px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,50%)] uppercase tracking-wider block mb-1">
+            <span className="text-[10px] font-[family-name:var(--font-mono)] text-[var(--text-muted)] uppercase tracking-wider block mb-1">
               Market Saturation
             </span>
             <div className="flex items-center gap-2">
               <SignalBars score={saturationScore} size="md" />
               <span className={`text-xs font-bold font-[family-name:var(--font-mono)] uppercase ${
-                saturationScore === 'low' ? 'text-[hsl(145,60%,55%)]' : saturationScore === 'medium' ? 'text-[hsl(42,95%,55%)]' : 'text-[hsl(0,72%,55%)]'
+                saturationScore === 'low' ? 'text-emerald-600 dark:text-emerald-400' : saturationScore === 'medium' ? 'text-[var(--accent-amber)]' : 'text-red-500'
               }`}>
                 {saturationScore}
               </span>
@@ -128,10 +128,10 @@ export default function ShareVerdictCard({
           </div>
 
           <div>
-            <span className="text-[10px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,50%)] uppercase tracking-wider block mb-1">
+            <span className="text-[10px] font-[family-name:var(--font-mono)] text-[var(--text-muted)] uppercase tracking-wider block mb-1">
               Competitors Found
             </span>
-            <p className="text-sm font-bold font-[family-name:var(--font-mono)] text-[hsl(40,20%,92%)]">
+            <p className="text-sm font-bold font-[family-name:var(--font-mono)] text-[var(--text-primary)]">
               {competitorsCount} tracked live
             </p>
           </div>
@@ -139,18 +139,18 @@ export default function ShareVerdictCard({
 
         {/* Opportunity Wedge */}
         <div className="relative z-10">
-          <span className="text-[10px] font-[family-name:var(--font-mono)] text-[hsl(42,95%,55%)] uppercase tracking-widest font-semibold block mb-1">
+          <span className="text-[10px] font-[family-name:var(--font-mono)] text-[var(--accent-amber)] uppercase tracking-widest font-semibold block mb-1">
             🎯 Strategic Moat Angle
           </span>
-          <p className="text-xs sm:text-sm text-[hsl(40,8%,70%)] font-[family-name:var(--font-inter)] leading-relaxed line-clamp-3">
+          <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-[family-name:var(--font-inter)] leading-relaxed line-clamp-3">
             {gapAnalysis}
           </p>
         </div>
 
         {/* Card Footer */}
-        <div className="mt-5 pt-3 border-t border-[hsl(220,10%,14%)] flex items-center justify-between text-[10px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,40%)] relative z-10">
+        <div className="mt-5 pt-3 border-t border-[var(--border)] flex items-center justify-between text-[10px] font-[family-name:var(--font-mono)] text-[var(--text-dim)] relative z-10">
           <span>Verified via Web-Grounded AI</span>
-          <span>ismysaastaken.vercel.app</span>
+          <span>ismysaastaken.com</span>
         </div>
       </div>
 
@@ -159,7 +159,7 @@ export default function ShareVerdictCard({
         <button
           onClick={handleDownloadPng}
           disabled={downloading}
-          className="px-4 py-2 bg-[hsl(220,12%,14%)] hover:bg-[hsl(220,12%,18%)] border border-[hsl(220,10%,24%)] hover:border-[hsl(42,95%,55%,0.4)] text-[hsl(40,20%,90%)] hover:text-[hsl(42,95%,55%)] text-xs font-bold font-[family-name:var(--font-space-grotesk)] rounded-lg transition-all flex items-center gap-1.5 cursor-pointer"
+          className="px-4 py-2 bg-[var(--bg-surface-alt)] hover:bg-[var(--bg-surface)] border border-[var(--border)] hover:border-[var(--accent-amber)]/40 text-[var(--text-primary)] hover:text-[var(--accent-amber)] text-xs font-bold font-[family-name:var(--font-space-grotesk)] rounded-lg transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
         >
           {downloading ? 'Rendering PNG...' : '🖼️ Export Pitch Card'}
         </button>
@@ -173,14 +173,14 @@ export default function ShareVerdictCard({
 
         <button
           onClick={handleCopyBadge}
-          className="px-3.5 py-2 bg-[hsl(220,12%,14%)] hover:bg-[hsl(220,12%,18%)] border border-[hsl(220,10%,24%)] text-[hsl(40,8%,70%)] hover:text-[hsl(40,20%,92%)] text-xs font-[family-name:var(--font-mono)] rounded-lg transition-all cursor-pointer"
+          className="px-3.5 py-2 bg-[var(--bg-surface-alt)] hover:bg-[var(--bg-surface)] border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-xs font-[family-name:var(--font-mono)] rounded-lg transition-all cursor-pointer"
         >
           {copiedBadge ? '✓ Badge Copied' : '🔖 GitHub Badge'}
         </button>
 
         <button
           onClick={handleCopyLink}
-          className="px-3.5 py-2 bg-[hsl(220,12%,14%)] hover:bg-[hsl(220,12%,18%)] border border-[hsl(220,10%,24%)] text-[hsl(40,8%,70%)] hover:text-[hsl(40,20%,92%)] text-xs font-[family-name:var(--font-mono)] rounded-lg transition-all cursor-pointer"
+          className="px-3.5 py-2 bg-[var(--bg-surface-alt)] hover:bg-[var(--bg-surface)] border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-xs font-[family-name:var(--font-mono)] rounded-lg transition-all cursor-pointer"
         >
           {copiedLink ? '✓ Link Copied' : '🔗 Copy URL'}
         </button>

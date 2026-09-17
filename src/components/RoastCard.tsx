@@ -79,7 +79,7 @@ export default function RoastCard({
 
   return (
     <>
-      <div className="w-full bg-[hsl(20,20%,8%)] border border-[hsl(24,95%,50%,0.3)] rounded-xl p-5 sm:p-6 shadow-xl relative overflow-hidden text-left transition-all">
+      <div className="w-full bg-[var(--bg-surface)] dark:bg-[hsl(20,20%,8%)] border border-[var(--border)] dark:border-[hsl(24,95%,50%,0.3)] rounded-xl p-5 sm:p-6 shadow-xl relative overflow-hidden text-left transition-all">
         {/* Ambient flame glow effect */}
         <div
           className="absolute -top-16 -right-16 w-56 h-56 rounded-full blur-3xl pointer-events-none opacity-20"
@@ -97,10 +97,10 @@ export default function RoastCard({
               <span className="absolute text-xl animate-pulse">🔥</span>
             </div>
             <div className="space-y-1">
-              <h4 className="text-sm font-bold font-[family-name:var(--font-space-grotesk)] text-orange-200">
+              <h4 className="text-sm font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)]">
                 Firing up the grill...
               </h4>
-              <p className="text-xs text-[hsl(40,8%,60%)] font-[family-name:var(--font-mono)]">
+              <p className="text-xs text-[var(--text-secondary)] font-[family-name:var(--font-mono)]">
                 Analyzing competitor moats, saturated wedges &amp; market traps
               </p>
             </div>
@@ -112,14 +112,14 @@ export default function RoastCard({
           <div className="py-4 space-y-3 animate-in fade-in duration-200">
             <div className="flex items-center gap-2">
               <span className="text-base">🛡️</span>
-              <span className="text-[10px] font-bold font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-amber-400 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-800/60">
+              <span className="text-[10px] font-bold font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-950/60 px-2 py-0.5 rounded border border-amber-300 dark:border-amber-800/60">
                 NOTICE
               </span>
             </div>
-            <p className="text-sm text-[hsl(40,20%,90%)] font-[family-name:var(--font-inter)] leading-relaxed">
+            <p className="text-sm text-[var(--text-primary)] font-[family-name:var(--font-inter)] leading-relaxed">
               {declinedMessage}
             </p>
-            <p className="text-xs text-[hsl(40,8%,55%)] font-[family-name:var(--font-mono)]">
+            <p className="text-xs text-[var(--text-secondary)] font-[family-name:var(--font-mono)]">
               Your standard validation report above remains unaffected.
             </p>
           </div>
@@ -132,14 +132,14 @@ export default function RoastCard({
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   <span className="text-sm">🔥</span>
-                  <span className="text-[10px] font-bold font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-orange-400 bg-orange-950/60 px-2 py-0.5 rounded border border-orange-800/60">
+                  <span className="text-[10px] font-bold font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-orange-700 dark:text-orange-400 bg-orange-100 dark:bg-orange-950/60 px-2 py-0.5 rounded border border-orange-300 dark:border-orange-800/60">
                     OPT-IN ROAST MODE
                   </span>
                 </div>
-                <h3 className="text-base sm:text-lg font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,95%)]">
+                <h3 className="text-base sm:text-lg font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)]">
                   Want the unfiltered comedy roast of this idea?
                 </h3>
-                <p className="text-xs text-[hsl(40,8%,60%)] font-[family-name:var(--font-inter)] leading-relaxed max-w-xl">
+                <p className="text-xs text-[var(--text-secondary)] font-[family-name:var(--font-inter)] leading-relaxed max-w-xl">
                   Get a sharp, witty critique of your market saturation and positioning.
                   Roasts the market realities, never the person.
                 </p>
@@ -156,10 +156,10 @@ export default function RoastCard({
             </div>
 
             {error && (
-              <p className="text-xs text-red-400 font-mono pt-1">{error}</p>
+              <p className="text-xs text-red-600 dark:text-red-400 font-mono pt-1">{error}</p>
             )}
 
-            <div className="flex items-center gap-2 pt-1 text-[10px] text-[hsl(40,8%,45%)] font-mono border-t border-[hsl(220,10%,14%)]">
+            <div className="flex items-center gap-2 pt-1 text-[10px] text-[var(--text-muted)] font-mono border-t border-[var(--border)]">
               <span>✦ Grounded in {competitors?.length || 0} competitors</span>
               <span>•</span>
               <span>✦ Always ends on a constructive takeaway</span>
@@ -175,10 +175,10 @@ export default function RoastCard({
               <div className="flex items-center gap-2.5">
                 <span className="text-base">🔥</span>
                 <div>
-                  <span className="text-[10px] font-bold font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-orange-400">
+                  <span className="text-[10px] font-bold font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-[var(--accent-amber)]">
                     IDEA ROAST VERDICT
                   </span>
-                  <h3 className="text-sm sm:text-base font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,95%)]">
+                  <h3 className="text-sm sm:text-base font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)]">
                     The Unfiltered Market Breakdown
                   </h3>
                 </div>
@@ -197,7 +197,7 @@ export default function RoastCard({
                   type="button"
                   onClick={() => handleTriggerRoast(true)}
                   title="Generate a fresh roast"
-                  className="p-1.5 text-xs text-[hsl(40,8%,50%)] hover:text-orange-400 font-mono transition-colors cursor-pointer"
+                  className="p-1.5 text-xs text-[var(--text-muted)] hover:text-[var(--accent-amber)] font-mono transition-colors cursor-pointer"
                 >
                   ↻
                 </button>
@@ -209,9 +209,9 @@ export default function RoastCard({
               {roast.lines.map((line, idx) => (
                 <div
                   key={idx}
-                  className="flex items-start gap-3 p-3 rounded-lg bg-[hsl(220,14%,9%)] border border-orange-500/20 text-xs sm:text-sm font-[family-name:var(--font-inter)] text-orange-100/90 leading-relaxed"
+                  className="flex items-start gap-3 p-3 rounded-lg bg-[var(--bg-surface-alt)] dark:bg-[hsl(220,14%,9%)] border border-[var(--border)] dark:border-orange-500/20 text-xs sm:text-sm font-[family-name:var(--font-inter)] text-[var(--text-primary)] leading-relaxed"
                 >
-                  <span className="shrink-0 w-5 h-5 rounded-full bg-orange-950/80 border border-orange-500/40 text-orange-400 flex items-center justify-center text-[10px] font-bold font-mono mt-0.5">
+                  <span className="shrink-0 w-5 h-5 rounded-full bg-orange-100 dark:bg-orange-950/80 border border-orange-300 dark:border-orange-500/40 text-orange-700 dark:text-orange-400 flex items-center justify-center text-[10px] font-bold font-mono mt-0.5">
                     {idx + 1}
                   </span>
                   <p className="flex-1 font-medium">{line}</p>
@@ -220,22 +220,22 @@ export default function RoastCard({
             </div>
 
             {/* Constructive Takeaway */}
-            <div className="p-3.5 rounded-lg bg-emerald-950/30 border border-emerald-500/30 text-xs sm:text-sm text-emerald-100 flex items-start gap-3">
-              <span className="shrink-0 px-2 py-0.5 rounded bg-emerald-900/60 border border-emerald-500/40 text-emerald-400 font-mono text-[9px] font-bold uppercase tracking-wider mt-0.5">
+            <div className="p-3.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-500/30 text-xs sm:text-sm text-[var(--text-primary)] flex items-start gap-3">
+              <span className="shrink-0 px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/60 border border-emerald-300 dark:border-emerald-500/40 text-[var(--accent-emerald)] font-mono text-[9px] font-bold uppercase tracking-wider mt-0.5">
                 Takeaway
               </span>
-              <p className="flex-1 font-[family-name:var(--font-inter)] leading-relaxed text-[hsl(40,20%,90%)]">
+              <p className="flex-1 font-[family-name:var(--font-inter)] leading-relaxed text-[var(--text-primary)]">
                 {roast.takeaway}
               </p>
             </div>
 
             {/* Footer subtext & share trigger */}
-            <div className="flex items-center justify-between pt-1 text-[10px] text-[hsl(40,8%,50%)] font-mono border-t border-[hsl(220,10%,14%)]">
+            <div className="flex items-center justify-between pt-1 text-[10px] text-[var(--text-muted)] font-mono border-t border-[var(--border)]">
               <span>Roasts the market &amp; positioning, never the founder.</span>
               <button
                 type="button"
                 onClick={() => setShareModalOpen(true)}
-                className="text-orange-400 hover:text-orange-300 underline underline-offset-2 transition-colors cursor-pointer"
+                className="text-[var(--accent-amber)] hover:opacity-80 underline underline-offset-2 transition-colors cursor-pointer"
               >
                 Create shareable card &rarr;
               </button>

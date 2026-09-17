@@ -38,18 +38,18 @@ export default function WhyThisExists() {
     <section className="w-full py-12 sm:py-16">
       {/* Eyebrow */}
       <div className="text-center mb-3">
-        <span className="text-[10.5px] font-bold font-[family-name:var(--font-mono)] tracking-[0.2em] text-[hsl(42,95%,55%)] uppercase">
+        <span className="text-[10.5px] font-bold font-[family-name:var(--font-mono)] tracking-[0.2em] text-[var(--accent-amber)] uppercase">
           SAME QUESTION, DIFFERENT ANSWERS
         </span>
       </div>
 
       {/* Headline */}
-      <h2 className="text-2xl sm:text-3xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)] text-center leading-snug mb-2">
+      <h2 className="text-2xl sm:text-3xl font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)] text-center leading-snug mb-2">
         What you get when you ask ChatGPT vs. IsMySaaSTaken
       </h2>
 
       {/* Subheadline */}
-      <p className="text-xs sm:text-sm text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] text-center mb-10 max-w-xl mx-auto">
+      <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-[family-name:var(--font-inter)] text-center mb-10 max-w-xl mx-auto">
         General chatbots produce diplomatic paragraphs. We build single-purpose intelligence to help you decide whether to code or pivot.
       </p>
 
@@ -58,42 +58,42 @@ export default function WhyThisExists() {
         {COMPARISON_PAIRS.map((pair, i) => (
           <div
             key={i}
-            className="bg-[hsl(220,14%,10%)] border border-[hsl(220,10%,18%)] rounded-2xl p-5 sm:p-6 transition-all"
+            className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl p-5 sm:p-6 transition-all shadow-sm"
           >
-            <div className="text-xs font-bold font-[family-name:var(--font-mono)] uppercase tracking-wider text-[hsl(40,8%,50%)] mb-4">
+            <div className="text-xs font-bold font-[family-name:var(--font-mono)] uppercase tracking-wider text-[var(--text-muted)] mb-4">
               {pair.aspect}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* ChatGPT Side */}
-              <div className="p-4 rounded-xl bg-[hsl(220,12%,12%)] border border-[hsl(220,10%,18%)] border-l-4 border-l-[hsl(0,72%,50%,0.6)] flex flex-col justify-between">
+              <div className="p-4 rounded-xl bg-[var(--bg-surface-alt)] border border-[var(--border)] border-l-4 border-l-red-500/60 flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-2">
-                    <span className="text-[10px] font-bold font-[family-name:var(--font-mono)] tracking-wider text-[hsl(40,8%,50%)]">
+                    <span className="text-[10px] font-bold font-[family-name:var(--font-mono)] tracking-wider text-[var(--text-muted)]">
                       {pair.theirLabel}
                     </span>
-                    <span className="text-[9px] font-extrabold font-[family-name:var(--font-mono)] px-2 py-0.5 rounded bg-[rgba(255,103,89,0.1)] text-[hsl(0,72%,65%)] border border-[hsl(0,72%,50%,0.3)]">
+                    <span className="text-[9px] font-extrabold font-[family-name:var(--font-mono)] px-2 py-0.5 rounded bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/30">
                       {pair.theirTag}
                     </span>
                   </div>
-                  <p className="text-xs text-[hsl(40,8%,65%)] font-[family-name:var(--font-inter)] leading-relaxed italic">
+                  <p className="text-xs text-[var(--text-secondary)] font-[family-name:var(--font-inter)] leading-relaxed italic">
                     {pair.theirText}
                   </p>
                 </div>
               </div>
 
               {/* IsMySaaSTaken Side */}
-              <div className="p-4 rounded-xl bg-[hsl(220,15%,12%)] border border-[hsl(42,95%,55%,0.35)] border-l-4 border-l-[hsl(42,95%,55%)] flex flex-col justify-between shadow-md">
+              <div className="p-4 rounded-xl bg-[var(--bg-surface-alt)] border border-[var(--accent-amber)]/35 border-l-4 border-l-[var(--accent-amber)] flex flex-col justify-between shadow-sm">
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-2">
-                    <span className="text-[10px] font-bold font-[family-name:var(--font-mono)] tracking-wider text-[hsl(42,95%,55%)]">
+                    <span className="text-[10px] font-bold font-[family-name:var(--font-mono)] tracking-wider text-[var(--accent-amber)]">
                       {pair.ourLabel}
                     </span>
-                    <span className="text-[9px] font-extrabold font-[family-name:var(--font-mono)] px-2 py-0.5 rounded bg-[hsl(42,95%,55%,0.15)] text-[hsl(42,95%,55%)] border border-[hsl(42,95%,55%,0.3)]">
+                    <span className="text-[9px] font-extrabold font-[family-name:var(--font-mono)] px-2 py-0.5 rounded bg-[var(--accent-amber)]/15 text-[var(--accent-amber)] border border-[var(--accent-amber)]/30">
                       {pair.ourTag}
                     </span>
                   </div>
-                  <p className="text-xs text-[hsl(40,20%,90%)] font-[family-name:var(--font-inter)] leading-relaxed font-medium">
+                  <p className="text-xs text-[var(--text-primary)] font-[family-name:var(--font-inter)] leading-relaxed font-medium">
                     {pair.ourText}
                   </p>
                 </div>
@@ -104,10 +104,10 @@ export default function WhyThisExists() {
       </div>
 
       {/* Bottom note */}
-      <p className="text-center mt-8 text-xs text-[hsl(40,8%,45%)] font-[family-name:var(--font-inter)] leading-relaxed max-w-lg mx-auto">
+      <p className="text-center mt-8 text-xs text-[var(--text-muted)] font-[family-name:var(--font-inter)] leading-relaxed max-w-lg mx-auto">
         Both use AI. One is a{' '}
-        <strong className="text-[hsl(40,8%,70%)]">general chatbot</strong>. The other is a{' '}
-        <strong className="text-[hsl(42,95%,55%)]">real-time grounded market validation engine</strong>.
+        <strong className="text-[var(--text-primary)]">general chatbot</strong>. The other is a{' '}
+        <strong className="text-[var(--accent-amber)]">real-time grounded market validation engine</strong>.
       </p>
     </section>
   );

@@ -155,12 +155,12 @@ export default function LandscapeMap({
 
   return (
     <div className="bg-[var(--panel)] border border-[var(--border)] rounded-2xl overflow-hidden w-full max-w-[620px] mx-auto shadow-xl">
-      <div className="flex justify-between items-center px-4 sm:px-5 py-3.5 border-b border-[var(--border)] bg-[hsl(220,15%,9%)]">
+      <div className="flex justify-between items-center px-4 sm:px-5 py-3.5 border-b border-[var(--border)] bg-[var(--bg-surface-alt)]">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text)]">
+          <span className="text-xs font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)]">
             Competitive Landscape Matrix
           </span>
-          <span className="text-[9px] font-[family-name:var(--font-mono)] px-2 py-0.5 rounded bg-[hsl(220,10%,18%)] text-[hsl(40,8%,55%)]">
+          <span className="text-[9px] font-[family-name:var(--font-mono)] px-2 py-0.5 rounded bg-[var(--bg-surface)] text-[var(--text-muted)] border border-[var(--border)]">
             2D SCATTER
           </span>
         </div>

@@ -68,13 +68,13 @@ export default function MarketPlaybook() {
     <section className="w-full mx-auto py-10 sm:py-16">
       {/* Section Header */}
       <div className="text-center mb-8 sm:mb-12">
-        <span className="text-[11px] font-[family-name:var(--font-mono)] uppercase tracking-[0.25em] text-[hsl(42,95%,55%)] font-bold block mb-2">
+        <span className="text-[11px] font-[family-name:var(--font-mono)] uppercase tracking-[0.25em] text-[var(--accent-amber)] font-bold block mb-2">
           FOUNDER PLAYBOOK
         </span>
-        <h2 className="text-2xl sm:text-3xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)] tracking-tight">
+        <h2 className="text-2xl sm:text-3xl font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)] tracking-tight">
           How to Win in a &ldquo;Crowded&rdquo; Market
         </h2>
-        <p className="mt-2.5 text-xs sm:text-sm text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] max-w-xl mx-auto">
+        <p className="mt-2.5 text-xs sm:text-sm text-[var(--text-secondary)] font-[family-name:var(--font-inter)] max-w-xl mx-auto">
           Every giant has blind spots. Explore the 4 strategic archetypes used by modern founders to carve out multi-million dollar wedges.
         </p>
       </div>
@@ -89,14 +89,14 @@ export default function MarketPlaybook() {
               onClick={() => setActiveTab(item.id)}
               className={`p-3 rounded-xl border text-left transition-all duration-150 cursor-pointer ${
                 isSelected
-                  ? 'bg-[hsl(220,15%,14%)] border-[hsl(42,95%,55%,0.5)] shadow-[0_0_18px_rgba(245,166,35,0.12)]'
-                  : 'bg-[hsl(220,12%,10%)] border-[hsl(220,10%,16%)] hover:border-[hsl(220,10%,24%)] opacity-75 hover:opacity-100'
+                  ? 'bg-[var(--bg-surface)] border-[var(--accent-amber)] shadow-[0_0_18px_rgba(245,166,35,0.12)]'
+                  : 'bg-[var(--bg-surface-alt)] border-[var(--border)] hover:border-[var(--text-dim)] opacity-80 hover:opacity-100'
               }`}
             >
-              <span className="text-[9px] font-[family-name:var(--font-mono)] px-1.5 py-0.5 rounded bg-[hsl(220,10%,18%)] text-[hsl(42,95%,55%)] font-semibold block w-fit mb-1.5">
+              <span className="text-[9px] font-[family-name:var(--font-mono)] px-1.5 py-0.5 rounded bg-[var(--accent-amber)]/10 text-[var(--accent-amber)] font-semibold block w-fit mb-1.5 border border-[var(--accent-amber)]/20">
                 {item.badge}
               </span>
-              <p className="text-xs sm:text-sm font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,92%)] leading-snug">
+              <p className="text-xs sm:text-sm font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)] leading-snug">
                 {item.name}
               </p>
             </button>
@@ -105,46 +105,46 @@ export default function MarketPlaybook() {
       </div>
 
       {/* Interactive Detail Card */}
-      <div className="bg-[hsl(220,14%,10%)] border border-[hsl(220,10%,18%)] rounded-2xl p-5 sm:p-8 shadow-xl">
-        <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 pb-4 mb-5 border-b border-[hsl(220,10%,15%)]">
+      <div className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl p-5 sm:p-8 shadow-xl">
+        <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 pb-4 mb-5 border-b border-[var(--border)]">
           <div>
-            <h3 className="text-lg sm:text-xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,95%)]">
+            <h3 className="text-lg sm:text-xl font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)]">
               {active.name}
             </h3>
-            <p className="text-xs sm:text-sm text-[hsl(42,95%,55%)] font-[family-name:var(--font-inter)] font-medium mt-0.5">
+            <p className="text-xs sm:text-sm text-[var(--accent-amber)] font-[family-name:var(--font-inter)] font-medium mt-0.5">
               {active.tagline}
             </p>
           </div>
-          <span className="text-xs font-[family-name:var(--font-mono)] px-2.5 py-1 rounded bg-[hsl(220,10%,15%)] text-[hsl(40,8%,70%)] border border-[hsl(220,10%,20%)]">
+          <span className="text-xs font-[family-name:var(--font-mono)] px-2.5 py-1 rounded bg-[var(--bg-surface-alt)] text-[var(--text-secondary)] border border-[var(--border)]">
             🏆 {active.classicExample}
           </span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
           <div>
-            <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-[hsl(40,8%,50%)] block mb-1.5 font-semibold">
+            <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-[var(--text-muted)] block mb-1.5 font-semibold">
               THE PLAYBOOK
             </span>
-            <p className="text-xs sm:text-sm text-[hsl(40,8%,75%)] font-[family-name:var(--font-inter)] leading-relaxed">
+            <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-[family-name:var(--font-inter)] leading-relaxed">
               {active.thePlaybook}
             </p>
           </div>
 
           <div className="space-y-4">
-            <div className="p-3.5 bg-[hsl(220,12%,12%)] border border-[hsl(220,10%,18%)] rounded-xl">
-              <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-[hsl(42,95%,55%)] block mb-1 font-bold">
+            <div className="p-3.5 bg-[var(--bg-surface-alt)] border border-[var(--border)] rounded-xl">
+              <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-[var(--accent-amber)] block mb-1 font-bold">
                 KEY WINNING METRIC
               </span>
-              <p className="text-xs font-[family-name:var(--font-inter)] text-[hsl(40,20%,90%)] font-medium">
+              <p className="text-xs font-[family-name:var(--font-inter)] text-[var(--text-primary)] font-medium">
                 {active.winningMetric}
               </p>
             </div>
 
-            <div className="p-3.5 bg-[hsl(220,12%,12%)] border border-[hsl(220,10%,18%)] rounded-xl">
-              <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-[hsl(40,8%,50%)] block mb-1 font-semibold">
+            <div className="p-3.5 bg-[var(--bg-surface-alt)] border border-[var(--border)] rounded-xl">
+              <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-[var(--text-muted)] block mb-1 font-semibold">
                 SAMPLE VALIDATED IDEA
               </span>
-              <p className="text-xs font-[family-name:var(--font-mono)] text-[hsl(40,20%,85%)]">
+              <p className="text-xs font-[family-name:var(--font-mono)] text-[var(--text-secondary)]">
                 &ldquo;{active.exampleIdea}&rdquo;
               </p>
             </div>

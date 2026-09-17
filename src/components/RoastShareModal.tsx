@@ -122,23 +122,23 @@ export default function RoastShareModal({
       <div className="absolute inset-0" onClick={onClose} />
 
       {/* Modal Dialog */}
-      <div className="relative w-full max-w-2xl bg-[hsl(220,15%,9%)] border border-[hsl(24,95%,50%,0.25)] rounded-2xl shadow-2xl p-5 sm:p-7 z-10 overflow-y-auto max-h-[92vh] space-y-6 text-left">
+      <div className="relative w-full max-w-2xl bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl shadow-2xl p-5 sm:p-7 z-10 overflow-y-auto max-h-[92vh] space-y-6 text-left">
         {/* Warm radial glow */}
         <div className="absolute -top-24 -right-24 w-52 h-52 bg-orange-600/10 rounded-full blur-3xl pointer-events-none" />
 
         {/* Modal Header */}
-        <div className="flex items-start justify-between gap-4 border-b border-[hsl(220,10%,16%)] pb-4">
+        <div className="flex items-start justify-between gap-4 border-b border-[var(--border)] pb-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="text-sm">🔥</span>
-              <span className="text-[10px] font-bold font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-orange-400 bg-orange-950/60 px-2.5 py-0.5 rounded border border-orange-800/60">
+              <span className="text-[10px] font-bold font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-orange-600 dark:text-orange-400 bg-orange-500/15 px-2.5 py-0.5 rounded border border-orange-500/30">
                 SHARE PREVIEW
               </span>
             </div>
-            <h2 className="text-lg sm:text-xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)]">
+            <h2 className="text-lg sm:text-xl font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)]">
               Pick Your Featured Burn
             </h2>
-            <p className="text-xs text-[hsl(40,8%,60%)] font-[family-name:var(--font-inter)]">
+            <p className="text-xs text-[var(--text-secondary)] font-[family-name:var(--font-inter)]">
               Choose or tweak which punchline to feature on your card before downloading or sharing.
             </p>
           </div>
@@ -147,7 +147,7 @@ export default function RoastShareModal({
             type="button"
             onClick={onClose}
             aria-label="Close dialog"
-            className="text-[hsl(40,8%,50%)] hover:text-[hsl(40,20%,95%)] bg-[hsl(220,12%,14%)] hover:bg-[hsl(220,12%,18%)] border border-[hsl(220,10%,20%)] w-8 h-8 rounded-lg flex items-center justify-center transition-colors shrink-0 cursor-pointer font-mono text-sm"
+            className="text-[var(--text-muted)] hover:text-[var(--text-primary)] bg-[var(--bg-surface-alt)] hover:bg-[var(--border)] border border-[var(--border)] w-8 h-8 rounded-lg flex items-center justify-center transition-colors shrink-0 cursor-pointer font-mono text-sm"
           >
             ✕
           </button>
@@ -155,9 +155,9 @@ export default function RoastShareModal({
 
         {/* 1. Line Selector */}
         <div className="space-y-2.5">
-          <label className="text-[11px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-[hsl(40,8%,55%)] font-semibold flex items-center justify-between">
+          <label className="text-[11px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-[var(--text-muted)] font-semibold flex items-center justify-between">
             <span>Select Punchline</span>
-            <span className="text-[10px] text-orange-400/80">
+            <span className="text-[10px] text-orange-600 dark:text-orange-400">
               {selectedIndex + 1} of {roastLines.length}
             </span>
           </label>
@@ -176,15 +176,15 @@ export default function RoastShareModal({
                   }}
                   className={`w-full text-left p-3 rounded-xl border text-xs sm:text-sm font-[family-name:var(--font-inter)] transition-all cursor-pointer flex items-start gap-3 ${
                     isSelected
-                      ? 'bg-orange-950/40 border-orange-500/60 text-orange-100 shadow-sm'
-                      : 'bg-[hsl(220,14%,11%)] border-[hsl(220,10%,18%)] text-[hsl(40,15%,80%)] hover:border-orange-500/30 hover:bg-[hsl(220,14%,13%)]'
+                      ? 'bg-orange-500/15 border-orange-500/60 text-orange-600 dark:text-orange-200 shadow-sm font-medium'
+                      : 'bg-[var(--bg-surface-alt)] border-[var(--border)] text-[var(--text-secondary)] hover:border-orange-500/30'
                   }`}
                 >
                   <span
                     className={`shrink-0 w-4 h-4 rounded-full border mt-0.5 flex items-center justify-center text-[9px] font-bold ${
                       isSelected
                         ? 'border-orange-400 bg-orange-500 text-white'
-                        : 'border-[hsl(220,10%,30%)] text-[hsl(40,8%,50%)]'
+                        : 'border-[var(--border)] text-[var(--text-muted)]'
                     }`}
                   >
                     {idx + 1}
@@ -200,7 +200,7 @@ export default function RoastShareModal({
             <button
               type="button"
               onClick={() => setIsCustomizing(!isCustomizing)}
-              className="text-[11px] font-[family-name:var(--font-mono)] text-orange-400/90 hover:text-orange-300 transition-colors inline-flex items-center gap-1 cursor-pointer"
+              className="text-[11px] font-[family-name:var(--font-mono)] text-orange-600 dark:text-orange-400 hover:opacity-80 transition-colors inline-flex items-center gap-1 cursor-pointer"
             >
               <span>{isCustomizing ? '▾ Close editor' : '▸ Tweak this punchline text'}</span>
             </button>
@@ -212,7 +212,7 @@ export default function RoastShareModal({
                   value={customText}
                   onChange={(e) => setCustomText(e.target.value)}
                   placeholder="Customize your roast burn..."
-                  className="w-full bg-[hsl(220,15%,7%)] border border-orange-500/40 rounded-lg p-2.5 text-xs text-orange-100 placeholder-zinc-600 focus:outline-none focus:border-orange-500 font-[family-name:var(--font-inter)] leading-relaxed"
+                  className="w-full bg-[var(--bg-surface-alt)] border border-orange-500/40 rounded-lg p-2.5 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-orange-500 font-[family-name:var(--font-inter)] leading-relaxed"
                 />
               </div>
             )}
@@ -221,7 +221,7 @@ export default function RoastShareModal({
 
         {/* 2. Live Card Preview */}
         <div className="space-y-2">
-          <label className="text-[11px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-[hsl(40,8%,55%)] font-semibold">
+          <label className="text-[11px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-[var(--text-muted)] font-semibold">
             Card Preview (What will be exported)
           </label>
 
@@ -289,7 +289,7 @@ export default function RoastShareModal({
         </div>
 
         {/* 3. Action Buttons */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-[hsl(220,10%,16%)]">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-[var(--border)]">
           {/* Download PNG */}
           <button
             type="button"
@@ -311,7 +311,7 @@ export default function RoastShareModal({
           <button
             type="button"
             onClick={handleShareTwitter}
-            className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-[hsl(220,12%,14%)] hover:bg-[hsl(220,12%,18%)] border border-[hsl(220,10%,22%)] text-[hsl(40,20%,94%)] font-semibold text-xs font-[family-name:var(--font-mono)] transition-colors cursor-pointer"
+            className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-[var(--bg-surface-alt)] hover:bg-[var(--border)] border border-[var(--border)] text-[var(--text-primary)] font-semibold text-xs font-[family-name:var(--font-mono)] transition-colors cursor-pointer"
           >
             <span>𝕏</span>
             <span>Post to X</span>
@@ -321,7 +321,7 @@ export default function RoastShareModal({
           <button
             type="button"
             onClick={handleCopyImageUrl}
-            className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-[hsl(220,12%,14%)] hover:bg-[hsl(220,12%,18%)] border border-[hsl(220,10%,22%)] text-[hsl(40,20%,94%)] font-semibold text-xs font-[family-name:var(--font-mono)] transition-colors cursor-pointer"
+            className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-[var(--bg-surface-alt)] hover:bg-[var(--border)] border border-[var(--border)] text-[var(--text-primary)] font-semibold text-xs font-[family-name:var(--font-mono)] transition-colors cursor-pointer"
           >
             <span>🖼</span>
             <span>{copiedImageUrl ? 'URL Copied!' : 'Image Link'}</span>
@@ -331,7 +331,7 @@ export default function RoastShareModal({
           <button
             type="button"
             onClick={handleCopyLink}
-            className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-[hsl(220,12%,14%)] hover:bg-[hsl(220,12%,18%)] border border-[hsl(220,10%,22%)] text-[hsl(40,20%,94%)] font-semibold text-xs font-[family-name:var(--font-mono)] transition-colors cursor-pointer"
+            className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-[var(--bg-surface-alt)] hover:bg-[var(--border)] border border-[var(--border)] text-[var(--text-primary)] font-semibold text-xs font-[family-name:var(--font-mono)] transition-colors cursor-pointer"
           >
             <span>🔗</span>
             <span>{copiedLink ? 'Copied!' : 'Copy Link'}</span>

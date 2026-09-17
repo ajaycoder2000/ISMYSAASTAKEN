@@ -86,7 +86,7 @@ export default function HomePage() {
           {!result && (
             <div className="mb-7 sm:mb-8 animate-fade-in relative z-10">
               <TypewriterHeadline />
-              <p className="mt-3 sm:mt-3.5 text-subhead text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] leading-relaxed max-w-xl">
+              <p className="mt-3 sm:mt-3.5 text-subhead text-[var(--text-secondary)] font-[family-name:var(--font-inter)] leading-relaxed max-w-xl">
                 Describe your idea. We&apos;ll search the web for real competitors, 
                 tell you how crowded the space is, and find the gap you could 
                 actually build toward.
@@ -139,13 +139,13 @@ export default function HomePage() {
 
         {/* Error message */}
         {error && (
-          <div className="w-full mx-auto mt-6 bg-[hsl(220,12%,12%)] border border-[hsl(0,72%,55%,0.3)] rounded-lg p-4 sm:p-5 animate-fade-in relative z-10">
-            <p className="text-sm text-[hsl(0,72%,65%)] font-[family-name:var(--font-inter)]">
+          <div className="w-full mx-auto mt-6 bg-[var(--bg-surface-alt)] border border-red-500/30 rounded-lg p-4 sm:p-5 animate-fade-in relative z-10">
+            <p className="text-sm text-red-600 dark:text-red-400 font-[family-name:var(--font-inter)]">
               {error}
             </p>
             <button
               onClick={() => setError(null)}
-              className="mt-2.5 text-xs text-[hsl(40,8%,45%)] hover:text-[hsl(40,20%,92%)] transition-colors font-[family-name:var(--font-mono)]"
+              className="mt-2.5 text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors font-[family-name:var(--font-mono)]"
             >
               Dismiss
             </button>
@@ -166,64 +166,64 @@ export default function HomePage() {
         <MomentumStat />
 
         {/* 2. Is It Taken? — Startup Name & Handle Availability */}
-        <div className="w-full pt-4 sm:pt-6 border-t border-[hsl(220,10%,15%)]">
+        <div className="w-full pt-4 sm:pt-6 border-t border-[var(--border)]">
           <IsItTakenSection />
         </div>
 
         {/* 3. 3-Step Live Intelligence Engine */}
-        <div className="w-full pt-6 sm:pt-10 border-t border-[hsl(220,10%,15%)]">
+        <div className="w-full pt-6 sm:pt-10 border-t border-[var(--border)]">
           <HowItWorksPipeline />
         </div>
 
         {/* 3. Why This Exists (ChatGPT vs This Tool) */}
-        <div className="w-full pt-8 sm:pt-12 border-t border-[hsl(220,10%,15%)]">
+        <div className="w-full pt-8 sm:pt-12 border-t border-[var(--border)]">
           <WhyThisExists />
         </div>
 
         {/* 4. Search Demand & Keyword Radar Feature Showcase */}
-        <div className="w-full pt-8 sm:pt-12 border-t border-[hsl(220,10%,15%)]">
+        <div className="w-full pt-8 sm:pt-12 border-t border-[var(--border)]">
           <KeywordTeaserSection />
         </div>
 
         {/* 5. Expanded Result Showcase ("See a real result") */}
-        <div className="w-full pt-8 sm:pt-12 border-t border-[hsl(220,10%,15%)]">
+        <div className="w-full pt-8 sm:pt-12 border-t border-[var(--border)]">
           <ExpandedResultShowcase />
         </div>
 
         {/* 5. Founder Moat Playbook (Interactive Archetypes) */}
-        <div className="w-full pt-10 sm:pt-16 border-t border-[hsl(220,10%,15%)]">
+        <div className="w-full pt-10 sm:pt-16 border-t border-[var(--border)]">
           <MarketPlaybook />
         </div>
 
         {/* 6. Weekly Gap Report Signup Widget */}
-        <div className="w-full pt-10 sm:pt-16 border-t border-[hsl(220,10%,15%)]">
+        <div className="w-full pt-10 sm:pt-16 border-t border-[var(--border)]">
           <WeeklyGapSignup />
         </div>
 
         {/* 7. Recent Scans Live Feed */}
-        <div className="w-full pt-12 sm:pt-16 border-t border-[hsl(220,10%,15%)]">
+        <div className="w-full pt-12 sm:pt-16 border-t border-[var(--border)]">
           <RecentScansSection />
         </div>
 
         {/* Bottom Upgrade & Pricing CTA Card */}
-        <div className="w-full mt-14 sm:mt-20 p-6 sm:p-10 bg-[var(--bg-surface-alt)] dark:bg-[hsl(220,14%,10%)] border border-[var(--border)] dark:border-[hsl(220,10%,18%)] rounded-2xl text-center relative overflow-hidden shadow-xl">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-[hsl(42,95%,55%,0.05)] rounded-full blur-3xl pointer-events-none" />
-          <h3 className="text-xl sm:text-2xl font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)] dark:text-[hsl(40,20%,94%)] mb-2 relative z-10">
+        <div className="w-full mt-14 sm:mt-20 p-6 sm:p-10 bg-[var(--bg-surface-alt)] border border-[var(--border)] rounded-2xl text-center relative overflow-hidden shadow-xl">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--accent-amber)]/5 rounded-full blur-3xl pointer-events-none" />
+          <h3 className="text-xl sm:text-2xl font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)] mb-2 relative z-10">
             Ready to validate your next startup idea?
           </h3>
-          <p className="text-xs sm:text-sm text-[var(--text-secondary)] dark:text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] max-w-lg mx-auto mb-6 relative z-10">
+          <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-[family-name:var(--font-inter)] max-w-lg mx-auto mb-6 relative z-10">
             Start with 1 free scan, or explore our $9 Sprint Pass and unlimited Founder Pro plans.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 relative z-10">
             <Link
               href="/pricing"
-              className="px-6 py-2.5 bg-[#d97706] dark:bg-[hsl(42,95%,55%)] hover:bg-amber-600 dark:hover:bg-[hsl(42,95%,50%)] text-white dark:text-[hsl(220,15%,8%)] font-bold text-xs sm:text-sm rounded-xl transition-all font-[family-name:var(--font-space-grotesk)] shadow-md"
+              className="px-6 py-2.5 bg-[var(--accent-amber)] hover:opacity-90 text-black font-bold text-xs sm:text-sm rounded-xl transition-all font-[family-name:var(--font-space-grotesk)] shadow-md"
             >
               View Plans & Passes →
             </Link>
             <Link
               href="/roadmap"
-              className="px-5 py-2.5 bg-[var(--bg-surface)] dark:bg-[hsl(220,12%,14%)] hover:bg-[var(--bg-surface-alt)] dark:hover:bg-[hsl(220,12%,20%)] border border-[var(--border)] dark:border-[hsl(220,10%,24%)] text-[var(--text-primary)] dark:text-[hsl(40,20%,90%)] text-xs sm:text-sm font-medium rounded-xl transition-all font-[family-name:var(--font-space-grotesk)]"
+              className="px-5 py-2.5 bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-alt)] border border-[var(--border)] text-[var(--text-primary)] text-xs sm:text-sm font-medium rounded-xl transition-all font-[family-name:var(--font-space-grotesk)]"
             >
               Public Roadmap 🚀
             </Link>

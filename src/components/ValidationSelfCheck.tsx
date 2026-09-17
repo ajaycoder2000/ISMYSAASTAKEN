@@ -99,29 +99,29 @@ export function ValidationSelfCheck({
     const allZero = Object.values(scores).every((v) => v === 0);
 
     return (
-      <div className="rounded-2xl border border-[hsl(220,10%,18%)] bg-[hsl(220,13%,10%)] p-6 sm:p-8 text-center shadow-xl">
+      <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-surface)] p-6 sm:p-8 text-center shadow-xl">
         {allZero ? (
           <>
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[hsl(145,60%,45%,0.15)] border border-[hsl(145,60%,45%,0.3)] text-xl mb-3">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-xl mb-3">
               👏
             </div>
-            <h3 className="text-lg sm:text-xl font-bold text-[hsl(145,60%,55%)] font-[family-name:var(--font-space-grotesk)] mb-2">
+            <h3 className="text-lg sm:text-xl font-bold text-emerald-600 dark:text-emerald-400 font-[family-name:var(--font-space-grotesk)] mb-2">
               You&apos;ve done your homework 👏
             </h3>
-            <p className="text-[hsl(40,8%,65%)] text-sm max-w-md mx-auto leading-relaxed mb-5 font-[family-name:var(--font-inter)]">
+            <p className="text-[var(--text-secondary)] text-sm max-w-md mx-auto leading-relaxed mb-5 font-[family-name:var(--font-inter)]">
               Your answers suggest you&apos;ve already thought about demand, competition, and monetization.
               A real scan can confirm it with live web search grounding and competitor moat analysis.
             </p>
           </>
         ) : (
           <>
-            <p className="text-xs font-[family-name:var(--font-mono)] uppercase tracking-wider text-[hsl(40,8%,50%)] mb-1">
+            <p className="text-xs font-[family-name:var(--font-mono)] uppercase tracking-wider text-[var(--text-muted)] mb-1 font-semibold">
               Your idea is most exposed to:
             </p>
-            <h3 className="text-2xl sm:text-3xl font-bold text-[hsl(42,95%,55%)] mb-2 font-[family-name:var(--font-space-grotesk)]">
+            <h3 className="text-2xl sm:text-3xl font-bold text-[var(--accent-amber)] mb-2 font-[family-name:var(--font-space-grotesk)]">
               {FAILURE_LABELS[topRisk]}
             </h3>
-            <p className="text-[hsl(40,8%,65%)] text-sm max-w-md mx-auto leading-relaxed mb-5 font-[family-name:var(--font-inter)]">
+            <p className="text-[var(--text-secondary)] text-sm max-w-md mx-auto leading-relaxed mb-5 font-[family-name:var(--font-inter)]">
               This is exactly what a live scan checks. Don&apos;t guess — verify real competitors and market demand before writing code.
             </p>
           </>
@@ -130,7 +130,7 @@ export function ValidationSelfCheck({
         <button
           type="button"
           onClick={handleReset}
-          className="text-xs text-[hsl(40,8%,50%)] hover:text-[hsl(40,20%,90%)] transition-colors font-[family-name:var(--font-mono)] underline underline-offset-4 cursor-pointer"
+          className="text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors font-[family-name:var(--font-mono)] underline underline-offset-4 cursor-pointer font-medium"
         >
           ↺ Retake self-check
         </button>
@@ -140,9 +140,9 @@ export function ValidationSelfCheck({
 
   const q = QUESTIONS[step];
   return (
-    <div className="rounded-2xl border border-[hsl(220,10%,18%)] bg-[hsl(220,13%,10%)] p-5 sm:p-7 shadow-xl">
-      <div className="flex justify-between items-center mb-4 pb-3 border-b border-[hsl(220,10%,16%)]">
-        <span className="text-xs text-[hsl(40,8%,50%)] font-[family-name:var(--font-mono)] font-medium">
+    <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-surface)] p-5 sm:p-7 shadow-xl">
+      <div className="flex justify-between items-center mb-4 pb-3 border-b border-[var(--border)]">
+        <span className="text-xs text-[var(--text-muted)] font-[family-name:var(--font-mono)] font-medium">
           Question {step + 1} of {QUESTIONS.length}
         </span>
         <div className="flex gap-1.5" aria-hidden="true">
@@ -150,14 +150,14 @@ export function ValidationSelfCheck({
             <span
               key={i}
               className={`h-1.5 w-6 sm:w-8 rounded-full transition-colors duration-300 ${
-                i <= step ? 'bg-[hsl(42,95%,55%)]' : 'bg-[hsl(220,10%,20%)]'
+                i <= step ? 'bg-[var(--accent-amber)]' : 'bg-[var(--border)]'
               }`}
             />
           ))}
         </div>
       </div>
 
-      <h3 className="text-base sm:text-lg font-bold text-[hsl(40,20%,94%)] mb-4 font-[family-name:var(--font-space-grotesk)]">
+      <h3 className="text-base sm:text-lg font-bold text-[var(--text-primary)] mb-4 font-[family-name:var(--font-space-grotesk)]">
         {q.text}
       </h3>
 
@@ -167,10 +167,10 @@ export function ValidationSelfCheck({
             key={opt.label}
             type="button"
             onClick={() => answer(opt)}
-            className="text-left px-4 py-3 rounded-xl border border-[hsl(220,10%,20%)] bg-[hsl(220,14%,8%)] text-xs sm:text-sm text-[hsl(40,20%,85%)] hover:border-[hsl(42,95%,55%)] hover:text-[hsl(40,20%,95%)] hover:bg-[hsl(220,15%,12%)] transition-all font-[family-name:var(--font-inter)] cursor-pointer flex items-center justify-between group"
+            className="text-left px-4 py-3 rounded-xl border border-[var(--border)] bg-[var(--bg-surface-alt)] text-xs sm:text-sm text-[var(--text-secondary)] hover:border-[var(--accent-amber)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface)] transition-all font-[family-name:var(--font-inter)] cursor-pointer flex items-center justify-between group shadow-sm font-medium"
           >
             <span>{opt.label}</span>
-            <span className="text-[hsl(42,95%,55%)] opacity-0 group-hover:opacity-100 transition-opacity font-bold">
+            <span className="text-[var(--accent-amber)] opacity-0 group-hover:opacity-100 transition-opacity font-bold">
               →
             </span>
           </button>

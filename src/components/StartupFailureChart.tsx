@@ -49,24 +49,24 @@ export default function StartupFailureChart({
 
   return (
     <div
-      className={`w-full bg-[hsl(220,13%,10%)] border border-[hsl(220,10%,18%)] rounded-2xl p-5 sm:p-7 shadow-xl relative overflow-hidden ${className}`}
+      className={`w-full bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl p-5 sm:p-7 shadow-xl relative overflow-hidden ${className}`}
       aria-label="Startup Failure Reasons Chart"
     >
       {/* Background ambient glow behind highlighted chart */}
       <div
-        className="absolute -top-12 -right-12 w-48 h-48 bg-[hsl(42,95%,55%,0.06)] rounded-full blur-3xl pointer-events-none"
+        className="absolute -top-12 -right-12 w-48 h-48 bg-[var(--accent-amber)]/5 rounded-full blur-3xl pointer-events-none"
         aria-hidden="true"
       />
 
       {/* Header bar */}
-      <div className="flex flex-wrap items-center justify-between gap-2 mb-6 pb-3.5 border-b border-[hsl(220,10%,16%)]">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-6 pb-3.5 border-b border-[var(--border)]">
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[hsl(42,95%,55%)] animate-pulse" />
-          <span className="text-[11px] font-[family-name:var(--font-mono)] font-bold tracking-wider uppercase text-[hsl(40,8%,50%)]">
+          <span className="w-2 h-2 rounded-full bg-[var(--accent-amber)] animate-pulse" />
+          <span className="text-[11px] font-[family-name:var(--font-mono)] font-bold tracking-wider uppercase text-[var(--text-muted)]">
             POST-MORTEM TELEMETRY // TOP 4 STARTUP KILLERS
           </span>
         </div>
-        <span className="text-[10px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,40%)]">
+        <span className="text-[10px] font-[family-name:var(--font-mono)] text-[var(--text-dim)]">
           N=100+ Startup Post-Mortems
         </span>
       </div>
@@ -81,28 +81,28 @@ export default function StartupFailureChart({
               key={item.key}
               className={`p-3 sm:p-4 rounded-xl border transition-all duration-300 ${
                 isHighlighted
-                  ? 'bg-[hsl(220,15%,12%)] border-[hsl(42,95%,55%,0.5)] shadow-[0_0_20px_rgba(245,166,35,0.12)]'
-                  : 'bg-[hsl(220,14%,8%)] border-[hsl(220,10%,16%)] opacity-85 hover:opacity-100'
+                  ? 'bg-[var(--bg-surface-alt)] border-[var(--accent-amber)] shadow-[0_0_20px_rgba(245,166,35,0.12)]'
+                  : 'bg-[var(--bg-surface)] border border-[var(--border)] opacity-85 hover:opacity-100'
               }`}
             >
               <div className="flex items-baseline justify-between gap-2 mb-2">
                 <div className="flex items-center gap-2">
                   <span
                     className={`font-[family-name:var(--font-space-grotesk)] text-sm sm:text-base font-bold transition-colors ${
-                      isHighlighted ? 'text-[hsl(40,20%,95%)]' : 'text-[hsl(40,8%,70%)]'
+                      isHighlighted ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'
                     }`}
                   >
                     {item.label}
                   </span>
                   {isHighlighted && (
-                    <span className="text-[9px] font-bold font-[family-name:var(--font-mono)] uppercase px-2 py-0.5 rounded-full bg-[hsl(42,95%,55%,0.15)] text-[hsl(42,95%,55%)] border border-[hsl(42,95%,55%,0.3)] animate-pulse">
+                    <span className="text-[9px] font-bold font-[family-name:var(--font-mono)] uppercase px-2 py-0.5 rounded-full bg-[var(--accent-amber)]/15 text-[var(--accent-amber)] border border-[var(--accent-amber)]/30 animate-pulse">
                       YOUR TOP EXPOSURE
                     </span>
                   )}
                 </div>
                 <span
                   className={`font-[family-name:var(--font-mono)] text-sm sm:text-base font-bold transition-colors ${
-                    isHighlighted ? 'text-[hsl(42,95%,55%)]' : 'text-[hsl(40,8%,50%)]'
+                    isHighlighted ? 'text-[var(--accent-amber)]' : 'text-[var(--text-muted)]'
                   }`}
                 >
                   {item.percentage}%
@@ -110,12 +110,12 @@ export default function StartupFailureChart({
               </div>
 
               {/* Progress Track */}
-              <div className="w-full h-2.5 sm:h-3 rounded-full bg-[hsl(220,10%,16%)] overflow-hidden">
+              <div className="w-full h-2.5 sm:h-3 rounded-full bg-[var(--border)] overflow-hidden">
                 <div
                   className={`h-full rounded-full transition-[width] duration-700 ease-out motion-reduce:transition-none ${
                     isHighlighted
-                      ? 'bg-gradient-to-r from-[hsl(42,95%,55%)] to-[hsl(35,95%,50%)] shadow-[0_0_12px_rgba(245,166,35,0.4)]'
-                      : 'bg-[hsl(220,10%,26%)]'
+                      ? 'bg-gradient-to-r from-[var(--accent-amber)] to-amber-600 shadow-[0_0_12px_rgba(245,166,35,0.4)]'
+                      : 'bg-[var(--text-dim)]/40'
                   }`}
                   style={{ width: `${item.percentage}%` }}
                 />
@@ -124,7 +124,7 @@ export default function StartupFailureChart({
               {/* Description */}
               <p
                 className={`mt-2 text-xs transition-colors leading-relaxed ${
-                  isHighlighted ? 'text-[hsl(40,8%,65%)]' : 'text-[hsl(40,8%,45%)]'
+                  isHighlighted ? 'text-[var(--text-primary)] font-medium' : 'text-[var(--text-muted)]'
                 }`}
               >
                 {item.description}
@@ -135,9 +135,9 @@ export default function StartupFailureChart({
       </div>
 
       {/* Attribution Footnote */}
-      <div className="mt-5 pt-3.5 border-t border-[hsl(220,10%,15%)] flex items-center justify-between text-[11px] text-[hsl(40,8%,45%)] font-[family-name:var(--font-inter)]">
+      <div className="mt-5 pt-3.5 border-t border-[var(--border)] flex items-center justify-between text-[11px] text-[var(--text-muted)] font-[family-name:var(--font-inter)]">
         <span>Source: CB Insights Research</span>
-        <span className="font-[family-name:var(--font-mono)] text-[10px] text-[hsl(40,8%,40%)]">
+        <span className="font-[family-name:var(--font-mono)] text-[10px] text-[var(--text-dim)]">
           Avoidable with upfront validation
         </span>
       </div>

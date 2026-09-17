@@ -30,13 +30,13 @@ export default function HowItWorksPipeline() {
     <section className="w-full mx-auto py-10 sm:py-16">
       {/* Section Header */}
       <div className="text-center mb-8 sm:mb-12">
-        <span className="text-[11px] font-[family-name:var(--font-mono)] uppercase tracking-[0.25em] text-[hsl(40,8%,50%)] font-bold block mb-2">
+        <span className="text-[11px] font-[family-name:var(--font-mono)] uppercase tracking-[0.25em] text-[var(--text-muted)] font-bold block mb-2">
           ENGINE ARCHITECTURE
         </span>
-        <h2 className="text-2xl sm:text-3xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)] tracking-tight">
+        <h2 className="text-2xl sm:text-3xl font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)] tracking-tight">
           How It Validates Your SaaS in 5 Seconds
         </h2>
-        <p className="mt-2 text-xs sm:text-sm text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] max-w-lg mx-auto">
+        <p className="mt-2 text-xs sm:text-sm text-[var(--text-secondary)] font-[family-name:var(--font-inter)] max-w-lg mx-auto">
           No generic filler text. Real market data, real competitors, and actionable differentiation.
         </p>
       </div>
@@ -46,27 +46,27 @@ export default function HowItWorksPipeline() {
         {steps.map((item, idx) => (
           <div
             key={idx}
-            className="bg-[hsl(220,13%,11%)] border border-[hsl(220,10%,18%)] hover:border-[hsl(42,95%,55%,0.3)] rounded-2xl p-5 sm:p-6 transition-all duration-200 hover:-translate-y-1 relative group"
+            className="bg-[var(--bg-surface)] border border-[var(--border)] hover:border-[var(--accent-amber)]/40 rounded-2xl p-5 sm:p-6 transition-all duration-200 hover:-translate-y-1 relative group shadow-sm"
           >
             {/* Step number badge */}
             <div className="flex items-center justify-between mb-4">
-              <div className="w-9 h-9 rounded-xl bg-[hsl(220,15%,15%)] border border-[hsl(220,10%,22%)] flex items-center justify-center text-lg">
+              <div className="w-9 h-9 rounded-xl bg-[var(--bg-surface-alt)] border border-[var(--border)] flex items-center justify-center text-lg">
                 {item.icon}
               </div>
-              <span className="text-xs font-bold font-[family-name:var(--font-mono)] text-[hsl(42,95%,55%)] bg-[hsl(42,95%,55%,0.1)] px-2 py-0.5 rounded border border-[hsl(42,95%,55%,0.2)]">
+              <span className="text-xs font-bold font-[family-name:var(--font-mono)] text-[var(--accent-amber)] bg-[var(--accent-amber)]/10 px-2 py-0.5 rounded border border-[var(--accent-amber)]/25">
                 STEP {item.step}
               </span>
             </div>
 
-            <h3 className="text-base sm:text-lg font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)] group-hover:text-[hsl(40,20%,100%)] transition-colors">
+            <h3 className="text-base sm:text-lg font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)] transition-colors">
               {item.title}
             </h3>
 
-            <span className="text-[10px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,50%)] block mt-0.5 mb-2.5">
+            <span className="text-[10px] font-[family-name:var(--font-mono)] text-[var(--text-muted)] block mt-0.5 mb-2.5">
               {item.badge}
             </span>
 
-            <p className="text-xs sm:text-sm text-[hsl(40,8%,65%)] font-[family-name:var(--font-inter)] leading-relaxed">
+            <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-[family-name:var(--font-inter)] leading-relaxed">
               {item.description}
             </p>
           </div>

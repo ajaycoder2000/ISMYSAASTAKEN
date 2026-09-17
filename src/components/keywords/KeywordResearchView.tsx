@@ -135,17 +135,17 @@ export default function KeywordResearchView() {
           FREE-TIER SEO TELEMETRY
         </div>
 
-        <h1 className="text-display font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)] tracking-tight">
+        <h1 className="text-display font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)] tracking-tight">
           SaaS Keyword Radar
         </h1>
 
-        <p className="text-subhead text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] leading-relaxed">
+        <p className="text-subhead text-[var(--text-secondary)] font-[family-name:var(--font-inter)] leading-relaxed">
           Ground your product hypothesis in real search behavior. Search interest trajectory (0–100 scale), live Google autocomplete queries, and SERP competition signals.
         </p>
       </div>
 
       {/* Input Search Console */}
-      <div className="max-w-3xl mx-auto bg-[hsl(220,14%,10%)] border border-[hsl(220,10%,18%)] rounded-2xl p-4 sm:p-6 shadow-2xl relative">
+      <div className="max-w-3xl mx-auto bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl p-4 sm:p-6 shadow-2xl relative">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -154,7 +154,7 @@ export default function KeywordResearchView() {
           className="space-y-4"
         >
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[hsl(40,8%,45%)] font-mono text-sm">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[var(--text-muted)] font-mono text-sm">
               &gt;
             </div>
             <input
@@ -163,16 +163,16 @@ export default function KeywordResearchView() {
               onChange={(e) => setSeed(e.target.value)}
               placeholder="e.g. ai meeting notes, linear alternative, postgres backup saas..."
               disabled={loading}
-              className="w-full pl-9 pr-28 py-3.5 bg-[hsl(220,16%,7%)] border border-[hsl(220,10%,20%)] focus:border-[hsl(145,60%,55%)] focus:ring-1 focus:ring-[hsl(145,60%,55%)] rounded-xl text-body text-[hsl(40,20%,95%)] placeholder:text-[hsl(40,8%,40%)] font-[family-name:var(--font-mono)] outline-none transition-all"
+              className="w-full pl-9 pr-28 py-3.5 bg-[var(--bg-surface-alt)] border border-[var(--border)] focus:border-[var(--accent-emerald)] focus:ring-1 focus:ring-[var(--accent-emerald)] rounded-xl text-body text-[var(--text-primary)] placeholder:text-[var(--text-muted)] font-[family-name:var(--font-mono)] outline-none transition-all"
             />
             <button
               type="submit"
               disabled={loading || !seed.trim()}
-              className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-[hsl(145,60%,45%)] hover:bg-[hsl(145,60%,50%)] disabled:opacity-40 disabled:hover:bg-[hsl(145,60%,45%)] text-[hsl(220,15%,8%)] text-button rounded-lg transition-all font-[family-name:var(--font-space-grotesk)] flex items-center gap-1.5 shadow-md cursor-pointer"
+              className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-[var(--accent-emerald)] hover:bg-emerald-700 disabled:opacity-40 text-white text-button rounded-lg transition-all font-[family-name:var(--font-space-grotesk)] flex items-center gap-1.5 shadow-md cursor-pointer font-bold"
             >
               {loading ? (
                 <>
-                  <span className="w-3 h-3 border-2 border-[hsl(220,15%,8%)] border-t-transparent rounded-full animate-spin" />
+                  <span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   <span>Scanning...</span>
                 </>
               ) : (
@@ -186,7 +186,7 @@ export default function KeywordResearchView() {
 
           {/* Quick seed suggestions */}
           <div className="flex flex-wrap items-center gap-1.5 pt-1">
-            <span className="text-meta font-[family-name:var(--font-mono)] text-[hsl(40,8%,45%)] uppercase tracking-wider mr-1">
+            <span className="text-meta font-[family-name:var(--font-mono)] text-[var(--text-muted)] uppercase tracking-wider mr-1">
               Try Seed:
             </span>
             {SAMPLE_SEEDS.map((s) => (
@@ -195,7 +195,7 @@ export default function KeywordResearchView() {
                 type="button"
                 onClick={() => handleSearch(s)}
                 disabled={loading}
-                className="text-[11px] font-[family-name:var(--font-mono)] px-2.5 py-1 rounded-md bg-[hsl(220,12%,14%)] hover:bg-[hsl(220,12%,18%)] text-[hsl(40,20%,80%)] hover:text-[hsl(40,20%,95%)] border border-[hsl(220,10%,20%)] transition-colors cursor-pointer"
+                className="text-[11px] font-[family-name:var(--font-mono)] px-2.5 py-1 rounded-md bg-[var(--bg-surface-alt)] hover:bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border)] transition-colors cursor-pointer"
               >
                 {s}
               </button>
@@ -244,29 +244,29 @@ export default function KeywordResearchView() {
         <div className="space-y-8 animate-in fade-in duration-300">
           {/* Cache Status Badge */}
           {results.fromCache && (
-            <div className="flex items-center justify-between px-4 py-2 rounded-xl bg-[hsl(220,12%,12%)] border border-[hsl(220,10%,18%)] text-[11px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,55%)]">
+            <div className="flex items-center justify-between px-4 py-2 rounded-xl bg-[var(--bg-surface-alt)] border border-[var(--border)] text-[11px] font-[family-name:var(--font-mono)] text-[var(--text-secondary)]">
               <span>⚡ Served from 48-Hour Cache</span>
               <span>{results.fetchedAt ? new Date(results.fetchedAt).toLocaleDateString() : 'Fresh snapshot'}</span>
             </div>
           )}
 
           {/* Sub-panel 1: Search Interest Trend */}
-          <div className="bg-[hsl(220,14%,10%)] border border-[hsl(220,10%,18%)] rounded-2xl p-4 sm:p-7 space-y-4">
+          <div className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl p-4 sm:p-7 space-y-4">
             <div className="flex items-center justify-between flex-wrap gap-2">
               <div>
-                <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-[hsl(145,60%,55%)] font-bold block">
+                <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-[var(--accent-emerald)] font-bold block">
                   SUB-PANEL 01 // TELEMETRY
                 </span>
-                <h2 className="text-lg sm:text-xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)]">
+                <h2 className="text-lg sm:text-xl font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)]">
                   Search Interest Trend
                 </h2>
               </div>
-              <span className="text-[11px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,50%)] bg-[hsl(220,12%,14%)] px-2.5 py-1 rounded-md border border-[hsl(220,10%,20%)]">
+              <span className="text-[11px] font-[family-name:var(--font-mono)] text-[var(--text-secondary)] bg-[var(--bg-surface-alt)] px-2.5 py-1 rounded-md border border-[var(--border)]">
                 Seed: &quot;{results.seed}&quot;
               </span>
             </div>
 
-            <p className="text-xs text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)]">
+            <p className="text-xs text-[var(--text-secondary)] font-[family-name:var(--font-inter)]">
               Relative search interest (0–100 scale) over the past 12 months. Indicates consumer demand momentum.
             </p>
 
@@ -276,15 +276,15 @@ export default function KeywordResearchView() {
           {/* 2-Column Grid: Panel 2 & Panel 3 */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Sub-panel 2: Keyword Generator & Expansion (7 cols) */}
-            <div className="lg:col-span-7 bg-[hsl(220,14%,10%)] border border-[hsl(220,10%,18%)] rounded-2xl p-4 sm:p-7 space-y-6">
+            <div className="lg:col-span-7 bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl p-4 sm:p-7 space-y-6">
               <div>
-                <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-[hsl(42,95%,55%)] font-bold block">
+                <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-[var(--accent-amber)] font-bold block">
                   SUB-PANEL 02 // DISCOVERY
                 </span>
-                <h2 className="text-lg sm:text-xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)]">
+                <h2 className="text-lg sm:text-xl font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)]">
                   Keyword Ideas &amp; Founder Angles
                 </h2>
-                <p className="text-xs text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] mt-1">
+                <p className="text-xs text-[var(--text-secondary)] font-[family-name:var(--font-inter)] mt-1">
                   Live Google autocomplete queries combined with AI-expanded long-tail angles.
                 </p>
               </div>
@@ -292,10 +292,10 @@ export default function KeywordResearchView() {
               {/* 1. Live Autocomplete Queries */}
               <div className="space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-[hsl(40,20%,85%)] font-bold">
+                  <span className="text-[11px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-[var(--text-primary)] font-bold">
                     ⚡ Live Autocomplete Suggestions ({results.autocomplete?.length || 0})
                   </span>
-                  <span className="text-[10px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,50%)]">
+                  <span className="text-[10px] font-[family-name:var(--font-mono)] text-[var(--text-muted)]">
                     What searchers type
                   </span>
                 </div>
@@ -305,9 +305,9 @@ export default function KeywordResearchView() {
                     results.autocomplete.map((kw, idx) => (
                       <div
                         key={idx}
-                        className="group flex items-center justify-between gap-2 p-2.5 rounded-lg bg-[hsl(220,15%,8%)] border border-[hsl(220,10%,16%)] hover:border-[hsl(220,10%,24%)] transition-colors"
+                        className="group flex items-center justify-between gap-2 p-2.5 rounded-lg bg-[var(--bg-surface-alt)] border border-[var(--border)] hover:border-[var(--border-hover)] transition-colors"
                       >
-                        <span className="text-xs font-[family-name:var(--font-mono)] text-[hsl(40,20%,90%)] truncate">
+                        <span className="text-xs font-[family-name:var(--font-mono)] text-[var(--text-primary)] truncate">
                           {kw}
                         </span>
 
@@ -316,7 +316,7 @@ export default function KeywordResearchView() {
                             type="button"
                             onClick={() => handleCopy(kw)}
                             title="Copy keyword"
-                            className="p-1 rounded bg-[hsl(220,12%,14%)] hover:bg-[hsl(220,12%,18%)] text-[10px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,60%)] hover:text-white transition-colors cursor-pointer"
+                            className="p-1 rounded bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-alt)] text-[10px] font-[family-name:var(--font-mono)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border)] transition-colors cursor-pointer"
                           >
                             {copiedKeyword === kw ? '✓' : 'Copy'}
                           </button>
@@ -324,7 +324,7 @@ export default function KeywordResearchView() {
                             type="button"
                             onClick={() => handleValidateIdea(kw)}
                             title="Validate as SaaS idea"
-                            className="px-2 py-1 rounded bg-[hsl(42,95%,55%,0.15)] hover:bg-[hsl(42,95%,55%,0.25)] text-[hsl(42,95%,55%)] text-[10px] font-[family-name:var(--font-mono)] font-bold transition-colors cursor-pointer"
+                            className="px-2 py-1 rounded bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/25 text-[var(--accent-amber)] text-[10px] font-[family-name:var(--font-mono)] font-bold transition-colors cursor-pointer"
                           >
                             Scan SaaS →
                           </button>
@@ -332,7 +332,7 @@ export default function KeywordResearchView() {
                       </div>
                     ))
                   ) : (
-                    <p className="text-xs font-[family-name:var(--font-mono)] text-[hsl(40,8%,50%)] py-2">
+                    <p className="text-xs font-[family-name:var(--font-mono)] text-[var(--text-muted)] py-2">
                       No live autocomplete variants found for this exact seed.
                     </p>
                   )}
@@ -340,12 +340,12 @@ export default function KeywordResearchView() {
               </div>
 
               {/* 2. AI Long-Tail & Question Variations */}
-              <div className="space-y-2.5 pt-3 border-t border-[hsl(220,10%,16%)]">
+              <div className="space-y-2.5 pt-3 border-t border-[var(--border)]">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-[hsl(40,20%,85%)] font-bold">
+                  <span className="text-[11px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-[var(--text-primary)] font-bold">
                     🎯 Founder Long-Tail &amp; Questions ({results.generatedKeywords?.length || 0})
                   </span>
-                  <span className="text-[10px] font-[family-name:var(--font-mono)] text-[hsl(145,60%,55%)]">
+                  <span className="text-[10px] font-[family-name:var(--font-mono)] text-[var(--accent-emerald)] font-bold">
                     Uncrowded Angles
                   </span>
                 </div>
@@ -355,9 +355,9 @@ export default function KeywordResearchView() {
                     results.generatedKeywords.map((kw, idx) => (
                       <div
                         key={idx}
-                        className="group flex items-center justify-between gap-2 p-2.5 rounded-lg bg-[hsl(220,15%,8%)] border border-[hsl(220,10%,16%)] hover:border-[hsl(220,10%,24%)] transition-colors"
+                        className="group flex items-center justify-between gap-2 p-2.5 rounded-lg bg-[var(--bg-surface-alt)] border border-[var(--border)] hover:border-[var(--border-hover)] transition-colors"
                       >
-                        <span className="text-xs font-[family-name:var(--font-mono)] text-[hsl(40,20%,90%)] truncate">
+                        <span className="text-xs font-[family-name:var(--font-mono)] text-[var(--text-primary)] truncate">
                           {kw}
                         </span>
 
@@ -366,7 +366,7 @@ export default function KeywordResearchView() {
                             type="button"
                             onClick={() => handleCopy(kw)}
                             title="Copy keyword"
-                            className="p-1 rounded bg-[hsl(220,12%,14%)] hover:bg-[hsl(220,12%,18%)] text-[10px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,60%)] hover:text-white transition-colors cursor-pointer"
+                            className="p-1 rounded bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-alt)] text-[10px] font-[family-name:var(--font-mono)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border)] transition-colors cursor-pointer"
                           >
                             {copiedKeyword === kw ? '✓' : 'Copy'}
                           </button>
@@ -374,7 +374,7 @@ export default function KeywordResearchView() {
                             type="button"
                             onClick={() => handleValidateIdea(kw)}
                             title="Validate as SaaS idea"
-                            className="px-2 py-1 rounded bg-[hsl(145,60%,45%,0.15)] hover:bg-[hsl(145,60%,45%,0.25)] text-[hsl(145,60%,55%)] text-[10px] font-[family-name:var(--font-mono)] font-bold transition-colors cursor-pointer"
+                            className="px-2 py-1 rounded bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-[var(--accent-emerald)] text-[10px] font-[family-name:var(--font-mono)] font-bold transition-colors cursor-pointer"
                           >
                             Scan SaaS →
                           </button>
@@ -387,16 +387,16 @@ export default function KeywordResearchView() {
             </div>
 
             {/* Sub-panel 3: Competition Signal (5 cols) */}
-            <div className="lg:col-span-5 bg-[hsl(220,14%,10%)] border border-[hsl(220,10%,18%)] rounded-2xl p-4 sm:p-7 space-y-6 flex flex-col justify-between">
+            <div className="lg:col-span-5 bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl p-4 sm:p-7 space-y-6 flex flex-col justify-between">
               <div className="space-y-4">
                 <div>
-                  <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-[hsl(200,85%,60%)] font-bold block">
+                  <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-sky-600 dark:text-[hsl(200,85%,60%)] font-bold block">
                     SUB-PANEL 03 // ESTIMATE
                   </span>
-                  <h2 className="text-lg sm:text-xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)]">
+                  <h2 className="text-lg sm:text-xl font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)]">
                     Competition Signal
                   </h2>
-                  <p className="text-xs text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] mt-1">
+                  <p className="text-xs text-[var(--text-secondary)] font-[family-name:var(--font-inter)] mt-1">
                     Heuristic proxy derived from page-1 SERP diversity &amp; forum discussion presence.
                   </p>
                 </div>
@@ -405,19 +405,19 @@ export default function KeywordResearchView() {
                 <div
                   className={`p-4 rounded-xl border ${
                     results.competitionSignal.label === 'Lower competition'
-                      ? 'bg-[hsl(145,60%,45%,0.1)] border-[hsl(145,60%,45%,0.3)] text-[hsl(145,60%,55%)]'
+                      ? 'bg-emerald-500/15 border-emerald-500/30 text-[var(--accent-emerald)]'
                       : results.competitionSignal.label === 'Moderate competition'
-                      ? 'bg-[hsl(42,95%,55%,0.1)] border-[hsl(42,95%,55%,0.3)] text-[hsl(42,95%,55%)]'
-                      : 'bg-[hsl(0,70%,50%,0.1)] border-[hsl(0,70%,50%,0.3)] text-[hsl(0,80%,70%)]'
+                      ? 'bg-amber-500/10 border-amber-500/25 text-[var(--accent-amber)]'
+                      : 'bg-red-500/10 border-red-500/25 text-red-600 dark:text-[hsl(0,80%,70%)]'
                   }`}
                 >
-                  <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-wider block opacity-75">
+                  <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-wider block opacity-75 font-semibold">
                     Signal Proxy Verdict
                   </span>
                   <div className="text-xl sm:text-2xl font-bold font-[family-name:var(--font-space-grotesk)] mt-0.5">
                     {results.competitionSignal.label}
                   </div>
-                  <p className="text-xs text-[hsl(40,20%,85%)] mt-2 font-[family-name:var(--font-inter)] leading-relaxed">
+                  <p className="text-xs text-[var(--text-primary)] mt-2 font-[family-name:var(--font-inter)] leading-relaxed">
                     {results.competitionSignal.label === 'Lower competition'
                       ? 'Multiple community discussions (Reddit, forums, Indie Hackers) rank on page 1. This signal indicates strong user demand with softer incumbent software defense.'
                       : results.competitionSignal.label === 'Moderate competition'
@@ -428,7 +428,7 @@ export default function KeywordResearchView() {
 
                 {/* Top Page 1 Domains */}
                 <div className="space-y-2">
-                  <span className="text-[11px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-[hsl(40,8%,50%)] block">
+                  <span className="text-[11px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-[var(--text-muted)] font-bold block">
                     Page 1 SERP Footprint
                   </span>
                   <div className="flex flex-wrap gap-1.5">
@@ -439,8 +439,8 @@ export default function KeywordResearchView() {
                           key={idx}
                           className={`text-[11px] font-[family-name:var(--font-mono)] px-2 py-0.5 rounded border ${
                             isForum
-                              ? 'bg-[hsl(145,60%,45%,0.15)] border-[hsl(145,60%,45%,0.3)] text-[hsl(145,60%,60%)] font-bold'
-                              : 'bg-[hsl(220,12%,14%)] border-[hsl(220,10%,18%)] text-[hsl(40,8%,65%)]'
+                              ? 'bg-emerald-500/15 border-emerald-500/30 text-[var(--accent-emerald)] font-bold'
+                              : 'bg-[var(--bg-surface-alt)] border-[var(--border)] text-[var(--text-secondary)]'
                           }`}
                         >
                           {domain} {isForum && '💬'}
@@ -452,19 +452,19 @@ export default function KeywordResearchView() {
 
                 {/* Forum Signals Stats */}
                 <div className="grid grid-cols-2 gap-2 pt-2">
-                  <div className="p-2.5 rounded-lg bg-[hsl(220,15%,8%)] border border-[hsl(220,10%,16%)]">
-                    <span className="text-[10px] font-mono text-[hsl(40,8%,45%)] uppercase block">
+                  <div className="p-2.5 rounded-lg bg-[var(--bg-surface-alt)] border border-[var(--border)]">
+                    <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase block">
                       Community Results
                     </span>
-                    <span className="text-sm font-bold font-mono text-[hsl(40,20%,90%)]">
+                    <span className="text-sm font-bold font-mono text-[var(--text-primary)]">
                       {results.competitionSignal.forumSignalsCount} threads detected
                     </span>
                   </div>
-                  <div className="p-2.5 rounded-lg bg-[hsl(220,15%,8%)] border border-[hsl(220,10%,16%)]">
-                    <span className="text-[10px] font-mono text-[hsl(40,8%,45%)] uppercase block">
+                  <div className="p-2.5 rounded-lg bg-[var(--bg-surface-alt)] border border-[var(--border)]">
+                    <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase block">
                       Indexed Results
                     </span>
-                    <span className="text-sm font-bold font-mono text-[hsl(40,20%,90%)]">
+                    <span className="text-sm font-bold font-mono text-[var(--text-primary)]">
                       ~{results.competitionSignal.totalResults.toLocaleString()}
                     </span>
                   </div>
@@ -472,7 +472,7 @@ export default function KeywordResearchView() {
               </div>
 
               {/* Core Honesty Disclaimer Notice */}
-              <div className="pt-4 border-t border-[hsl(220,10%,16%)] text-[10px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,45%)] leading-relaxed">
+              <div className="pt-4 border-t border-[var(--border)] text-[10px] font-[family-name:var(--font-mono)] text-[var(--text-muted)] leading-relaxed">
                 ⚖️ <strong>Honesty Transparency:</strong> We label this as a <em>Competition Signal</em> estimate based on organic SERP composition. We never display a fabricated numeric score like &quot;72/100&quot; which would falsely imply backlink &amp; domain authority data we do not have.
               </div>
             </div>
@@ -498,23 +498,23 @@ export default function KeywordResearchView() {
             </div>
 
             {/* Mock result card */}
-            <div className="bg-bg-surface dark:bg-[hsl(220,14%,10%)]/90 border border-border dark:border-[hsl(220,10%,20%)] rounded-2xl p-5 sm:p-7 space-y-6 relative overflow-hidden shadow-2xl">
+            <div className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl p-5 sm:p-7 space-y-6 relative overflow-hidden shadow-2xl">
               {/* Sub-panel 1: Search Interest Trend */}
-              <div className="space-y-3 pb-6 border-b border-[hsl(220,10%,16%)]">
+              <div className="space-y-3 pb-6 border-b border-[var(--border)]">
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <div>
-                    <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-[hsl(145,60%,55%)] font-bold block">
+                    <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-[var(--accent-emerald)] font-bold block">
                       SUB-PANEL 01 // TELEMETRY
                     </span>
-                    <h3 className="text-base sm:text-lg font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)]">
+                    <h3 className="text-base sm:text-lg font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)]">
                       Search Interest Trend
                     </h3>
                   </div>
-                  <span className="text-[11px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,50%)] bg-[hsl(220,12%,14%)] px-2.5 py-1 rounded-md border border-[hsl(220,10%,20%)]">
+                  <span className="text-[11px] font-[family-name:var(--font-mono)] text-[var(--text-secondary)] bg-[var(--bg-surface-alt)] px-2.5 py-1 rounded-md border border-[var(--border)]">
                     Seed: &quot;ai meeting notes&quot;
                   </span>
                 </div>
-                <p className="text-xs text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)]">
+                <p className="text-xs text-[var(--text-secondary)] font-[family-name:var(--font-inter)]">
                   Relative search interest (0–100 scale) over the past 12 months, trending upward.
                 </p>
                 <KeywordTrendChart data={SAMPLE_TREND_DATA} seed="ai meeting notes" />
@@ -525,13 +525,13 @@ export default function KeywordResearchView() {
                 {/* Sub-panel 2: Keyword Ideas */}
                 <div className="lg:col-span-7 space-y-4">
                   <div>
-                    <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-[hsl(42,95%,55%)] font-bold block">
+                    <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-[var(--accent-amber)] font-bold block">
                       SUB-PANEL 02 // DISCOVERY
                     </span>
-                    <h3 className="text-base sm:text-lg font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)]">
+                    <h3 className="text-base sm:text-lg font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)]">
                       Keyword Ideas
                     </h3>
-                    <p className="text-xs text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] mt-0.5">
+                    <p className="text-xs text-[var(--text-secondary)] font-[family-name:var(--font-inter)] mt-0.5">
                       Live autocomplete suggestions and expanded founder angles.
                     </p>
                   </div>
@@ -540,9 +540,9 @@ export default function KeywordResearchView() {
                     {SAMPLE_KEYWORD_IDEAS.map((kw, idx) => (
                       <div
                         key={idx}
-                        className="group flex items-center justify-between gap-2 p-2.5 rounded-lg bg-[hsl(220,15%,8%)] border border-[hsl(220,10%,16%)] hover:border-[hsl(220,10%,24%)] transition-colors"
+                        className="group flex items-center justify-between gap-2 p-2.5 rounded-lg bg-[var(--bg-surface-alt)] border border-[var(--border)] hover:border-[var(--border-hover)] transition-colors"
                       >
-                        <span className="text-xs font-[family-name:var(--font-mono)] text-[hsl(40,20%,90%)] truncate">
+                        <span className="text-xs font-[family-name:var(--font-mono)] text-[var(--text-primary)] truncate">
                           {kw}
                         </span>
 
@@ -551,10 +551,10 @@ export default function KeywordResearchView() {
                             type="button"
                             onClick={() => handleCopy(kw)}
                             title="Copy keyword"
-                            className="p-1 px-2 rounded bg-[hsl(220,12%,14%)] hover:bg-[hsl(220,12%,18%)] text-[10px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,60%)] hover:text-white transition-colors cursor-pointer flex items-center gap-1"
+                            className="p-1 px-2 rounded bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-alt)] border border-[var(--border)] text-[10px] font-[family-name:var(--font-mono)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-pointer flex items-center gap-1"
                           >
                             {copiedKeyword === kw ? (
-                              <span className="text-[hsl(145,60%,55%)] font-bold">✓ Copied</span>
+                              <span className="text-[var(--accent-emerald)] font-bold">✓ Copied</span>
                             ) : (
                               <>
                                 <span>📋</span>
@@ -566,7 +566,7 @@ export default function KeywordResearchView() {
                             type="button"
                             onClick={() => handleValidateIdea(kw)}
                             title="Validate as SaaS idea"
-                            className="px-2 py-1 rounded bg-[hsl(145,60%,45%,0.15)] hover:bg-[hsl(145,60%,45%,0.25)] text-[hsl(145,60%,55%)] text-[10px] font-[family-name:var(--font-mono)] font-bold transition-colors cursor-pointer"
+                            className="px-2 py-1 rounded bg-emerald-500/15 hover:bg-emerald-500/25 text-[var(--accent-emerald)] text-[10px] font-[family-name:var(--font-mono)] font-bold transition-colors cursor-pointer"
                           >
                             Scan SaaS →
                           </button>
@@ -579,30 +579,30 @@ export default function KeywordResearchView() {
                 {/* Sub-panel 3: Competition Signal */}
                 <div className="lg:col-span-5 space-y-4 flex flex-col justify-between">
                   <div>
-                    <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-[hsl(200,85%,60%)] font-bold block">
+                    <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-sky-600 dark:text-[hsl(200,85%,60%)] font-bold block">
                       SUB-PANEL 03 // ESTIMATE
                     </span>
-                    <h3 className="text-base sm:text-lg font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)]">
+                    <h3 className="text-base sm:text-lg font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)]">
                       Competition Signal
                     </h3>
-                    <p className="text-xs text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] mt-0.5">
+                    <p className="text-xs text-[var(--text-secondary)] font-[family-name:var(--font-inter)] mt-0.5">
                       Organic SERP density proxy and community discussions.
                     </p>
 
-                    <div className="mt-3 p-4 rounded-xl border bg-[hsl(42,95%,55%,0.1)] border-[hsl(42,95%,55%,0.3)] text-[hsl(42,95%,55%)] space-y-1.5">
+                    <div className="mt-3 p-4 rounded-xl border bg-[var(--accent-subtle)] border-[var(--accent-mid)] text-[var(--accent-amber)] space-y-1.5">
                       <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-wider block opacity-75">
                         Signal Proxy Verdict
                       </span>
                       <div className="text-xl font-bold font-[family-name:var(--font-space-grotesk)]">
                         MODERATE COMPETITION
                       </div>
-                      <p className="text-xs text-[hsl(40,20%,85%)] font-[family-name:var(--font-inter)] leading-relaxed">
+                      <p className="text-xs text-[var(--text-primary)] font-[family-name:var(--font-inter)] leading-relaxed">
                         Some forum/community discussion visible on page 1 — room for a focused entrant.
                       </p>
                     </div>
 
                     <div className="mt-3 space-y-1.5">
-                      <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-[hsl(40,8%,50%)] block">
+                      <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-wider text-[var(--text-secondary)] block">
                         Page 1 SERP Footprint
                       </span>
                       <div className="flex flex-wrap gap-1.5">
@@ -611,8 +611,8 @@ export default function KeywordResearchView() {
                             key={i}
                             className={`text-[10px] font-[family-name:var(--font-mono)] px-2 py-0.5 rounded border ${
                               domain.includes('💬')
-                                ? 'bg-[hsl(145,60%,45%,0.15)] border-[hsl(145,60%,45%,0.3)] text-[hsl(145,60%,60%)] font-bold'
-                                : 'bg-[hsl(220,12%,14%)] border-[hsl(220,10%,18%)] text-[hsl(40,8%,65%)]'
+                                ? 'bg-emerald-500/15 border-emerald-500/30 text-[var(--accent-emerald)] font-bold'
+                                : 'bg-[var(--bg-surface-alt)] border-[var(--border)] text-[var(--text-secondary)]'
                             }`}
                           >
                             {domain}
@@ -622,85 +622,85 @@ export default function KeywordResearchView() {
                     </div>
                   </div>
 
-                  <div className="text-[10px] font-[family-name:var(--font-mono)] text-[hsl(40,8%,45%)] leading-relaxed pt-3 border-t border-[hsl(220,10%,16%)]">
+                  <div className="text-[10px] font-[family-name:var(--font-mono)] text-[var(--text-secondary)] leading-relaxed pt-3 border-t border-[var(--border)]">
                     ⚖️ Organic SERP composition proxy, not a fabricated metric.
                   </div>
                 </div>
               </div>
             </div>
 
-            <p className="text-center text-xs font-[family-name:var(--font-mono)] text-[hsl(40,8%,50%)]">
+            <p className="text-center text-xs font-[family-name:var(--font-mono)] text-[var(--text-muted)]">
               Sample data shown. Run a real scan above to see live results for your idea.
             </p>
           </div>
 
           {/* Section B — How It Works */}
-          <div className="pt-8 sm:pt-10 border-t border-[hsl(220,10%,16%)] space-y-6">
+          <div className="pt-8 sm:pt-10 border-t border-[var(--border)] space-y-6">
             <div className="text-center space-y-1.5 max-w-xl mx-auto">
-              <span className="text-[10px] font-bold font-[family-name:var(--font-mono)] uppercase tracking-[0.25em] text-[hsl(40,8%,50%)] block">
+              <span className="text-[10px] font-bold font-[family-name:var(--font-mono)] uppercase tracking-[0.25em] text-[var(--accent-emerald)] block">
                 RADAR PIPELINE
               </span>
-              <h2 className="text-xl sm:text-2xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)]">
+              <h2 className="text-xl sm:text-2xl font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)]">
                 How It Works
               </h2>
-              <p className="text-xs text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)]">
+              <p className="text-xs text-[var(--text-secondary)] font-[family-name:var(--font-inter)]">
                 Three free-tier telemetry streams unified into actionable search signals.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-              <div className="bg-[hsl(220,13%,11%)] border border-[hsl(220,10%,18%)] hover:border-[hsl(145,60%,45%,0.3)] rounded-2xl p-5 sm:p-6 space-y-3 transition-all">
+              <div className="bg-[var(--bg-surface)] border border-[var(--border)] hover:border-[var(--accent-emerald)] rounded-2xl p-5 sm:p-6 space-y-3 transition-all">
                 <div className="flex items-center justify-between">
-                  <div className="w-9 h-9 rounded-xl bg-[hsl(220,15%,15%)] border border-[hsl(220,10%,22%)] flex items-center justify-center text-base">
+                  <div className="w-9 h-9 rounded-xl bg-[var(--bg-surface-alt)] border border-[var(--border)] flex items-center justify-center text-base">
                     🔍
                   </div>
-                  <span className="text-xs font-bold font-[family-name:var(--font-mono)] text-[hsl(145,60%,55%)] bg-[hsl(145,60%,45%,0.1)] px-2 py-0.5 rounded border border-[hsl(145,60%,45%,0.2)]">
+                  <span className="text-xs font-bold font-[family-name:var(--font-mono)] text-[var(--accent-emerald)] bg-emerald-500/15 px-2 py-0.5 rounded border border-emerald-500/30">
                     STEP 01
                   </span>
                 </div>
                 <div>
-                  <h3 className="text-sm sm:text-base font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)]">
+                  <h3 className="text-sm sm:text-base font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)]">
                     Autocomplete expansion
                   </h3>
-                  <p className="text-xs text-[hsl(40,8%,60%)] font-[family-name:var(--font-inter)] leading-relaxed mt-2">
+                  <p className="text-xs text-[var(--text-secondary)] font-[family-name:var(--font-inter)] leading-relaxed mt-2">
                     We pull real Google autocomplete suggestions for your seed keyword, then expand them into long-tail and question-format variations.
                   </p>
                 </div>
               </div>
 
-              <div className="bg-[hsl(220,13%,11%)] border border-[hsl(220,10%,18%)] hover:border-[hsl(145,60%,45%,0.3)] rounded-2xl p-5 sm:p-6 space-y-3 transition-all">
+              <div className="bg-[var(--bg-surface)] border border-[var(--border)] hover:border-[var(--accent-emerald)] rounded-2xl p-5 sm:p-6 space-y-3 transition-all">
                 <div className="flex items-center justify-between">
-                  <div className="w-9 h-9 rounded-xl bg-[hsl(220,15%,15%)] border border-[hsl(220,10%,22%)] flex items-center justify-center text-base">
+                  <div className="w-9 h-9 rounded-xl bg-[var(--bg-surface-alt)] border border-[var(--border)] flex items-center justify-center text-base">
                     📈
                   </div>
-                  <span className="text-xs font-bold font-[family-name:var(--font-mono)] text-[hsl(145,60%,55%)] bg-[hsl(145,60%,45%,0.1)] px-2 py-0.5 rounded border border-[hsl(145,60%,45%,0.2)]">
+                  <span className="text-xs font-bold font-[family-name:var(--font-mono)] text-[var(--accent-emerald)] bg-emerald-500/15 px-2 py-0.5 rounded border border-emerald-500/30">
                     STEP 02
                   </span>
                 </div>
                 <div>
-                  <h3 className="text-sm sm:text-base font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)]">
+                  <h3 className="text-sm sm:text-base font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)]">
                     Search interest trend
                   </h3>
-                  <p className="text-xs text-[hsl(40,8%,60%)] font-[family-name:var(--font-inter)] leading-relaxed mt-2">
+                  <p className="text-xs text-[var(--text-secondary)] font-[family-name:var(--font-inter)] leading-relaxed mt-2">
                     Google Trends data shows relative search interest over time (0–100 scale) — is this getting more or less attention?
                   </p>
                 </div>
               </div>
 
-              <div className="bg-[hsl(220,13%,11%)] border border-[hsl(220,10%,18%)] hover:border-[hsl(145,60%,45%,0.3)] rounded-2xl p-5 sm:p-6 space-y-3 transition-all">
+              <div className="bg-[var(--bg-surface)] border border-[var(--border)] hover:border-[var(--accent-emerald)] rounded-2xl p-5 sm:p-6 space-y-3 transition-all">
                 <div className="flex items-center justify-between">
-                  <div className="w-9 h-9 rounded-xl bg-[hsl(220,15%,15%)] border border-[hsl(220,10%,22%)] flex items-center justify-center text-base">
+                  <div className="w-9 h-9 rounded-xl bg-[var(--bg-surface-alt)] border border-[var(--border)] flex items-center justify-center text-base">
                     🎯
                   </div>
-                  <span className="text-xs font-bold font-[family-name:var(--font-mono)] text-[hsl(145,60%,55%)] bg-[hsl(145,60%,45%,0.1)] px-2 py-0.5 rounded border border-[hsl(145,60%,45%,0.2)]">
+                  <span className="text-xs font-bold font-[family-name:var(--font-mono)] text-[var(--accent-emerald)] bg-emerald-500/15 px-2 py-0.5 rounded border border-emerald-500/30">
                     STEP 03
                   </span>
                 </div>
                 <div>
-                  <h3 className="text-sm sm:text-base font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)]">
+                  <h3 className="text-sm sm:text-base font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)]">
                     Competition signal
                   </h3>
-                  <p className="text-xs text-[hsl(40,8%,60%)] font-[family-name:var(--font-inter)] leading-relaxed mt-2">
+                  <p className="text-xs text-[var(--text-secondary)] font-[family-name:var(--font-inter)] leading-relaxed mt-2">
                     We scan the live top-10 results for your keyword and flag whether forums/communities or established players dominate the page.
                   </p>
                 </div>
@@ -709,12 +709,12 @@ export default function KeywordResearchView() {
           </div>
 
           {/* Section C — Methodology Note */}
-          <div className="p-4 sm:p-5 rounded-2xl bg-[hsl(220,12%,10%)] border border-[hsl(220,10%,16%)] text-xs text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] leading-relaxed">
+          <div className="p-4 sm:p-5 rounded-2xl bg-[var(--bg-surface-alt)] border border-[var(--border)] text-xs text-[var(--text-secondary)] font-[family-name:var(--font-inter)] leading-relaxed">
             <div className="flex items-start gap-2.5">
               <span className="text-base shrink-0 mt-0.5">ℹ️</span>
               <p>
-                <strong className="text-[hsl(40,20%,90%)] font-[family-name:var(--font-mono)]">Methodology Note: </strong>
-                We use free-tier, publicly available data (Google Trends, autocomplete, live search results) rather than paid keyword databases — which means numbers here reflect <em className="text-[hsl(40,20%,85%)]">relative interest and signal</em>, not guaranteed search volume. Good enough to spot direction and competition, not a replacement for paid SEO tools once you&apos;re scaling.
+                <strong className="text-[var(--text-primary)] font-[family-name:var(--font-mono)]">Methodology Note: </strong>
+                We use free-tier, publicly available data (Google Trends, autocomplete, live search results) rather than paid keyword databases — which means numbers here reflect <em className="text-[var(--text-primary)]">relative interest and signal</em>, not guaranteed search volume. Good enough to spot direction and competition, not a replacement for paid SEO tools once you&apos;re scaling.
               </p>
             </div>
           </div>
@@ -722,11 +722,11 @@ export default function KeywordResearchView() {
       )}
 
       {/* Shared: Cross-link footer */}
-      <div className="pt-6 pb-6 border-t border-[hsl(220,10%,16%)] flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs font-[family-name:var(--font-mono)] text-[hsl(40,8%,50%)]">
-        <span className="text-[hsl(40,8%,40%)] uppercase tracking-wider text-[11px]">Also try:</span>
+      <div className="pt-6 pb-6 border-t border-[var(--border)] flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs font-[family-name:var(--font-mono)] text-[var(--text-muted)]">
+        <span className="text-[var(--text-muted)] uppercase tracking-wider text-[11px]">Also try:</span>
         <Link
           href="/"
-          className="px-3 py-1.5 rounded-lg bg-[hsl(220,12%,12%)] hover:bg-[hsl(220,12%,16%)] text-[hsl(40,20%,85%)] hover:text-white border border-[hsl(220,10%,18%)] hover:border-[hsl(42,95%,55%,0.3)] transition-colors inline-flex items-center gap-1.5"
+          className="px-3 py-1.5 rounded-lg bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-alt)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border)] hover:border-[var(--accent-amber)] transition-colors inline-flex items-center gap-1.5"
         >
           <span>🚀</span>
           <span>SaaS Idea Scanner</span>
@@ -734,7 +734,7 @@ export default function KeywordResearchView() {
         <span>·</span>
         <Link
           href="/is-it-taken"
-          className="px-3 py-1.5 rounded-lg bg-[hsl(220,12%,12%)] hover:bg-[hsl(220,12%,16%)] text-[hsl(40,20%,85%)] hover:text-white border border-[hsl(220,10%,18%)] hover:border-[hsl(42,95%,55%,0.3)] transition-colors inline-flex items-center gap-1.5"
+          className="px-3 py-1.5 rounded-lg bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-alt)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border)] hover:border-[var(--accent-amber)] transition-colors inline-flex items-center gap-1.5"
         >
           <span>🔍</span>
           <span>Is It Taken?</span>

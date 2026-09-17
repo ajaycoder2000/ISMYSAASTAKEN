@@ -14,15 +14,15 @@ export default function MomentumStat() {
         {stats.map((stat, i) => (
           <div
             key={i}
-            className="p-4 sm:p-5 rounded-2xl bg-[hsl(220,13%,10%)] border border-[hsl(220,10%,16%)] text-center transition-all hover:border-[hsl(42,95%,55%,0.3)]"
+            className="p-4 sm:p-5 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border)] text-center transition-all hover:border-[var(--accent-amber)]/40 shadow-sm"
           >
-            <p className="text-2xl sm:text-3xl lg:text-4xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,95%)] tracking-tight">
+            <p className="text-2xl sm:text-3xl lg:text-4xl font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)] tracking-tight">
               {stat.value}
             </p>
-            <p className="mt-1 text-xs font-bold font-[family-name:var(--font-mono)] text-[hsl(42,95%,55%)] uppercase tracking-wider">
+            <p className="mt-1 text-xs font-bold font-[family-name:var(--font-mono)] text-[var(--accent-amber)] uppercase tracking-wider">
               {stat.label}
             </p>
-            <p className="mt-0.5 text-[10.5px] text-[hsl(40,8%,45%)] font-[family-name:var(--font-inter)]">
+            <p className="mt-0.5 text-[10.5px] text-[var(--text-muted)] font-[family-name:var(--font-inter)]">
               {stat.detail}
             </p>
           </div>

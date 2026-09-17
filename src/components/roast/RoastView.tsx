@@ -175,7 +175,7 @@ export default function RoastView({ initialScan }: { initialScan?: IScanDocument
           )}
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-1">
-            <div className="text-meta text-zinc-500 font-mono flex items-center gap-2">
+            <div className="text-meta text-[var(--text-muted)] font-mono flex items-center gap-2">
               <span>✦ Grounded in real competitors</span>
               <span>•</span>
               <span>✦ Free &amp; shareable</span>
@@ -215,7 +215,7 @@ export default function RoastView({ initialScan }: { initialScan?: IScanDocument
                 setResult(null);
                 setIdeaText('');
               }}
-              className="text-xs text-zinc-400 hover:text-zinc-200 font-mono underline underline-offset-2 transition-colors cursor-pointer"
+              className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-mono underline underline-offset-2 transition-colors cursor-pointer"
             >
               Roast another idea &rarr;
             </button>
@@ -232,12 +232,12 @@ export default function RoastView({ initialScan }: { initialScan?: IScanDocument
           />
 
           {/* Link to view full standard market report */}
-          <div className="w-full bg-[hsl(220,12%,11%)] border border-[hsl(220,10%,18%)] rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-left">
+          <div className="w-full bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-left">
             <div className="space-y-0.5">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-400 font-bold">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-[var(--accent-emerald)] font-bold">
                 COMPREHENSIVE DATA
               </span>
-              <p className="text-xs text-zinc-300 font-[family-name:var(--font-inter)]">
+              <p className="text-xs text-[var(--text-secondary)] font-[family-name:var(--font-inter)]">
                 Want to see all {result.scan.competitors.length} competitors, pricing models, and 2D landscape matrix?
               </p>
             </div>
@@ -255,14 +255,14 @@ export default function RoastView({ initialScan }: { initialScan?: IScanDocument
       {/* 4. Pre-search Showcase: Sample Roast Examples */}
       {!result && (
         <div className="space-y-6 pt-2">
-          <div className="text-left space-y-1 border-b border-zinc-800 pb-3">
-            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-orange-400 font-bold">
+          <div className="text-left space-y-1 border-b border-[var(--border)] pb-3">
+            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[var(--accent-amber)] font-bold">
               PREVIEW: SAMPLE BURNS
             </span>
-            <h3 className="text-lg font-bold font-[family-name:var(--font-space-grotesk)] text-zinc-200">
+            <h3 className="text-lg font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)]">
               How Idea Roast Mode Evaluates Concepts
             </h3>
-            <p className="text-xs text-zinc-400 font-[family-name:var(--font-inter)]">
+            <p className="text-xs text-[var(--text-secondary)] font-[family-name:var(--font-inter)]">
               Real sample roasts grounded in live competitor tracking and saturation metrics.
             </p>
           </div>
@@ -271,19 +271,19 @@ export default function RoastView({ initialScan }: { initialScan?: IScanDocument
             {SAMPLE_ROASTS.map((sample, idx) => (
               <div
                 key={idx}
-                className="bg-[hsl(220,14%,9%)] border border-zinc-800 rounded-xl p-5 space-y-4 text-left relative overflow-hidden flex flex-col justify-between"
+                className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl p-5 space-y-4 text-left relative overflow-hidden flex flex-col justify-between"
               >
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between gap-2 border-b border-zinc-800/80 pb-2.5">
-                    <span className="text-[9px] font-mono uppercase px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 font-bold">
+                  <div className="flex items-center justify-between gap-2 border-b border-[var(--border)] pb-2.5">
+                    <span className="text-[9px] font-mono uppercase px-2 py-0.5 rounded bg-[var(--bg-surface-alt)] text-[var(--text-secondary)] font-bold border border-[var(--border)]">
                       SAMPLE #{idx + 1}
                     </span>
-                    <span className="text-[9px] font-mono text-orange-400 font-semibold">
+                    <span className="text-[9px] font-mono text-[var(--accent-amber)] font-semibold">
                       {sample.saturation} SATURATION
                     </span>
                   </div>
 
-                  <p className="text-xs sm:text-sm font-semibold text-zinc-100 italic">
+                  <p className="text-xs sm:text-sm font-semibold text-[var(--text-primary)] italic">
                     &ldquo;{sample.idea}&rdquo;
                   </p>
 
@@ -291,9 +291,9 @@ export default function RoastView({ initialScan }: { initialScan?: IScanDocument
                     {sample.burns.slice(0, 3).map((b, bIdx) => (
                       <div
                         key={bIdx}
-                        className="flex items-start gap-2 text-xs text-orange-100/85 font-[family-name:var(--font-inter)] leading-relaxed bg-zinc-900/60 p-2.5 rounded-lg border border-orange-500/15"
+                        className="flex items-start gap-2 text-xs text-[var(--text-primary)] font-[family-name:var(--font-inter)] leading-relaxed bg-[var(--bg-surface-alt)] p-2.5 rounded-lg border border-orange-500/20"
                       >
-                        <span className="text-orange-500 font-bold text-[10px] mt-0.5 font-mono">
+                        <span className="text-[var(--accent-amber)] font-bold text-[10px] mt-0.5 font-mono">
                           {bIdx + 1}.
                         </span>
                         <p>{b}</p>
@@ -303,11 +303,11 @@ export default function RoastView({ initialScan }: { initialScan?: IScanDocument
                 </div>
 
                 <div className="pt-2">
-                  <div className="bg-emerald-950/30 border border-emerald-500/30 rounded-lg p-2.5 text-xs text-emerald-100 flex items-start gap-2">
-                    <span className="shrink-0 text-[9px] font-mono uppercase font-bold text-emerald-400 bg-emerald-900/60 px-1.5 py-0.5 rounded mt-0.5">
+                  <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-500/30 rounded-lg p-2.5 text-xs text-[var(--text-primary)] flex items-start gap-2">
+                    <span className="shrink-0 text-[9px] font-mono uppercase font-bold text-[var(--accent-emerald)] bg-emerald-100 dark:bg-emerald-900/60 px-1.5 py-0.5 rounded mt-0.5 border border-emerald-200 dark:border-emerald-500/40">
                       Takeaway
                     </span>
-                    <p className="text-zinc-300 leading-relaxed text-[11px]">
+                    <p className="text-[var(--text-secondary)] leading-relaxed text-[11px]">
                       {sample.takeaway}
                     </p>
                   </div>
@@ -317,31 +317,31 @@ export default function RoastView({ initialScan }: { initialScan?: IScanDocument
           </div>
 
           {/* 5. The 3 Roast Guardrails */}
-          <div className="pt-4 border-t border-zinc-800">
-            <h4 className="text-xs font-mono uppercase tracking-widest text-zinc-400 font-bold mb-3 text-left">
+          <div className="pt-4 border-t border-[var(--border)]">
+            <h4 className="text-xs font-mono uppercase tracking-widest text-[var(--text-muted)] font-bold mb-3 text-left">
               The 3 Roast Guardrails
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left">
-              <div className="p-3.5 rounded-xl bg-zinc-900/50 border border-zinc-800 space-y-1">
+              <div className="p-3.5 rounded-xl bg-[var(--bg-surface-alt)] border border-[var(--border)] space-y-1">
                 <span className="text-sm">🛡️</span>
-                <h5 className="text-xs font-bold text-zinc-200">Never the Person</h5>
-                <p className="text-[11px] text-zinc-400 leading-relaxed">
+                <h5 className="text-xs font-bold text-[var(--text-primary)]">Never the Person</h5>
+                <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">
                   We roast market saturation and positioning. Zero insults or personal remarks toward the founder.
                 </p>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-zinc-900/50 border border-zinc-800 space-y-1">
+              <div className="p-3.5 rounded-xl bg-[var(--bg-surface-alt)] border border-[var(--border)] space-y-1">
                 <span className="text-sm">📊</span>
-                <h5 className="text-xs font-bold text-zinc-200">Grounded in Data</h5>
-                <p className="text-[11px] text-zinc-400 leading-relaxed">
+                <h5 className="text-xs font-bold text-[var(--text-primary)]">Grounded in Data</h5>
+                <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">
                   Every burn cites real competitor metrics, pricing pressure, and saturation signals found during crawl.
                 </p>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-zinc-900/50 border border-zinc-800 space-y-1">
+              <div className="p-3.5 rounded-xl bg-[var(--bg-surface-alt)] border border-[var(--border)] space-y-1">
                 <span className="text-sm">🎯</span>
-                <h5 className="text-xs font-bold text-zinc-200">Constructive Takeaway</h5>
-                <p className="text-[11px] text-zinc-400 leading-relaxed">
+                <h5 className="text-xs font-bold text-[var(--text-primary)]">Constructive Takeaway</h5>
+                <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">
                   Every critique concludes with a specific, viable wedge angle to help you pivot before writing code.
                 </p>
               </div>

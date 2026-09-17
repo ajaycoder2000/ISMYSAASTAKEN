@@ -66,55 +66,55 @@ export default function Navbar() {
           <div className="flex items-center gap-2.5 sm:gap-4">
             <Link
               href="/#recent-scans"
-              className="hidden md:inline text-xs sm:text-sm text-[hsl(40,8%,55%)] hover:text-[hsl(40,20%,92%)] transition-colors font-[family-name:var(--font-inter)]"
+              className="hidden md:inline text-xs sm:text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors font-[family-name:var(--font-inter)]"
             >
               Recent Scans
             </Link>
             <Link
               href="/roadmap"
-              className="hidden md:inline text-xs sm:text-sm text-[hsl(40,8%,55%)] hover:text-[hsl(40,20%,92%)] transition-colors font-[family-name:var(--font-inter)]"
+              className="hidden md:inline text-xs sm:text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors font-[family-name:var(--font-inter)]"
             >
               Roadmap 🚀
             </Link>
             <Link
               href="/keywords"
-              className="hidden lg:flex text-xs sm:text-sm text-[hsl(40,8%,55%)] hover:text-[hsl(40,20%,92%)] transition-colors font-[family-name:var(--font-inter)] items-center gap-1.5"
+              className="hidden lg:flex text-xs sm:text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors font-[family-name:var(--font-inter)] items-center gap-1.5"
             >
               <span>Keywords</span>
-              <span className="text-[9px] font-[family-name:var(--font-mono)] uppercase px-1.5 py-0.5 bg-[hsl(145,60%,45%,0.15)] text-[hsl(145,60%,55%)] rounded border border-[hsl(145,60%,45%,0.3)] font-bold">
+              <span className="text-[9px] font-[family-name:var(--font-mono)] uppercase px-1.5 py-0.5 bg-emerald-500/15 text-[var(--accent-emerald)] rounded border border-emerald-500/30 font-bold">
                 NEW
               </span>
             </Link>
             <Link
               href="/is-it-taken"
-              className="hidden lg:flex text-xs sm:text-sm text-[hsl(40,8%,55%)] hover:text-[hsl(40,20%,92%)] transition-colors font-[family-name:var(--font-inter)] items-center gap-1.5"
+              className="hidden lg:flex text-xs sm:text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors font-[family-name:var(--font-inter)] items-center gap-1.5"
             >
               <span>Is It Taken?</span>
-              <span className="text-[9px] font-[family-name:var(--font-mono)] uppercase px-1.5 py-0.5 bg-[hsl(145,60%,45%,0.15)] text-[hsl(145,60%,55%)] rounded border border-[hsl(145,60%,45%,0.3)] font-bold">
+              <span className="text-[9px] font-[family-name:var(--font-mono)] uppercase px-1.5 py-0.5 bg-emerald-500/15 text-[var(--accent-emerald)] rounded border border-emerald-500/30 font-bold">
                 NEW
               </span>
             </Link>
             <Link
               href="/roast"
-              className="hidden md:flex text-xs sm:text-sm text-orange-400/90 hover:text-orange-300 transition-colors font-[family-name:var(--font-inter)] items-center gap-1 font-medium"
+              className="hidden md:flex text-xs sm:text-sm text-orange-600 dark:text-orange-400 hover:text-orange-500 transition-colors font-[family-name:var(--font-inter)] items-center gap-1 font-medium"
             >
               <span>🔥 Roast</span>
-              <span className="text-[9px] font-[family-name:var(--font-mono)] uppercase px-1 py-0.5 bg-orange-950/60 text-orange-400 rounded border border-orange-800/60 font-bold">
+              <span className="text-[9px] font-[family-name:var(--font-mono)] uppercase px-1 py-0.5 bg-orange-500/15 text-orange-600 dark:text-orange-400 rounded border border-orange-500/30 font-bold">
                 HOT
               </span>
             </Link>
             <Link
               href="/why-validation-matters"
-              className="hidden xl:flex text-xs sm:text-sm text-[hsl(40,8%,55%)] hover:text-[hsl(40,20%,92%)] transition-colors font-[family-name:var(--font-inter)] items-center gap-1.5"
+              className="hidden xl:flex text-xs sm:text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors font-[family-name:var(--font-inter)] items-center gap-1.5"
             >
               <span>Why Validate?</span>
-              <span className="text-[9px] font-[family-name:var(--font-mono)] uppercase px-1.5 py-0.5 bg-[hsl(42,95%,55%,0.15)] text-[hsl(42,95%,55%)] rounded border border-[hsl(42,95%,55%,0.3)] font-bold">
+              <span className="text-[9px] font-[family-name:var(--font-mono)] uppercase px-1.5 py-0.5 bg-amber-500/15 text-[var(--accent-amber)] rounded border border-amber-500/30 font-bold">
                 QUIZ
               </span>
             </Link>
             <Link
               href="/pricing"
-              className="hidden sm:inline text-xs sm:text-sm text-[hsl(40,8%,55%)] hover:text-[hsl(40,20%,92%)] transition-colors font-[family-name:var(--font-inter)]"
+              className="hidden sm:inline text-xs sm:text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors font-[family-name:var(--font-inter)]"
             >
               Pricing
             </Link>
@@ -144,12 +144,12 @@ export default function Navbar() {
             <Show when="signed-out">
               <div className="hidden sm:flex items-center gap-2">
                 <SignInButton mode="modal">
-                  <button className="text-xs sm:text-sm px-2.5 py-1.5 text-[hsl(40,20%,90%)] hover:text-[hsl(42,95%,55%)] transition-colors font-[family-name:var(--font-inter)] cursor-pointer">
+                  <button className="text-xs sm:text-sm px-2.5 py-1.5 text-[var(--text-secondary)] hover:text-[var(--accent-amber)] transition-colors font-[family-name:var(--font-inter)] cursor-pointer">
                     Sign in
                   </button>
                 </SignInButton>
                 <SignUpButton mode="modal">
-                  <button className="text-xs sm:text-sm px-3.5 py-1.5 bg-[hsl(42,95%,55%)] hover:bg-[hsl(42,95%,50%)] text-[hsl(220,15%,8%)] font-bold rounded-lg transition-all font-[family-name:var(--font-space-grotesk)] shadow-sm cursor-pointer">
+                  <button className="text-xs sm:text-sm px-3.5 py-1.5 bg-[var(--accent-amber)] hover:opacity-90 text-white font-bold rounded-lg transition-all font-[family-name:var(--font-space-grotesk)] shadow-sm cursor-pointer">
                     Sign up
                   </button>
                 </SignUpButton>
@@ -161,7 +161,7 @@ export default function Navbar() {
               <div className="flex items-center gap-2.5 sm:gap-3">
                 <Link
                   href="/dashboard"
-                  className="hidden sm:inline text-xs sm:text-sm text-[hsl(40,8%,60%)] hover:text-[hsl(40,20%,92%)] transition-colors font-[family-name:var(--font-inter)]"
+                  className="hidden sm:inline text-xs sm:text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors font-[family-name:var(--font-inter)]"
                 >
                   Dashboard
                 </Link>
@@ -170,7 +170,7 @@ export default function Navbar() {
                 {userData?.role === 'admin' && (
                   <Link
                     href="/admin"
-                    className="text-[11px] font-[family-name:var(--font-mono)] px-2 py-0.5 rounded bg-[hsl(42,95%,55%,0.15)] text-[hsl(42,95%,55%)] border border-[hsl(42,95%,55%,0.3)] hover:bg-[hsl(42,95%,55%,0.25)] transition-colors font-bold"
+                    className="text-[11px] font-[family-name:var(--font-mono)] px-2 py-0.5 rounded bg-amber-500/15 text-[var(--accent-amber)] border border-amber-500/30 hover:bg-amber-500/25 transition-colors font-bold"
                   >
                     Admin ⚡
                   </Link>
@@ -186,7 +186,7 @@ export default function Navbar() {
             {/* Mobile / Tablet Hamburger Toggle Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-1.5 text-[hsl(40,8%,60%)] hover:text-[hsl(40,20%,95%)] transition-colors rounded-lg bg-[hsl(220,12%,12%)] border border-[hsl(220,10%,18%)] cursor-pointer"
+              className="lg:hidden p-1.5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors rounded-lg bg-[var(--bg-surface)] border border-[var(--border)] cursor-pointer"
               aria-label="Toggle Mobile Menu"
             >
               {mobileMenuOpen ? (
@@ -209,15 +209,15 @@ export default function Navbar() {
               <Link
                 href="/#recent-scans"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2 rounded-lg text-[hsl(40,20%,90%)] hover:bg-[hsl(220,12%,14%)] flex items-center justify-between"
+                className="px-3 py-2 rounded-lg text-[var(--text-primary)] hover:bg-[var(--bg-surface-alt)] flex items-center justify-between"
               >
                 <span>Live Feed</span>
-                <span className="text-[10px] font-mono text-[hsl(42,95%,55%)]">LIVE</span>
+                <span className="text-[10px] font-mono text-[var(--accent-amber)]">LIVE</span>
               </Link>
               <Link
                 href="/roadmap"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2 rounded-lg text-[hsl(40,20%,90%)] hover:bg-[hsl(220,12%,14%)] flex items-center justify-between"
+                className="px-3 py-2 rounded-lg text-[var(--text-primary)] hover:bg-[var(--bg-surface-alt)] flex items-center justify-between"
               >
                 <span>Public Roadmap</span>
                 <span className="text-xs">🚀</span>
@@ -225,47 +225,47 @@ export default function Navbar() {
               <Link
                 href="/keywords"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2 rounded-lg text-[hsl(40,20%,90%)] hover:bg-[hsl(220,12%,14%)] flex items-center justify-between"
+                className="px-3 py-2 rounded-lg text-[var(--text-primary)] hover:bg-[var(--bg-surface-alt)] flex items-center justify-between"
               >
                 <span>Keyword Research</span>
-                <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 bg-[hsl(145,60%,45%,0.15)] text-[hsl(145,60%,55%)] rounded font-bold border border-[hsl(145,60%,45%,0.3)]">
+                <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 bg-emerald-500/15 text-[var(--accent-emerald)] rounded font-bold border border-emerald-500/30">
                   NEW
                 </span>
               </Link>
               <Link
                 href="/is-it-taken"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2 rounded-lg text-[hsl(40,20%,90%)] hover:bg-[hsl(220,12%,14%)] flex items-center justify-between"
+                className="px-3 py-2 rounded-lg text-[var(--text-primary)] hover:bg-[var(--bg-surface-alt)] flex items-center justify-between"
               >
                 <span>Is It Taken?</span>
-                <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 bg-[hsl(145,60%,45%,0.15)] text-[hsl(145,60%,55%)] rounded font-bold border border-[hsl(145,60%,45%,0.3)]">
+                <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 bg-emerald-500/15 text-[var(--accent-emerald)] rounded font-bold border border-emerald-500/30">
                   NEW
                 </span>
               </Link>
               <Link
                 href="/roast"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2 rounded-lg text-orange-400 hover:bg-[hsl(220,12%,14%)] flex items-center justify-between font-medium"
+                className="px-3 py-2 rounded-lg text-orange-600 dark:text-orange-400 hover:bg-[var(--bg-surface-alt)] flex items-center justify-between font-medium"
               >
                 <span>🔥 Roast Mode</span>
-                <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 bg-orange-950/60 text-orange-400 rounded font-bold border border-orange-800/60">
+                <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 bg-orange-500/15 text-orange-600 dark:text-orange-400 rounded font-bold border border-orange-500/30">
                   HOT
                 </span>
               </Link>
               <Link
                 href="/why-validation-matters"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2 rounded-lg text-[hsl(40,20%,90%)] hover:bg-[hsl(220,12%,14%)] flex items-center justify-between"
+                className="px-3 py-2 rounded-lg text-[var(--text-primary)] hover:bg-[var(--bg-surface-alt)] flex items-center justify-between"
               >
                 <span>Why Validation Matters</span>
-                <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 bg-[hsl(42,95%,55%,0.15)] text-[hsl(42,95%,55%)] rounded font-bold border border-[hsl(42,95%,55%,0.3)]">
+                <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 bg-amber-500/15 text-[var(--accent-amber)] rounded font-bold border border-amber-500/30">
                   QUIZ
                 </span>
               </Link>
               <Link
                 href="/pricing"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2 rounded-lg text-[hsl(40,20%,90%)] hover:bg-[hsl(220,12%,14%)]"
+                className="px-3 py-2 rounded-lg text-[var(--text-primary)] hover:bg-[var(--bg-surface-alt)]"
               >
                 Pricing &amp; Passes
               </Link>
@@ -279,7 +279,7 @@ export default function Navbar() {
                 <Link
                   href="/dashboard"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="px-3 py-2 rounded-lg text-[hsl(40,20%,90%)] hover:bg-[hsl(220,12%,14%)] flex items-center justify-between"
+                  className="px-3 py-2 rounded-lg text-[var(--text-primary)] hover:bg-[var(--bg-surface-alt)] flex items-center justify-between"
                 >
                   <span>Founder Dashboard</span>
                   <span className="text-xs">⚙️</span>
@@ -289,11 +289,11 @@ export default function Navbar() {
 
             {/* Signed-out actions for mobile */}
             <Show when="signed-out">
-              <div className="pt-2 border-t border-[hsl(220,10%,16%)] flex items-center gap-2">
+              <div className="pt-2 border-t border-[var(--border)] flex items-center gap-2">
                 <SignInButton mode="modal">
                   <button
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex-1 py-2 text-center text-xs font-bold text-[hsl(40,20%,90%)] bg-[hsl(220,12%,14%)] rounded-lg border border-[hsl(220,10%,20%)]"
+                    className="flex-1 py-2 text-center text-xs font-bold text-[var(--text-primary)] bg-[var(--bg-surface-alt)] rounded-lg border border-[var(--border)]"
                   >
                     Sign in
                   </button>
@@ -301,7 +301,7 @@ export default function Navbar() {
                 <SignUpButton mode="modal">
                   <button
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex-1 py-2 text-center text-xs font-bold text-[hsl(220,15%,8%)] bg-[hsl(42,95%,55%)] rounded-lg font-[family-name:var(--font-space-grotesk)]"
+                    className="flex-1 py-2 text-center text-xs font-bold text-white bg-[var(--accent-amber)] rounded-lg font-[family-name:var(--font-space-grotesk)]"
                   >
                     Sign up
                   </button>

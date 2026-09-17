@@ -94,16 +94,16 @@ export default function ScanForm({
           placeholder="Describe your SaaS idea in plain English (e.g. AI tool that turns Figma designs into clean React & Tailwind components with live AST parsing)..."
           disabled={loading || disabled}
           rows={4}
-          className="w-full bg-[hsl(220,12%,12%)] border border-[hsl(220,10%,20%)] rounded-xl px-4 sm:px-5 py-3.5 sm:py-4 text-[hsl(40,20%,92%)] text-body font-[family-name:var(--font-inter)] placeholder:text-[hsl(40,8%,35%)] focus:outline-none focus:border-[hsl(42,95%,55%)] focus:shadow-[0_0_0_1px_hsl(42,95%,55%,0.3)] transition-all duration-200 resize-none disabled:opacity-50"
+          className="w-full bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl px-4 sm:px-5 py-3.5 sm:py-4 text-[var(--text-primary)] text-body font-[family-name:var(--font-inter)] placeholder:text-[var(--text-dim)] focus:outline-none focus:border-[var(--accent-amber)] focus:shadow-[0_0_0_1px_var(--accent-amber)] transition-all duration-200 resize-none disabled:opacity-50 shadow-sm"
         />
-        <span className="absolute bottom-3 right-4 text-xs font-[family-name:var(--font-mono)] text-[hsl(40,8%,35%)]">
+        <span className="absolute bottom-3 right-4 text-xs font-[family-name:var(--font-mono)] text-[var(--text-dim)]">
           {ideaText.length}/500
         </span>
       </div>
 
       <div className="mt-3 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
-        <div className="flex items-center gap-2 text-meta text-[hsl(40,8%,50%)] font-[family-name:var(--font-mono)]">
-          <span className="w-1.5 h-1.5 rounded-full bg-[hsl(145,60%,55%)]" />
+        <div className="flex items-center gap-2 text-meta text-[var(--text-muted)] font-[family-name:var(--font-mono)]">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
           <span>Live Web Search Grounded • 100% Private</span>
         </div>
 
@@ -118,12 +118,12 @@ export default function ScanForm({
       </div>
 
       {/* Trust & Privacy Guarantee Banner */}
-      <div className="mt-3 pt-2.5 border-t border-[hsl(220,10%,14%)] flex flex-wrap items-center justify-between gap-2 text-meta text-[hsl(40,8%,45%)] font-[family-name:var(--font-inter)]">
+      <div className="mt-3 pt-2.5 border-t border-[var(--border)] flex flex-wrap items-center justify-between gap-2 text-meta text-[var(--text-muted)] font-[family-name:var(--font-inter)]">
         <div className="flex items-center gap-1.5">
           <span>🔒</span>
           <span><strong>100% Confidential:</strong> Ideas are analyzed live in real-time and never used for public AI training.</span>
         </div>
-        <div className="flex items-center gap-2 font-[family-name:var(--font-mono)] text-meta text-[hsl(40,8%,40%)]">
+        <div className="flex items-center gap-2 font-[family-name:var(--font-mono)] text-meta text-[var(--text-dim)]">
           <span>✓ 1 Free Lifetime Scan</span>
           <span>•</span>
           <span>✓ Zero Credit Card Needed</span>

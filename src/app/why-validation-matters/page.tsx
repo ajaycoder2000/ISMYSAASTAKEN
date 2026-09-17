@@ -29,7 +29,7 @@ export default function WhyValidationMattersPage() {
       <div className="mb-2">
         <Link
           href="/"
-          className="inline-flex items-center gap-1.5 text-xs text-[hsl(40,8%,50%)] hover:text-[hsl(40,20%,90%)] transition-colors font-[family-name:var(--font-mono)]"
+          className="inline-flex items-center gap-1.5 text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors font-[family-name:var(--font-mono)]"
         >
           <span>←</span>
           <span>Back to Scanner</span>

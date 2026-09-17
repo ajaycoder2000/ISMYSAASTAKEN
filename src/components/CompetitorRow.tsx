@@ -8,8 +8,8 @@ interface CompetitorRowProps {
 
 export default function CompetitorRow({ competitor, index }: CompetitorRowProps) {
   return (
-    <div className="bg-[hsl(220,12%,12%)] border border-[hsl(220,10%,18%)] rounded-lg p-4 flex flex-col sm:flex-row sm:items-start gap-3 hover:border-[hsl(220,10%,25%)] transition-colors duration-200">
-      <span className="text-xs font-[family-name:var(--font-mono)] text-[hsl(40,8%,35%)] min-w-[24px]">
+    <div className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-lg p-4 flex flex-col sm:flex-row sm:items-start gap-3 hover:border-[var(--accent-amber)]/40 transition-colors duration-200 shadow-sm">
+      <span className="text-xs font-[family-name:var(--font-mono)] text-[var(--text-dim)] min-w-[24px]">
         {String(index + 1).padStart(2, '0')}
       </span>
       <div className="flex-1 min-w-0">
@@ -18,16 +18,16 @@ export default function CompetitorRow({ competitor, index }: CompetitorRowProps)
             href={competitor.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[hsl(40,20%,92%)] font-semibold text-sm hover:text-[hsl(42,95%,55%)] transition-colors font-[family-name:var(--font-space-grotesk)]"
+            className="text-[var(--text-primary)] font-semibold text-sm hover:text-[var(--accent-amber)] transition-colors font-[family-name:var(--font-space-grotesk)]"
           >
             {competitor.name}
             <span className="inline-block ml-1 opacity-40">↗</span>
           </a>
-          <span className="text-xs font-[family-name:var(--font-mono)] text-[hsl(42,95%,55%)] bg-[hsl(42,95%,55%,0.1)] px-2 py-0.5 rounded">
+          <span className="text-xs font-[family-name:var(--font-mono)] text-[var(--accent-amber)] bg-[var(--accent-amber)]/10 px-2 py-0.5 rounded font-semibold border border-[var(--accent-amber)]/20">
             {competitor.pricing}
           </span>
         </div>
-        <p className="mt-1 text-sm text-[hsl(40,8%,55%)] leading-relaxed font-[family-name:var(--font-inter)]">
+        <p className="mt-1 text-sm text-[var(--text-secondary)] leading-relaxed font-[family-name:var(--font-inter)]">
           {competitor.description}
         </p>
       </div>

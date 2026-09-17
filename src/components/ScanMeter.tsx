@@ -73,7 +73,7 @@ export default function ScanMeter({
           <div
             key={i}
             className={`w-3.5 h-2 rounded-sm transition-all duration-300 ${
-              i < scansUsed ? segColor : "bg-[hsl(220,10%,20%)]"
+              i < scansUsed ? segColor : "bg-[var(--border)]"
             }`}
           />
         ))}

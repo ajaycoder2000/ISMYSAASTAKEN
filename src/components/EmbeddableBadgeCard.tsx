@@ -62,23 +62,23 @@ export default function EmbeddableBadgeCard({ scan }: EmbeddableBadgeCardProps) 
   };
 
   return (
-    <div className="w-full bg-[hsl(220,15%,9%)] border border-emerald-500/30 rounded-2xl p-5 sm:p-7 shadow-xl relative overflow-hidden text-left space-y-6">
+    <div className="w-full bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl p-5 sm:p-7 shadow-xl relative overflow-hidden text-left space-y-6">
       {/* Subtle emerald ambient glow */}
       <div className="absolute -top-20 -right-20 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-zinc-800/80 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-[var(--border)] pb-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="text-emerald-400 font-bold text-sm">✓</span>
-            <span className="text-[10px] font-bold font-mono uppercase tracking-[0.2em] text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30">
+            <span className="text-[var(--accent-emerald)] font-bold text-sm">✓</span>
+            <span className="text-[10px] font-bold font-mono uppercase tracking-[0.2em] text-[var(--accent-emerald)] bg-emerald-500/15 px-2 py-0.5 rounded border border-emerald-500/30">
               TRUST SEAL QUALIFIED
             </span>
           </div>
-          <h3 className="text-base sm:text-lg font-bold font-[family-name:var(--font-space-grotesk)] text-zinc-100">
+          <h3 className="text-base sm:text-lg font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)]">
             Your idea qualified for a Validated Trust Seal 🎉
           </h3>
-          <p className="text-xs text-zinc-400 font-[family-name:var(--font-inter)] leading-relaxed max-w-xl">
+          <p className="text-xs text-[var(--text-secondary)] font-[family-name:var(--font-inter)] leading-relaxed max-w-xl">
             Embed this live badge on your landing page or README. It proves to early adopters and
             investors that this concept has an open opportunity wedge.
           </p>
@@ -89,7 +89,7 @@ export default function EmbeddableBadgeCard({ scan }: EmbeddableBadgeCardProps) 
             href={verifyUrl}
             target="_blank"
             rel="noopener"
-            className="shrink-0 text-xs font-mono text-emerald-400 hover:text-emerald-300 underline underline-offset-4 transition-colors"
+            className="shrink-0 text-xs font-mono text-[var(--accent-emerald)] hover:opacity-80 underline underline-offset-4 transition-colors"
           >
             Preview Certificate &rarr;
           </Link>
@@ -98,7 +98,7 @@ export default function EmbeddableBadgeCard({ scan }: EmbeddableBadgeCardProps) 
 
       {/* Live Badge Preview */}
       <div className="space-y-2">
-        <span className="text-[11px] font-mono font-semibold uppercase tracking-wider text-zinc-400 block">
+        <span className="text-[11px] font-mono font-semibold uppercase tracking-wider text-[var(--text-muted)] block">
           Badge Preview
         </span>
 
@@ -107,7 +107,7 @@ export default function EmbeddableBadgeCard({ scan }: EmbeddableBadgeCardProps) 
             theme === 'light'
               ? 'bg-zinc-100 border-zinc-300'
               : theme === 'transparent'
-              ? 'bg-gradient-to-r from-zinc-900 via-zinc-950 to-zinc-900 border-zinc-800'
+              ? 'bg-[var(--bg-surface-alt)] border-[var(--border)]'
               : 'bg-zinc-950 border-zinc-800'
           }`}
         >
@@ -124,12 +124,12 @@ export default function EmbeddableBadgeCard({ scan }: EmbeddableBadgeCardProps) 
 
       {/* Gating: Paid Tiers unlock snippet & copy */}
       {sessionLoaded && !isPaidUser ? (
-        <div className="bg-zinc-950 border border-emerald-500/20 rounded-xl p-5 text-center space-y-3">
-          <div className="flex items-center justify-center gap-2 text-emerald-400 text-sm font-bold font-mono">
+        <div className="bg-[var(--bg-surface-alt)] border border-emerald-500/30 rounded-xl p-5 text-center space-y-3">
+          <div className="flex items-center justify-center gap-2 text-[var(--accent-emerald)] text-sm font-bold font-mono">
             <span>🔒</span>
             <span>Paid Tier Feature (Sprint Pass or Founder Pro)</span>
           </div>
-          <p className="text-xs text-zinc-400 max-w-lg mx-auto leading-relaxed">
+          <p className="text-xs text-[var(--text-secondary)] max-w-lg mx-auto leading-relaxed">
             Your scan passed the saturation qualification check! To embed the live trust seal on your
             landing page and unlock your public verification certificate, upgrade your plan.
           </p>
@@ -147,8 +147,8 @@ export default function EmbeddableBadgeCard({ scan }: EmbeddableBadgeCardProps) 
         <div className="space-y-3 pt-1">
           <div className="flex flex-wrap items-center justify-between gap-3">
             {/* Theme Selector */}
-            <div className="flex items-center gap-1.5 bg-zinc-900 p-1 rounded-lg border border-zinc-800 text-xs font-mono">
-              <span className="text-zinc-500 px-2 text-[10px] uppercase tracking-wider">
+            <div className="flex items-center gap-1.5 bg-[var(--bg-surface-alt)] p-1 rounded-lg border border-[var(--border)] text-xs font-mono">
+              <span className="text-[var(--text-muted)] px-2 text-[10px] uppercase tracking-wider">
                 Theme:
               </span>
               {(['dark', 'light', 'transparent'] as const).map((t) => (
@@ -158,8 +158,8 @@ export default function EmbeddableBadgeCard({ scan }: EmbeddableBadgeCardProps) 
                   onClick={() => setTheme(t)}
                   className={`px-2.5 py-1 rounded-md text-[11px] capitalize transition-colors cursor-pointer ${
                     theme === t
-                      ? 'bg-emerald-950 text-emerald-300 border border-emerald-500/40 font-bold'
-                      : 'text-zinc-400 hover:text-zinc-200'
+                      ? 'bg-emerald-500/20 text-[var(--accent-emerald)] border border-emerald-500/40 font-bold'
+                      : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
                   }`}
                 >
                   {t}
@@ -168,7 +168,7 @@ export default function EmbeddableBadgeCard({ scan }: EmbeddableBadgeCardProps) 
             </div>
 
             {/* Format Selector */}
-            <div className="flex items-center gap-1.5 bg-zinc-900 p-1 rounded-lg border border-zinc-800 text-xs font-mono">
+            <div className="flex items-center gap-1.5 bg-[var(--bg-surface-alt)] p-1 rounded-lg border border-[var(--border)] text-xs font-mono">
               {(['html', 'markdown'] as const).map((f) => (
                 <button
                   key={f}
@@ -176,8 +176,8 @@ export default function EmbeddableBadgeCard({ scan }: EmbeddableBadgeCardProps) 
                   onClick={() => setFormat(f)}
                   className={`px-2.5 py-1 rounded-md text-[11px] uppercase transition-colors cursor-pointer ${
                     format === f
-                      ? 'bg-zinc-800 text-zinc-100 font-bold'
-                      : 'text-zinc-400 hover:text-zinc-200'
+                      ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] border border-[var(--border)] font-bold'
+                      : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
                   }`}
                 >
                   {f}
@@ -188,7 +188,7 @@ export default function EmbeddableBadgeCard({ scan }: EmbeddableBadgeCardProps) 
 
           {/* Code Snippet Box */}
           <div className="relative">
-            <pre className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3.5 text-xs text-emerald-300 font-mono overflow-x-auto whitespace-pre leading-relaxed">
+            <pre className="w-full bg-[var(--bg-surface-alt)] border border-[var(--border)] rounded-xl p-3.5 text-xs text-[var(--accent-emerald)] font-mono overflow-x-auto whitespace-pre leading-relaxed">
               <code>{snippet}</code>
             </pre>
 
@@ -205,7 +205,7 @@ export default function EmbeddableBadgeCard({ scan }: EmbeddableBadgeCardProps) 
       )}
 
       {/* Footer reassurance */}
-      <div className="pt-1 text-[11px] font-mono text-zinc-500 flex items-center justify-between border-t border-zinc-800">
+      <div className="pt-1 text-[11px] font-mono text-[var(--text-dim)] flex items-center justify-between border-t border-[var(--border)]">
         <span>Includes click-through verification &amp; rel=&quot;noopener&quot;</span>
         <span>Backlink drives organic trust</span>
       </div>
