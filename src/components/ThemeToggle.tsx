@@ -1,9 +1,17 @@
 'use client';
 
+import React, { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
+import { Moon, Sun } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-export function ThemeToggle({ className }: { className?: string }) {
+//  ------------------------------ | SWITCH - TOGGLE THEME | ------------------------------  //
+
+interface ThemeToggleProps {
+  className?: string;
+}
+
+export function SwitchToggleTheme({ className }: ThemeToggleProps) {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -13,60 +21,76 @@ export function ThemeToggle({ className }: { className?: string }) {
   }, []);
 
   if (!mounted) {
-    return <div className={`w-9 h-9 shrink-0 ${className || ''}`} aria-hidden="true" />;
+    return <div className={cn("w-20 h-7 shrink-0", className)} aria-hidden="true" />;
   }
 
   const currentTheme = resolvedTheme || theme;
   const isDark = currentTheme === 'dark';
 
   return (
-    <button
-      type="button"
-      onClick={() => setTheme(isDark ? 'light' : 'dark')}
-      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-      title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-      className={`w-9 h-9 shrink-0 flex items-center justify-center rounded-lg border border-[var(--border)] bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-alt)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-amber)] cursor-pointer ${className || ''}`}
-    >
-      {isDark ? <SunIcon /> : <MoonIcon />}
-    </button>
+    <div className={cn("flex items-center justify-center gap-1.5 sm:gap-2", className)}>
+      {/* Light Mode Sun Button */}
+      <button
+        type="button"
+        onClick={() => setTheme('light')}
+        className={cn(
+          "p-1 rounded cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent-amber)]",
+          !isDark
+            ? "text-amber-500 dark:text-amber-400"
+            : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+        )}
+        aria-label="Light mode"
+        title="Switch to light mode"
+      >
+        <Sun className="size-4" />
+      </button>
+
+      {/* Switch Control */}
+      <button
+        type="button"
+        role="switch"
+        id="switch-theme-between"
+        aria-checked={isDark}
+        aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+        title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+        onClick={() => setTheme(isDark ? 'light' : 'dark')}
+        className={cn(
+          "relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-md border border-[var(--border)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-amber)] focus-visible:ring-offset-2",
+          isDark
+            ? "bg-[var(--accent-amber)] border-amber-500"
+            : "bg-zinc-200 dark:bg-zinc-700"
+        )}
+      >
+        <span
+          data-slot="switch-thumb"
+          className={cn(
+            "pointer-events-none block h-3.5 w-3.5 rounded-sm bg-white shadow-sm ring-0 transition-transform duration-200 ease-in-out",
+            isDark ? "translate-x-[17px]" : "translate-x-[2px]"
+          )}
+        />
+      </button>
+
+      {/* Dark Mode Moon Button */}
+      <button
+        type="button"
+        onClick={() => setTheme('dark')}
+        className={cn(
+          "p-1 rounded cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent-amber)]",
+          isDark
+            ? "text-[var(--text-primary)]"
+            : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+        )}
+        aria-label="Dark mode"
+        title="Switch to dark mode"
+      >
+        <Moon className="size-4" />
+      </button>
+    </div>
   );
 }
 
-function SunIcon() {
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="text-[var(--accent-amber)] transition-transform duration-200 hover:rotate-45"
-    >
-      <circle cx="12" cy="12" r="4" />
-      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
-    </svg>
-  );
-}
+// Alias for existing usages
+export const ThemeToggle = SwitchToggleTheme;
 
-function MoonIcon() {
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="text-[var(--text-primary)] transition-transform duration-200 hover:-rotate-12"
-    >
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-    </svg>
-  );
-}
+export default SwitchToggleTheme;
 
-export default ThemeToggle;

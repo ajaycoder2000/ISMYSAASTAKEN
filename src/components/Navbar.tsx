@@ -181,7 +181,7 @@ export default function Navbar() {
             </Show>
 
             {/* Mobile Light / Dark Theme Toggle */}
-            <ThemeToggle className="lg:hidden" />
+            <ThemeToggle className="sm:hidden" />
 
             {/* Mobile / Tablet Hamburger Toggle Button */}
             <button
