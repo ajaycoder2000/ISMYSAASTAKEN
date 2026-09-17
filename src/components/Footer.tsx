@@ -1,106 +1,369 @@
-import Link from 'next/link';
-import Image from 'next/image';
+"use client";
+
+import React from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { motion, type Variants } from "framer-motion";
+import { Minus } from "lucide-react";
+
+interface FooterLink {
+  label: string;
+  href: string;
+  badge?: string;
+  badgeClass?: string;
+}
+
+interface FooterColumn {
+  title: string;
+  links: FooterLink[];
+}
+
+const footerColumns: FooterColumn[] = [
+  {
+    title: "Validation Tools",
+    links: [
+      { label: "Idea Scanner", href: "/#scan-form" },
+      {
+        label: "Keyword Radar",
+        href: "/keywords",
+        badge: "NEW",
+        badgeClass: "bg-emerald-500/15 text-[var(--accent-emerald)]",
+      },
+      {
+        label: "Is It Taken?",
+        href: "/is-it-taken",
+        badge: "NEW",
+        badgeClass: "bg-amber-500/15 text-[var(--accent-amber)]",
+      },
+      {
+        label: "Idea Roast Mode",
+        href: "/roast",
+        badge: "HOT",
+        badgeClass: "bg-orange-500/15 text-orange-500",
+      },
+      {
+        label: "Why Validate?",
+        href: "/why-validation-matters",
+        badge: "QUIZ",
+        badgeClass: "bg-amber-500/15 text-[var(--accent-amber)]",
+      },
+    ],
+  },
+  {
+    title: "Market Radar",
+    links: [
+      { label: "AI & Automation", href: "/category/ai-agents" },
+      { label: "Developer Tools", href: "/category/dev-tools" },
+      { label: "Micro-SaaS Radar", href: "/category/micro-saas" },
+      { label: "B2B SaaS Gaps", href: "/category/b2b-saas" },
+      { label: "Creator Economy", href: "/category/creator-economy" },
+    ],
+  },
+  {
+    title: "Platform",
+    links: [
+      { label: "Pricing & Plans", href: "/pricing" },
+      { label: "Live Telemetry Feed", href: "/#recent-scans" },
+      {
+        label: "Product Roadmap",
+        href: "/roadmap",
+        badge: "🚀",
+        badgeClass: "bg-purple-500/15 text-purple-400",
+      },
+      { label: "Sponsor Platform", href: "/sponsors" },
+      { label: "Founder Dashboard", href: "/dashboard" },
+    ],
+  },
+  {
+    title: "Trust & Legal",
+    links: [
+      { label: "Terms of Service", href: "/terms" },
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Embeddable Badge", href: "/settings" },
+      { label: "Account Settings", href: "/settings" },
+      { label: "Contact Support", href: "mailto:ismysaastaken@gmail.com" },
+    ],
+  },
+];
+
+const socialIcons = [
+  {
+    label: "Twitter / X",
+    href: "https://twitter.com",
+    bgClass: "bg-[#101411] hover:bg-[#1f2420]",
+    svg: (
+      <svg
+        className="h-4 w-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g clipPath="url(#clip0_twitter)">
+          <path
+            d="M5.31529 2.09988C6.10629 1.98688 7.21529 2.24488 8.64829 3.06588L8.92029 3.22688L9.08029 3.32688L9.47729 3.24388C10.9911 2.95137 12.5442 2.9243 14.0673 3.16388L14.5233 3.24388L14.9193 3.32688L15.0803 3.22688C16.4653 2.38688 17.5673 2.05688 18.4023 2.07888L18.5663 2.08688L18.7133 2.10388L18.7893 2.11788L18.8393 2.12888L18.9833 2.17588C19.2191 2.27334 19.4087 2.45721 19.5133 2.68988C19.9225 3.60158 20.0603 4.61188 19.9103 5.59988L19.8633 5.86688L19.8173 6.06288L19.9403 6.22588C20.5143 7.02088 20.8703 7.95388 20.9703 8.93288L20.9933 9.22788L21.0003 9.49988C21.0003 13.3549 19.3413 15.3829 16.3563 16.1799L16.1113 16.2409L15.9793 16.2699L15.9933 16.4309L16.0013 16.5879L16.0053 16.9529L16.0033 17.1659L16.0003 20.9999C16.0003 21.2448 15.9103 21.4812 15.7476 21.6643C15.5848 21.8473 15.3605 21.9642 15.1173 21.9929L15.0003 21.9999H9.00029C8.75536 21.9998 8.51896 21.9099 8.33592 21.7472C8.15289 21.5844 8.03595 21.3601 8.00729 21.1169L8.00029 20.9999V20.2659C6.18229 20.5259 4.97029 19.8419 3.89029 18.3879L3.35529 17.6219C3.07529 17.2259 2.90029 17.0429 2.76629 16.9779L2.71829 16.9589C2.47071 16.8784 2.26425 16.7046 2.14281 16.4743C2.02137 16.244 1.99452 15.9755 2.06796 15.7257C2.14141 15.476 2.30936 15.2647 2.53611 15.1368C2.76287 15.0089 3.03056 14.9745 3.28229 15.0409C3.92429 15.2289 4.35629 15.6089 4.85229 16.2799L5.39029 17.0489C6.15029 18.1279 6.75029 18.5079 7.99929 18.2399L8.00029 17.5619L7.98229 17.3939C7.95276 17.1202 7.94574 16.8447 7.96129 16.5699L7.97829 16.3849L7.99729 16.2649L7.88929 16.2409C4.91329 15.5309 3.18629 13.6679 3.01429 10.1019L3.00429 9.79188L3.00029 9.49988C3.00145 8.41646 3.31686 7.35663 3.90829 6.44888L4.06029 6.22688L4.18229 6.06388L4.13729 5.86788C3.95701 4.98944 4.00696 4.07931 4.28229 3.22588L4.38229 2.94388L4.48829 2.69088C4.59269 2.4584 4.78191 2.27455 5.01729 2.17688L5.16129 2.12988L5.31529 2.09988Z"
+            fill="currentColor"
+          />
+        </g>
+        <defs>
+          <clipPath id="clip0_twitter">
+            <rect className="h-6 w-6" fill="currentColor" />
+          </clipPath>
+        </defs>
+      </svg>
+    ),
+  },
+  {
+    label: "LinkedIn",
+    href: "https://linkedin.com",
+    bgClass: "bg-[#0072b1] hover:bg-[#005f94]",
+    svg: (
+      <svg
+        className="h-4 w-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M4.58579 4.58579C4.21071 4.96086 4 5.46957 4 6V18C4 18.5304 4.21071 19.0391 4.58579 19.4142C4.96086 19.7893 5.46957 20 6 20H18C18.5304 20 19.0391 19.7893 19.4142 19.4142C19.7893 19.0391 20 18.5304 20 18V6C20 5.46957 19.7893 4.96086 19.4142 4.58579C19.0391 4.21071 18.5304 4 18 4H6C5.46957 4 4.96086 4.21071 4.58579 4.58579ZM8.99935 10.9993C8.99935 10.4471 8.55163 9.99935 7.99935 9.99935C7.44706 9.99935 6.99935 10.4471 6.99935 10.9993V15.9993C6.99935 16.5516 7.44706 16.9993 7.99935 16.9993C8.55163 16.9993 8.99935 16.5516 8.99935 15.9993V10.9993ZM16.1204 10.8783C15.5578 10.3156 14.795 9.99935 13.9993 9.99935C13.5478 9.99935 13.1082 10.1043 12.7083 10.2952C12.5272 10.1128 12.2767 9.99935 11.9993 9.99935C11.4471 9.99935 10.9993 10.4471 10.9993 10.9993V15.9993C10.9993 16.5516 11.4471 16.9993 11.9993 16.9993C12.5516 16.9993 12.9993 16.5516 12.9993 15.9993V12.9993C12.9993 12.7341 13.1048 12.4799 13.2923 12.2923C13.4799 12.1048 13.7341 11.9993 13.9993 11.9993C14.2646 11.9993 14.5188 12.1048 14.7064 12.2923C14.8939 12.4799 14.9993 12.7341 14.9993 12.9993V15.9993C14.9993 16.5516 15.4471 16.9993 15.9993 16.9993C16.5516 16.9993 16.9993 16.5516 16.9993 15.9993V12.9993C16.9993 12.2037 16.6831 11.4409 16.1204 10.8783ZM8.99935 7.99935C8.99935 7.44706 8.55163 6.99935 7.99935 6.99935C7.44706 6.99935 6.99935 7.44706 6.99935 7.99935V8.00911C6.99935 8.5614 7.44706 9.00911 7.99935 9.00911C8.55163 9.00911 8.99935 8.5614 8.99935 8.00911V7.99935Z"
+          fill="currentColor"
+        />
+      </svg>
+    ),
+  },
+  {
+    label: "YouTube",
+    href: "https://youtube.com",
+    bgClass: "bg-[#ff0000] hover:bg-[#d90000]",
+    svg: (
+      <svg
+        className="h-4 w-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g clipPath="url(#clip0_yt)">
+          <path
+            d="M18 3C18.6566 3 19.3068 3.12933 19.9134 3.3806C20.52 3.63188 21.0712 4.00017 21.5355 4.46447C21.9998 4.92876 22.3681 5.47995 22.6194 6.08658C22.8707 6.69321 23 7.34339 23 8V16C23 16.6566 22.8707 17.3068 22.6194 17.9134C22.3681 18.52 21.9998 19.0712 21.5355 19.5355C21.0712 19.9998 20.52 20.3681 19.9134 20.6194C19.3068 20.8707 18.6566 21 18 21H6C5.34339 21 4.69321 20.8707 4.08658 20.6194C3.47995 20.3681 2.92876 19.9998 2.46447 19.5355C1.52678 18.5979 1 17.3261 1 16V8C1 6.67392 1.52678 5.40215 2.46447 4.46447C3.40215 3.52678 4.67392 3 6 3H18ZM9 9V15C9.00014 15.1768 9.04718 15.3505 9.13631 15.5032C9.22545 15.656 9.35349 15.7823 9.50739 15.8695C9.66129 15.9566 9.83555 16.0013 10.0124 15.9991C10.0124 15.9991 10.0124 15.9991 10.514 15.857L15.514 12.857C15.6619 12.7681 15.7842 12.6425 15.8691 12.4923C15.954 12.3421 15.9987 12.1725 15.9987 12C15.9987 11.8275 15.954 11.6579 15.8691 11.5077C15.7842 11.3575 15.6619 11.2319 15.514 11.143L10.514 8.143C10.3623 8.0521 10.1892 8.00306 10.0124 8.00087C9.83555 7.99868 9.66129 8.04342 9.50739 8.13054C9.35349 8.21765 9.22545 8.34402 9.13631 8.49677C9.04718 8.64951 9.00014 8.82315 9 9Z"
+            fill="currentColor"
+          />
+        </g>
+        <defs>
+          <clipPath id="clip0_yt">
+            <rect className="h-6 w-6" fill="currentColor" />
+          </clipPath>
+        </defs>
+      </svg>
+    ),
+  },
+  {
+    label: "Facebook",
+    href: "https://facebook.com",
+    bgClass: "bg-[#1877f2] hover:bg-[#1464cc]",
+    svg: (
+      <svg
+        className="h-4 w-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g clipPath="url(#clip0_fb)">
+          <path
+            d="M17.1538 4C17.3611 4.00003 17.5611 4.07196 17.716 4.20217C17.8709 4.33238 17.9698 4.5118 17.9941 4.7064L18 4.8V8C18 8.19595 17.9239 8.38507 17.7862 8.5315C17.6484 8.67793 17.4587 8.77147 17.2528 8.7944L17.1538 8.8H14.6154V9.6H17.1538C17.2743 9.60004 17.3934 9.6244 17.503 9.67144C17.6127 9.71849 17.7106 9.78713 17.7899 9.87278C17.8693 9.95844 17.9284 10.0591 17.9634 10.1681C17.9983 10.2771 18.0082 10.3919 17.9924 10.5048L17.9755 10.5944L17.1293 13.7944C17.0873 13.9524 16.9953 14.0945 16.8656 14.2017C16.7358 14.309 16.5745 14.3762 16.4033 14.3944L16.3077 14.4H14.6154V19.2C14.6154 19.3959 14.5393 19.5851 14.4015 19.7315C14.2638 19.8779 14.0741 19.9715 13.8682 19.9944L13.7692 20H10.3846C10.1774 20 9.97733 19.928 9.82245 19.7978C9.66758 19.6676 9.56863 19.4882 9.54438 19.2936L9.53846 19.2V14.4H7.84615C7.6389 14.4 7.43887 14.328 7.28399 14.1978C7.12912 14.0676 7.03017 13.8882 7.00592 13.6936L7 13.6V10.4C7.00003 10.2041 7.07612 10.0149 7.21384 9.8685C7.35156 9.72207 7.54133 9.62853 7.74715 9.6056L7.84615 9.6H9.53846V8.8C9.53841 7.5581 10.0475 6.36451 10.9587 5.47002C11.8699 4.57553 13.1124 4.04977 14.425 4.0032L14.6154 4H17.1538Z"
+            fill="currentColor"
+          />
+        </g>
+        <defs>
+          <clipPath id="clip0_fb">
+            <rect className="h-6 w-6" fill="currentColor" />
+          </clipPath>
+        </defs>
+      </svg>
+    ),
+  },
+  {
+    label: "Dribbble",
+    href: "https://dribbble.com",
+    bgClass: "bg-[#ea4c89] hover:bg-[#d63d7a]",
+    svg: (
+      <svg
+        className="h-4 w-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M13.6113 14.8809C14.12 16.447 14.4781 18.0556 14.6826 19.6865C13.9541 19.8957 13.1984 20.0035 12.4375 20.0029H12.4365C11.0199 20.0052 9.63281 19.6347 8.41797 18.9365C9.00362 17.9926 9.75575 17.1548 10.6406 16.4629C11.5286 15.7686 12.5342 15.2327 13.6113 14.8809ZM16.2803 14.4092C17.5044 14.3629 18.7264 14.5451 19.8818 14.9443C19.3534 16.3333 18.4304 17.5453 17.2207 18.4375C17.004 17.0748 16.6903 15.7287 16.2803 14.4092ZM12.2988 11.6064C12.4252 11.8688 12.5471 12.1335 12.665 12.4004C10.0709 13.2722 7.84713 14.9662 6.3457 17.2139C5.74889 16.5111 5.27957 15.7128 4.96484 14.8506C4.6418 13.9655 4.4879 13.032 4.50391 12.0957C7.09404 12.5386 9.78697 12.371 12.2988 11.6064ZM18.9014 7.75684C19.8685 9.08936 20.382 10.6827 20.373 12.3125C18.7469 11.8118 17.0319 11.6429 15.335 11.8203C15.1649 11.4159 14.9871 11.0147 14.7988 10.6182C16.3077 9.87524 17.6909 8.9102 18.9014 7.75684ZM8.33301 5.61426C9.32073 6.742 10.2115 7.94704 10.9941 9.21875C9.04591 9.73043 7.00771 9.82372 5.01855 9.49121C5.65035 7.87834 6.81396 6.51137 8.33301 5.61426ZM12.4365 4.5H12.4375C14.13 4.50008 15.6966 5.01767 16.9834 5.89746C15.9692 6.85441 14.8114 7.6548 13.5488 8.27051C12.7934 6.99507 11.9419 5.77688 11 4.62695C11.4733 4.54228 11.9541 4.49966 12.4365 4.5Z"
+          fill="currentColor"
+        />
+      </svg>
+    ),
+  },
+];
+
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] },
+  },
+};
 
 export default function Footer() {
   return (
-    <footer className="w-full border-t border-[var(--border)] bg-[var(--bg-surface)] mt-20 sm:mt-28 transition-colors duration-200">
-      <div className="w-full max-w-[1780px] mx-auto px-3 sm:px-5 lg:px-8 py-10">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-6 border-b border-[var(--border)]">
-          {/* Logo & Tagline */}
-          <div>
-            <Link
-              href="/"
-              className="inline-block hover:opacity-90 transition-opacity"
+    <footer className="relative overflow-hidden pt-12 sm:pt-20 pb-8 sm:pb-12 mt-16 sm:mt-24 transition-colors duration-200">
+      {/* Ambient background glow & curved horizon */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-transparent via-[var(--accent-amber)]/[0.02] to-[var(--accent-amber)]/[0.05] pointer-events-none" />
+
+      {/* The curved dome rising from the bottom behind the card */}
+      <div className="absolute inset-x-0 bottom-0 z-0 h-1/2 rounded-t-[100%] bg-gradient-to-t from-[var(--accent-amber)]/25 via-[var(--accent-emerald)]/10 to-transparent dark:from-amber-500/15 dark:via-emerald-500/5 dark:to-transparent blur-2xl pointer-events-none" />
+      <div className="absolute inset-x-0 bottom-0 z-0 h-1/3 rounded-t-full bg-gradient-to-t from-[var(--border)]/40 via-[var(--border)]/15 to-transparent pointer-events-none" />
+
+      <div className="relative z-10 w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={containerVariants}
+          className="rounded-2xl sm:rounded-3xl bg-[var(--bg-surface)] border border-[var(--border)] p-6 sm:p-10 lg:p-14 text-left shadow-[0_0_50px_-12px_rgba(245,166,35,0.15)] dark:shadow-[0_0_60px_-15px_rgba(0,0,0,0.6)]"
+        >
+          <div className="grid grid-cols-12 gap-8 lg:gap-10">
+            {/* Left Brand Area */}
+            <motion.div
+              variants={itemVariants}
+              className="col-span-12 lg:col-span-4"
             >
-              <Image
-                src="/logo.png"
-                alt="IsMySaaSTaken"
-                width={180}
-                height={22}
-                className="h-5 sm:h-6 w-auto object-contain hidden dark:block"
-              />
-              <Image
-                src="/logo-light.png"
-                alt="IsMySaaSTaken"
-                width={180}
-                height={22}
-                className="h-5 sm:h-6 w-auto object-contain block dark:hidden"
-              />
-            </Link>
-            <p className="mt-1 text-xs text-[var(--text-muted)] font-[family-name:var(--font-inter)]">
-              Instant market validation and competitive gap discovery for SaaS founders.
-            </p>
+              <div className="flex flex-col gap-4">
+                <Link
+                  href="/"
+                  className="inline-block hover:opacity-90 transition-opacity"
+                >
+                  <Image
+                    src="/logo.png"
+                    alt="IsMySaaSTaken"
+                    width={180}
+                    height={24}
+                    className="h-6 w-auto object-contain hidden dark:block"
+                  />
+                  <Image
+                    src="/logo-light.png"
+                    alt="IsMySaaSTaken"
+                    width={180}
+                    height={24}
+                    className="h-6 w-auto object-contain block dark:hidden"
+                  />
+                </Link>
+
+                <p className="text-xs sm:text-sm leading-relaxed text-[var(--text-muted)] font-[family-name:var(--font-inter)] max-w-sm">
+                  Instant market validation, competitor intelligence radar, and gap discovery for SaaS founders. Real-time telemetry to protect your runway.
+                </p>
+
+                {/* AI Radar status pill */}
+                <div className="flex items-center gap-2 pt-1">
+                  <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-[11px] font-mono text-[var(--accent-emerald)] font-medium">
+                    <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span>AI Radar Active • Real-Time Telemetry</span>
+                  </div>
+                </div>
+
+                <p className="text-[11px] text-[var(--text-dim)] font-[family-name:var(--font-inter)] leading-relaxed pt-1">
+                  🔒 100% Private &amp; Confidential. Concepts scanned are never shared or indexed.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Right Multi-Column Links */}
+            <div className="col-span-12 lg:col-span-8">
+              <div className="grid grid-cols-12 gap-6 sm:gap-8">
+                {footerColumns.map((col) => (
+                  <motion.div
+                    variants={itemVariants}
+                    key={col.title}
+                    className="col-span-6 sm:col-span-6 lg:col-span-3"
+                  >
+                    <div className="flex flex-col gap-3 sm:gap-4">
+                      <div className="text-xs sm:text-sm font-semibold tracking-wider font-mono uppercase text-[var(--text-primary)]">
+                        {col.title}
+                      </div>
+                      <div className="h-px w-full bg-[var(--border)]" />
+                      <ul className="space-y-2 sm:space-y-2.5">
+                        {col.links.map((link) => (
+                          <li key={link.label}>
+                            <Link
+                              href={link.href}
+                              className="group flex items-center gap-1.5 text-xs sm:text-sm text-[var(--text-secondary)] transition-all duration-300 ease-in-out hover:gap-2.5 hover:font-medium hover:text-[var(--text-primary)]"
+                            >
+                              <Minus className="size-3.5 text-[var(--text-dim)] transition-all duration-300 ease-in-out group-hover:translate-x-0.5 group-hover:text-[var(--accent-amber)] shrink-0" />
+                              <span className="truncate">{link.label}</span>
+                              {link.badge && (
+                                <span
+                                  className={`text-[9px] font-mono px-1 py-0.5 rounded font-bold uppercase tracking-wider shrink-0 ${
+                                    link.badgeClass ||
+                                    "bg-amber-500/15 text-[var(--accent-amber)]"
+                                  }`}
+                                >
+                                  {link.badge}
+                                </span>
+                              )}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
           </div>
 
-          {/* Core Navigation Links */}
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-[family-name:var(--font-inter)] text-[var(--text-secondary)]">
-            <Link href="/keywords" className="hover:text-[var(--accent-emerald)] transition-colors flex items-center gap-1 font-medium">
-              <span>Keyword Radar</span>
-              <span className="text-[9px] font-mono px-1 py-0.2 bg-emerald-500/15 text-[var(--accent-emerald)] rounded font-bold">NEW</span>
-            </Link>
-            <Link href="/is-it-taken" className="hover:text-[var(--accent-amber)] transition-colors flex items-center gap-1 font-medium">
-              <span>Is It Taken?</span>
-              <span className="text-[9px] font-mono px-1 py-0.2 bg-amber-500/15 text-[var(--accent-amber)] rounded font-bold">NEW</span>
-            </Link>
-            <Link href="/why-validation-matters" className="hover:text-[var(--accent-amber)] transition-colors flex items-center gap-1 font-medium">
-              <span>Why Validate?</span>
-              <span className="text-[9px] font-mono px-1 py-0.2 bg-amber-500/15 text-[var(--accent-amber)] rounded font-bold">QUIZ</span>
-            </Link>
-            <Link href="/pricing" className="hover:text-[var(--text-primary)] transition-colors">
-              Pricing
-            </Link>
-            <Link href="/#recent-scans" className="hover:text-[var(--text-primary)] transition-colors">
-              Live Feed
-            </Link>
-            <Link href="/roadmap" className="hover:text-[var(--text-primary)] transition-colors">
-              Roadmap 🚀
-            </Link>
-            <Link href="/dashboard" className="hover:text-[var(--text-primary)] transition-colors">
-              Dashboard
-            </Link>
-          </div>
-        </div>
+          {/* Separator */}
+          <motion.div
+            variants={itemVariants}
+            className="my-8 h-px w-full bg-[var(--border)] sm:my-10"
+          />
 
-        {/* Category Intelligence SEO Index Links */}
-        <div className="py-5 border-b border-[var(--border)]">
-          <p className="text-[10px] font-bold font-[family-name:var(--font-mono)] uppercase tracking-wider text-[var(--text-dim)] mb-2.5">
-            Market Intelligence Categories:
-          </p>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-[family-name:var(--font-inter)] text-[var(--text-secondary)]">
-            <Link href="/category/ai-agents" className="hover:text-[var(--accent-amber)] transition-colors">
-              🤖 AI & Automation
-            </Link>
-            <Link href="/category/dev-tools" className="hover:text-[var(--accent-amber)] transition-colors">
-              🛠️ Developer Tools
-            </Link>
-            <Link href="/category/micro-saas" className="hover:text-[var(--accent-amber)] transition-colors">
-              ⚡ Micro-SaaS
-            </Link>
-            <Link href="/category/b2b-saas" className="hover:text-[var(--accent-amber)] transition-colors">
-              📈 B2B SaaS
-            </Link>
-            <Link href="/category/creator-economy" className="hover:text-[var(--accent-amber)] transition-colors">
-              🎨 Creator Economy
-            </Link>
-          </div>
-        </div>
+          {/* Bottom Bar: Copyright & Socials */}
+          <motion.div
+            variants={itemVariants}
+            className="flex flex-col-reverse sm:flex-row items-center justify-between gap-4"
+          >
+            <div className="text-center sm:text-left">
+              <p className="font-sans text-xs text-[var(--text-muted)]">
+                Copyright © {new Date().getFullYear()} IsMySaaSTaken. All rights reserved.
+              </p>
+            </div>
 
-        {/* Privacy & Legal Disclaimer */}
-        <div className="pt-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-[11px] font-[family-name:var(--font-inter)] text-[var(--text-muted)]">
-          <div className="flex flex-wrap items-center gap-4">
-            <span>🔒 Private &amp; Confidential • Web results are AI-grounded in real-time.</span>
-            <Link href="/terms" className="text-[var(--text-muted)] hover:text-[var(--accent-amber)] transition-colors underline">
-              Terms of Service
-            </Link>
-            <Link href="/privacy" className="text-[var(--text-muted)] hover:text-[var(--accent-amber)] transition-colors underline">
-              Privacy Policy
-            </Link>
-          </div>
-          <p className="text-[var(--text-dim)]">
-            © {new Date().getFullYear()} ismysaastaken.
-          </p>
-        </div>
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              {socialIcons.map(({ label, href, bgClass, svg }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className={`inline-flex h-8 w-8 items-center justify-center rounded-lg text-white ${bgClass} transition-all duration-300 hover:-translate-y-1 hover:shadow-md cursor-pointer`}
+                >
+                  {svg}
+                </a>
+              ))}
+            </div>
+          </motion.div>
+        </motion.div>
       </div>
     </footer>
   );
 }
+
