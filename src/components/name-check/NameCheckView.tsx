@@ -399,7 +399,7 @@ export default function NameCheckView() {
             </div>
 
             {/* Mock result card */}
-            <div className="bg-[hsl(220,14%,10%)]/90 border border-[hsl(220,10%,20%)] rounded-2xl p-5 sm:p-6 space-y-6 shadow-2xl relative overflow-hidden">
+            <div className="bg-bg-surface dark:bg-[hsl(220,14%,10%)]/90 border border-border dark:border-[hsl(220,10%,20%)] rounded-2xl p-5 sm:p-6 space-y-6 shadow-2xl relative overflow-hidden">
               <div className="flex items-center justify-between flex-wrap gap-2 pb-3 border-b border-[hsl(220,10%,16%)]">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)]">

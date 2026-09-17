@@ -426,6 +426,7 @@ html:not(.dark) {
   .bg-\[hsl\(220\,13\%\,11\%\)\],
   .bg-\[hsl\(220\,13\%\,12\%\)\],
   .bg-\[hsl\(220\,14\%\,10\%\)\],
+  .bg-\[hsl\(220\,14\%\,10\%\)\]\/90,
   .bg-\[hsl\(220\,14\%\,11\%\)\],
   .bg-\[hsl\(220\,14\%\,12\%\)\],
   .bg-\[hsl\(220\,14\%\,13\%\)\],
@@ -725,5 +726,24 @@ html:not(.dark) {
 
   .to-\[hsl\(220\,15\%\,9\%\)\] {
     --tw-gradient-to: var(--bg-surface-alt) var(--tw-gradient-to-position) !important;
+  }
+
+  /* Subpanel 03 cyan/sky blue contrast fix */
+  .text-\[hsl\(200\,85\%\,60\%\)\] {
+    color: #0284c7 !important;
+  }
+
+  /* SVG chart axis labels */
+  .fill-\[hsl\(40\,8\%\,45\%\)\] {
+    fill: var(--text-secondary) !important;
+  }
+
+  /* Pricing table row opacity backgrounds */
+  .bg-\[hsl\(220\,14\%\,8\%\)\]\/40 {
+    background-color: var(--bg-surface-alt) !important;
+  }
+
+  .hover\:bg-\[hsl\(220\,12\%\,12\%\)\]\/50:hover {
+    background-color: var(--bg-surface-alt) !important;
   }
 }

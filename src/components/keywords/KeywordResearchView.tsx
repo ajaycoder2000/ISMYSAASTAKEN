@@ -498,7 +498,7 @@ export default function KeywordResearchView() {
             </div>
 
             {/* Mock result card */}
-            <div className="bg-[hsl(220,14%,10%)]/90 border border-[hsl(220,10%,20%)] rounded-2xl p-5 sm:p-7 space-y-6 relative overflow-hidden shadow-2xl">
+            <div className="bg-bg-surface dark:bg-[hsl(220,14%,10%)]/90 border border-border dark:border-[hsl(220,10%,20%)] rounded-2xl p-5 sm:p-7 space-y-6 relative overflow-hidden shadow-2xl">
               {/* Sub-panel 1: Search Interest Trend */}
               <div className="space-y-3 pb-6 border-b border-[hsl(220,10%,16%)]">
                 <div className="flex items-center justify-between flex-wrap gap-2">
