@@ -256,14 +256,14 @@ export default function Footer() {
                     alt="IsMySaaSTaken"
                     width={180}
                     height={24}
-                    className="h-6 w-auto object-contain hidden dark:block"
+                    className="h-6 w-auto object-contain theme-logo-dark"
                   />
                   <Image
                     src="/logo-light.png"
                     alt="IsMySaaSTaken"
                     width={180}
                     height={24}
-                    className="h-6 w-auto object-contain block dark:hidden"
+                    className="h-6 w-auto object-contain theme-logo-light"
                   />
                 </Link>
 

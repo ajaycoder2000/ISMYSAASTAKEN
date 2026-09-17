@@ -51,7 +51,7 @@ export default function Navbar() {
               width={200}
               height={24}
               priority
-              className="h-6 sm:h-7 w-auto object-contain hidden dark:block"
+              className="h-6 sm:h-7 w-auto object-contain theme-logo-dark"
             />
             <Image
               src="/logo-light.png"
@@ -59,7 +59,7 @@ export default function Navbar() {
               width={200}
               height={24}
               priority
-              className="h-6 sm:h-7 w-auto object-contain block dark:hidden"
+              className="h-6 sm:h-7 w-auto object-contain theme-logo-light"
             />
           </Link>
           

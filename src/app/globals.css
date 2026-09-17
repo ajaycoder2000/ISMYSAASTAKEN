@@ -1,5 +1,25 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Guaranteed Theme Logo Visibility */
+.theme-logo-dark {
+  display: none !important;
+}
+.theme-logo-light {
+  display: block !important;
+}
+
+html.dark .theme-logo-dark,
+.dark .theme-logo-dark {
+  display: block !important;
+}
+
+html.dark .theme-logo-light,
+.dark .theme-logo-light {
+  display: none !important;
+}
+
 :root {
   /* Light theme */
   --bg-primary: #faf9f6;
