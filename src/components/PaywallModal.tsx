@@ -121,7 +121,7 @@ export default function PaywallModal({
       <div className="absolute inset-0" onClick={onClose} />
 
       {/* Modal Card */}
-      <div className="relative w-full max-w-xl max-h-[92vh] overflow-y-auto bg-[hsl(220,15%,10%)] border border-[hsl(220,10%,22%)] rounded-2xl shadow-2xl p-5 sm:p-8 z-10 space-y-6">
+      <div className="relative w-full max-w-xl max-h-[92vh] overflow-y-auto bg-bg-surface dark:bg-[hsl(220,15%,10%)] border border-border dark:border-[hsl(220,10%,22%)] rounded-2xl shadow-2xl p-5 sm:p-8 z-10 space-y-6">
         {/* Subtle accent glow */}
         <div className="absolute -top-24 -right-24 w-48 h-48 bg-[hsl(42,95%,55%,0.08)] rounded-full blur-3xl pointer-events-none" />
 
@@ -138,13 +138,13 @@ export default function PaywallModal({
               </span>
             )}
 
-            <h2 className="text-xl sm:text-2xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)] tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-bold font-[family-name:var(--font-space-grotesk)] text-text-primary dark:text-[hsl(40,20%,94%)] tracking-tight">
               {mode === 'SIGN_IN_REQUIRED'
                 ? 'Sign in to use this tool'
                 : "You've used your free scan"}
             </h2>
 
-            <p className="text-xs sm:text-sm text-[hsl(40,8%,60%)] font-[family-name:var(--font-inter)] leading-relaxed">
+            <p className="text-xs sm:text-sm text-text-secondary dark:text-[hsl(40,8%,60%)] font-[family-name:var(--font-inter)] leading-relaxed">
               {mode === 'SIGN_IN_REQUIRED'
                 ? `Create a free account or sign in to unlock your 1 combined free scan across SaaS Keyword Radar and Is It Taken.`
                 : 'Upgrade to keep scanning Keyword Radar and Is It Taken — plus unlimited idea validation.'}
@@ -155,7 +155,7 @@ export default function PaywallModal({
             type="button"
             onClick={onClose}
             aria-label="Close dialog"
-            className="text-[hsl(40,8%,50%)] hover:text-[hsl(40,20%,95%)] bg-[hsl(220,12%,14%)] hover:bg-[hsl(220,12%,18%)] border border-[hsl(220,10%,20%)] w-8 h-8 rounded-lg flex items-center justify-center transition-colors shrink-0 cursor-pointer font-mono text-sm"
+            className="text-text-muted dark:text-[hsl(40,8%,50%)] hover:text-text-primary dark:hover:text-[hsl(40,20%,95%)] bg-bg-surface-alt hover:bg-border dark:bg-[hsl(220,12%,14%)] dark:hover:bg-[hsl(220,12%,18%)] border border-border dark:border-[hsl(220,10%,20%)] w-8 h-8 rounded-lg flex items-center justify-center transition-colors shrink-0 cursor-pointer font-mono text-sm"
           >
             ✕
           </button>
@@ -164,7 +164,7 @@ export default function PaywallModal({
         {/* Content based on mode */}
         {mode === 'SIGN_IN_REQUIRED' ? (
           <div className="space-y-4 pt-2">
-            <div className="p-4 rounded-xl bg-[hsl(220,14%,8%)] border border-[hsl(220,10%,18%)] space-y-2 text-xs font-[family-name:var(--font-inter)] text-[hsl(40,20%,85%)]">
+            <div className="p-4 rounded-xl bg-bg-surface-alt dark:bg-[hsl(220,14%,8%)] border border-border dark:border-[hsl(220,10%,18%)] space-y-2 text-xs font-[family-name:var(--font-inter)] text-text-primary dark:text-[hsl(40,20%,85%)]">
               <div className="flex items-center gap-2">
                 <span className="text-[hsl(145,60%,55%)] font-bold">✓</span>
                 <span>1 combined free scan for Keyword Radar &amp; Is It Taken</span>
@@ -188,7 +188,7 @@ export default function PaywallModal({
               </Link>
               <Link
                 href="/sign-up"
-                className="flex-1 py-2.5 px-4 text-center rounded-xl bg-[hsl(220,12%,14%)] hover:bg-[hsl(220,12%,18%)] border border-[hsl(220,10%,24%)] text-[hsl(40,20%,90%)] hover:text-white font-bold text-xs sm:text-sm font-[family-name:var(--font-space-grotesk)] transition-colors"
+                className="flex-1 py-2.5 px-4 text-center rounded-xl bg-bg-surface-alt hover:bg-border dark:bg-[hsl(220,12%,14%)] dark:hover:bg-[hsl(220,12%,18%)] border border-border dark:border-[hsl(220,10%,24%)] text-text-primary dark:text-[hsl(40,20%,90%)] hover:text-white font-bold text-xs sm:text-sm font-[family-name:var(--font-space-grotesk)] transition-colors"
               >
                 Create Free Account
               </Link>
@@ -199,10 +199,10 @@ export default function PaywallModal({
             {/* Inline Plan Cards (Sprint Pass vs Founder Pro) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               {/* Sprint Pass */}
-              <div className="bg-[hsl(220,13%,11%)] border border-[hsl(220,10%,20%)] hover:border-[hsl(220,10%,30%)] rounded-xl p-4 flex flex-col justify-between space-y-3">
+              <div className="bg-bg-surface dark:bg-[hsl(220,13%,11%)] border border-border dark:border-[hsl(220,10%,20%)] hover:border-[hsl(220,10%,30%)] rounded-xl p-4 flex flex-col justify-between space-y-3">
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)]">
+                    <span className="text-xs font-bold font-[family-name:var(--font-space-grotesk)] text-text-primary dark:text-[hsl(40,20%,94%)]">
                       Sprint Pass
                     </span>
                     <span className="text-[9px] font-mono font-bold text-[hsl(145,60%,55%)] bg-[hsl(145,60%,45%,0.1)] px-1.5 py-0.5 rounded border border-[hsl(145,60%,45%,0.2)]">
@@ -210,12 +210,12 @@ export default function PaywallModal({
                     </span>
                   </div>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,95%)]">
+                    <span className="text-2xl font-bold font-[family-name:var(--font-space-grotesk)] text-text-primary dark:text-[hsl(40,20%,95%)]">
                       $9
                     </span>
-                    <span className="text-[10px] font-mono text-[hsl(40,8%,50%)]">one-time</span>
+                    <span className="text-[10px] font-mono text-text-muted dark:text-[hsl(40,8%,50%)]">one-time</span>
                   </div>
-                  <ul className="space-y-1.5 text-[11px] font-[family-name:var(--font-inter)] text-[hsl(40,8%,65%)] pt-1">
+                  <ul className="space-y-1.5 text-[11px] font-[family-name:var(--font-inter)] text-text-secondary dark:text-[hsl(40,8%,65%)] pt-1">
                     <li className="flex items-start gap-1.5">
                       <span className="text-[hsl(42,95%,55%)]">✓</span>
                       <span><strong>Unlimited</strong> new tools access</span>
@@ -235,17 +235,17 @@ export default function PaywallModal({
                   type="button"
                   onClick={() => handleCheckout('price_sprint_9')}
                   disabled={checkoutLoading === 'price_sprint_9'}
-                  className="w-full py-2 bg-[hsl(220,12%,16%)] hover:bg-[hsl(220,12%,22%)] border border-[hsl(220,10%,28%)] text-[hsl(40,20%,90%)] hover:text-white rounded-lg text-xs font-bold font-[family-name:var(--font-space-grotesk)] transition-all cursor-pointer"
+                  className="w-full py-2 bg-bg-surface-alt hover:bg-border dark:bg-[hsl(220,12%,16%)] dark:hover:bg-[hsl(220,12%,22%)] border border-border dark:border-[hsl(220,10%,28%)] text-text-primary dark:text-[hsl(40,20%,90%)] hover:text-white rounded-lg text-xs font-bold font-[family-name:var(--font-space-grotesk)] transition-all cursor-pointer"
                 >
                   {checkoutLoading === 'price_sprint_9' ? 'Loading...' : 'Get Sprint Pass ($9) →'}
                 </button>
               </div>
 
               {/* Founder Pro */}
-              <div className="bg-[hsl(220,14%,12%)] border-2 border-[hsl(42,95%,55%)] rounded-xl p-4 flex flex-col justify-between space-y-3 relative shadow-lg">
+              <div className="bg-bg-surface dark:bg-[hsl(220,14%,12%)] border-2 border-[hsl(42,95%,55%)] rounded-xl p-4 flex flex-col justify-between space-y-3 relative shadow-lg">
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)]">
+                    <span className="text-xs font-bold font-[family-name:var(--font-space-grotesk)] text-text-primary dark:text-[hsl(40,20%,94%)]">
                       Founder Pro
                     </span>
                     <span className="text-[9px] font-mono font-bold text-[hsl(42,95%,55%)] bg-[hsl(42,95%,55%,0.15)] px-1.5 py-0.5 rounded border border-[hsl(42,95%,55%,0.3)]">
@@ -253,12 +253,12 @@ export default function PaywallModal({
                     </span>
                   </div>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,95%)]">
+                    <span className="text-2xl font-bold font-[family-name:var(--font-space-grotesk)] text-text-primary dark:text-[hsl(40,20%,95%)]">
                       $19
                     </span>
-                    <span className="text-[10px] font-mono text-[hsl(40,8%,50%)]">/month</span>
+                    <span className="text-[10px] font-mono text-text-muted dark:text-[hsl(40,8%,50%)]">/month</span>
                   </div>
-                  <ul className="space-y-1.5 text-[11px] font-[family-name:var(--font-inter)] text-[hsl(40,20%,85%)] pt-1">
+                  <ul className="space-y-1.5 text-[11px] font-[family-name:var(--font-inter)] text-text-primary dark:text-[hsl(40,20%,85%)] pt-1">
                     <li className="flex items-start gap-1.5">
                       <span className="text-[hsl(42,95%,55%)]">✓</span>
                       <span><strong>Unlimited</strong> new tools access</span>
@@ -286,11 +286,11 @@ export default function PaywallModal({
             </div>
 
             {/* Link to full pricing comparison */}
-            <div className="text-center pt-1 border-t border-[hsl(220,10%,16%)]">
+            <div className="text-center pt-1 border-t border-border dark:border-[hsl(220,10%,16%)]">
               <Link
                 href="/pricing"
                 onClick={onClose}
-                className="text-xs text-[hsl(40,8%,50%)] hover:text-[hsl(42,95%,55%)] font-[family-name:var(--font-mono)] transition-colors underline"
+                className="text-xs text-text-muted dark:text-[hsl(40,8%,50%)] hover:text-[hsl(42,95%,55%)] font-[family-name:var(--font-mono)] transition-colors underline"
               >
                 Compare all features &amp; annual discounts on pricing page →
               </Link>

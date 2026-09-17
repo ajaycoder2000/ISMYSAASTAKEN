@@ -206,24 +206,24 @@ export default function HomePage() {
         </div>
 
         {/* Bottom Upgrade & Pricing CTA Card */}
-        <div className="w-full mt-14 sm:mt-20 p-6 sm:p-10 bg-[hsl(220,14%,10%)] border border-[hsl(220,10%,18%)] rounded-2xl text-center relative overflow-hidden shadow-xl">
+        <div className="w-full mt-14 sm:mt-20 p-6 sm:p-10 bg-[var(--bg-surface-alt)] dark:bg-[hsl(220,14%,10%)] border border-[var(--border)] dark:border-[hsl(220,10%,18%)] rounded-2xl text-center relative overflow-hidden shadow-xl">
           <div className="absolute top-0 right-0 w-64 h-64 bg-[hsl(42,95%,55%,0.05)] rounded-full blur-3xl pointer-events-none" />
-          <h3 className="text-xl sm:text-2xl font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,94%)] mb-2 relative z-10">
+          <h3 className="text-xl sm:text-2xl font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)] dark:text-[hsl(40,20%,94%)] mb-2 relative z-10">
             Ready to validate your next startup idea?
           </h3>
-          <p className="text-xs sm:text-sm text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] max-w-lg mx-auto mb-6 relative z-10">
+          <p className="text-xs sm:text-sm text-[var(--text-secondary)] dark:text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] max-w-lg mx-auto mb-6 relative z-10">
             Start with 1 free scan, or explore our $9 Sprint Pass and unlimited Founder Pro plans.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 relative z-10">
             <Link
               href="/pricing"
-              className="px-6 py-2.5 bg-[hsl(42,95%,55%)] hover:bg-[hsl(42,95%,50%)] text-[hsl(220,15%,8%)] font-bold text-xs sm:text-sm rounded-xl transition-all font-[family-name:var(--font-space-grotesk)] shadow-md"
+              className="px-6 py-2.5 bg-[#d97706] dark:bg-[hsl(42,95%,55%)] hover:bg-amber-600 dark:hover:bg-[hsl(42,95%,50%)] text-white dark:text-[hsl(220,15%,8%)] font-bold text-xs sm:text-sm rounded-xl transition-all font-[family-name:var(--font-space-grotesk)] shadow-md"
             >
               View Plans & Passes →
             </Link>
             <Link
               href="/roadmap"
-              className="px-5 py-2.5 bg-[hsl(220,12%,14%)] hover:bg-[hsl(220,12%,20%)] border border-[hsl(220,10%,24%)] text-[hsl(40,20%,90%)] text-xs sm:text-sm font-medium rounded-xl transition-all font-[family-name:var(--font-space-grotesk)]"
+              className="px-5 py-2.5 bg-[var(--bg-surface)] dark:bg-[hsl(220,12%,14%)] hover:bg-[var(--bg-surface-alt)] dark:hover:bg-[hsl(220,12%,20%)] border border-[var(--border)] dark:border-[hsl(220,10%,24%)] text-[var(--text-primary)] dark:text-[hsl(40,20%,90%)] text-xs sm:text-sm font-medium rounded-xl transition-all font-[family-name:var(--font-space-grotesk)]"
             >
               Public Roadmap 🚀
             </Link>

@@ -174,25 +174,25 @@ export default function RecentScansSection() {
           ))}
 
           {/* Member Lock Gate Card */}
-          <div className="relative overflow-hidden rounded-2xl border border-[hsl(42,95%,55%,0.3)] bg-gradient-to-b from-[hsl(220,15%,12%)] to-[hsl(220,15%,9%)] p-6 sm:p-8 text-center shadow-xl">
+          <div className="relative overflow-hidden rounded-2xl border border-[hsl(42,95%,55%,0.3)] bg-[var(--bg-surface-alt)] dark:bg-gradient-to-b dark:from-[hsl(220,15%,12%)] dark:to-[hsl(220,15%,9%)] p-6 sm:p-8 text-center shadow-xl">
             <div className="absolute top-0 right-0 w-48 h-48 bg-[hsl(42,95%,55%,0.05)] rounded-full blur-3xl pointer-events-none" />
 
             <span className="text-2xl mb-2 block">🔒</span>
-            <h3 className="text-base sm:text-lg font-bold font-[family-name:var(--font-space-grotesk)] text-[hsl(40,20%,95%)] mb-1">
+            <h3 className="text-base sm:text-lg font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)] dark:text-[hsl(40,20%,95%)] mb-1">
               Unlock Today&apos;s Full Stream of {todayCount}+ SaaS Scans
             </h3>
-            <p className="text-xs text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] max-w-md mx-auto mb-5 leading-relaxed">
+            <p className="text-xs text-[var(--text-secondary)] dark:text-[hsl(40,8%,55%)] font-[family-name:var(--font-inter)] max-w-md mx-auto mb-5 leading-relaxed">
               Sign in free to explore full competitor breakdowns, open space gap analyses, and trending founder ideas updated daily.
             </p>
 
             <div className="flex items-center justify-center gap-3">
               <SignUpButton mode="modal">
-                <button className="px-5 py-2 bg-[hsl(42,95%,55%)] hover:bg-[hsl(42,95%,50%)] text-[hsl(220,15%,8%)] text-xs font-bold font-[family-name:var(--font-space-grotesk)] rounded-xl transition-all shadow-md cursor-pointer">
+                <button className="px-5 py-2 bg-[#d97706] dark:bg-[hsl(42,95%,55%)] hover:bg-amber-600 dark:hover:bg-[hsl(42,95%,50%)] text-white dark:text-[hsl(220,15%,8%)] text-xs font-bold font-[family-name:var(--font-space-grotesk)] rounded-xl transition-all shadow-md cursor-pointer">
                   Sign up free to unlock →
                 </button>
               </SignUpButton>
               <SignInButton mode="modal">
-                <button className="px-4 py-2 bg-[hsl(220,12%,14%)] hover:bg-[hsl(220,12%,18%)] border border-[hsl(220,10%,24%)] text-[hsl(40,20%,90%)] text-xs font-medium font-[family-name:var(--font-space-grotesk)] rounded-xl transition-all cursor-pointer">
+                <button className="px-4 py-2 bg-[var(--bg-surface)] dark:bg-[hsl(220,12%,14%)] hover:bg-[var(--bg-surface-alt)] dark:hover:bg-[hsl(220,12%,18%)] border border-[var(--border)] dark:border-[hsl(220,10%,24%)] text-[var(--text-primary)] dark:text-[hsl(40,20%,90%)] text-xs font-medium font-[family-name:var(--font-space-grotesk)] rounded-xl transition-all cursor-pointer">
                   Sign in
                 </button>
               </SignInButton>
