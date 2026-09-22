@@ -17,6 +17,13 @@ interface DevUser {
   idea_scans_used?: number;
   new_tools_scans_used?: number;
   bonus_scans?: number;
+  founder_stage?: string;
+  validation_experience?: string;
+  main_worry?: string;
+  building_type?: string;
+  decision_timeline?: string;
+  onboarding_completed_at?: Date | string | null;
+  onboarding_bonus_claimed?: boolean;
   scansResetDate: Date;
   createdAt: Date;
 }

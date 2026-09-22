@@ -6,6 +6,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import FounderQuizLauncher from "@/components/quiz/FounderQuizLauncher";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -138,8 +139,17 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <ClerkProvider>
             <Navbar />
-            <main className="flex-1">{children}</main>
+            <main className="flex-1 relative">
+              {children}
+              {/* Invisible sentinel at 50% height for cheap IntersectionObserver trigger */}
+              <div
+                id="quiz-scroll-sentinel"
+                className="absolute top-1/2 left-0 w-px h-px pointer-events-none opacity-0"
+                aria-hidden="true"
+              />
+            </main>
             <Footer />
+            <FounderQuizLauncher />
           </ClerkProvider>
         </ThemeProvider>
         {/* Lightweight Vercel Analytics */}
