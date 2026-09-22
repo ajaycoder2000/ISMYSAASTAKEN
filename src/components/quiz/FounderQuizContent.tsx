@@ -112,16 +112,21 @@ export default function FounderQuizContent({
     : TOOL_FOR_WORRY.already_built;
   const suggestedPlan = fullAnswers.stage ? suggestPlan(fullAnswers) : 'free';
 
+  const greetingHeading =
+    isSignedIn && user?.firstName
+      ? `Welcome back, ${user.firstName} 👋`
+      : 'Welcome, founder 👋';
+
   return (
     <div
       role="dialog"
       aria-modal="true"
       aria-labelledby="founder-quiz-heading"
       ref={modalRef}
-      className="relative w-full max-w-[480px] bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl sm:rounded-3xl shadow-2xl p-5 sm:p-7 overflow-hidden text-left transition-colors"
+      className="relative w-full max-w-[480px] bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 overflow-hidden text-left transition-colors"
     >
       {/* Top Header Bar */}
-      <div className="flex items-center justify-between pb-3 border-b border-[var(--border)]">
+      <div className="flex items-center justify-between pb-2.5 sm:pb-3 border-b border-[var(--border)]">
         <div className="flex items-center gap-2">
           {currentStep > 0 && !isCompleted && (
             <button
@@ -150,7 +155,7 @@ export default function FounderQuizContent({
       </div>
 
       {/* Progress Track */}
-      <div className="w-full bg-[var(--border)] h-1 rounded-full overflow-hidden mt-3 mb-5">
+      <div className="w-full bg-[var(--border)] h-1 rounded-full overflow-hidden mt-2.5 mb-3.5 sm:mt-3 sm:mb-5">
         <div
           className="h-full bg-gradient-to-r from-[var(--accent-amber)] to-amber-400 transition-all duration-300 ease-out"
           style={{ width: `${progressPercent}%` }}
@@ -159,20 +164,32 @@ export default function FounderQuizContent({
 
       {/* Questions View */}
       {!isCompleted && currentQuestion && (
-        <div className="flex flex-col justify-between min-h-[300px]">
+        <div className="flex flex-col justify-between min-h-[280px] sm:min-h-[300px]">
           <div>
+            {/* Step 0 Welcome Greeting */}
+            {currentStep === 0 && (
+              <div className="mb-3 sm:mb-4 pb-2.5 sm:pb-3 border-b border-[var(--border)] motion-safe:animate-fade-in motion-reduce:animate-none">
+                <h3 className="text-[17px] sm:text-[18px] font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)] tracking-tight">
+                  {greetingHeading}
+                </h3>
+                <p className="text-[13px] sm:text-[14px] text-[var(--text-secondary)] font-[family-name:var(--font-inter)] leading-snug mt-1">
+                  Before you build anything, let&apos;s see where you stand. 5 quick taps, 30 seconds, and a bonus scan at the end.
+                </p>
+              </div>
+            )}
+
             <h2
               id="founder-quiz-heading"
               className="text-base sm:text-lg font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)] tracking-tight mb-1"
             >
               {currentQuestion.title}
             </h2>
-            <p className="text-xs text-[var(--text-muted)] font-[family-name:var(--font-inter)] mb-5">
+            <p className="text-xs text-[var(--text-muted)] font-[family-name:var(--font-inter)] mb-3 sm:mb-4">
               {currentQuestion.subtitle}
             </p>
 
             {/* Options List */}
-            <div className="flex flex-col gap-2.5">
+            <div className="flex flex-col gap-2 sm:gap-2.5">
               {currentQuestion.options.map((opt) => {
                 const isSelected = answers[currentQuestion.id] === opt.value;
                 return (
@@ -180,7 +197,7 @@ export default function FounderQuizContent({
                     key={String(opt.value)}
                     type="button"
                     onClick={() => handleSelectOption(opt.value)}
-                    className={`group w-full flex items-center justify-between p-3.5 sm:p-4 rounded-xl border text-xs sm:text-sm font-medium transition-all text-left cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-amber)] ${
+                    className={`group w-full flex items-center justify-between p-3 sm:p-4 rounded-xl border text-xs sm:text-sm font-medium transition-all text-left cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-amber)] ${
                       isSelected
                         ? 'border-[var(--accent-amber)] bg-amber-500/10 text-[var(--text-primary)] shadow-sm'
                         : 'border-[var(--border)] bg-[var(--bg-surface-alt)] text-[var(--text-secondary)] hover:border-[var(--accent-amber)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface)]'
