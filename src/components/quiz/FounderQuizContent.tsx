@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useUser, SignUpButton } from '@clerk/nextjs';
 import { X, ArrowLeft, Sparkles, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { QuizProgressRing } from './QuizProgressRing';
 import {
   Answers,
   QUESTIONS,
@@ -26,6 +27,7 @@ export default function FounderQuizContent({
 
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [answers, setAnswers] = useState<Partial<Answers>>({});
+  const [isFinishing, setIsFinishing] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const [bonusClaimed, setBonusClaimed] = useState<boolean>(false);
@@ -45,6 +47,8 @@ export default function FounderQuizContent({
   }, [onClose]);
 
   const handleSelectOption = (value: any) => {
+    if (isFinishing || isCompleted) return;
+
     const question = QUESTIONS[currentStep];
     const newAnswers = { ...answers, [question.id]: value };
     setAnswers(newAnswers);
@@ -52,8 +56,12 @@ export default function FounderQuizContent({
     if (currentStep < QUESTIONS.length - 1) {
       setCurrentStep((prev) => prev + 1);
     } else {
-      // Finished all 5 questions
-      finishQuiz(newAnswers as Answers);
+      // Finished all 5 questions — complete ring to 100% and show checkmark for 400ms
+      setIsFinishing(true);
+      setTimeout(() => {
+        finishQuiz(newAnswers as Answers);
+        setIsFinishing(false);
+      }, 400);
     }
   };
 
@@ -94,16 +102,13 @@ export default function FounderQuizContent({
   };
 
   const handleBack = () => {
-    if (currentStep > 0 && !isCompleted) {
+    if (currentStep > 0 && !isCompleted && !isFinishing) {
       setCurrentStep((prev) => prev - 1);
     }
   };
 
   const currentQuestion = QUESTIONS[currentStep];
   const totalQuestions = QUESTIONS.length;
-  const progressPercent = isCompleted
-    ? 100
-    : Math.round(((currentStep + 1) / totalQuestions) * 100);
 
   const fullAnswers = answers as Answers;
   const profileName = fullAnswers.stage ? PROFILE_NAMES[fullAnswers.stage] : 'Founder';
@@ -111,11 +116,6 @@ export default function FounderQuizContent({
     ? TOOL_FOR_WORRY[fullAnswers.worry]
     : TOOL_FOR_WORRY.already_built;
   const suggestedPlan = fullAnswers.stage ? suggestPlan(fullAnswers) : 'free';
-
-  const greetingHeading =
-    isSignedIn && user?.firstName
-      ? `Welcome back, ${user.firstName} 👋`
-      : 'Welcome, founder 👋';
 
   return (
     <div
@@ -127,20 +127,29 @@ export default function FounderQuizContent({
     >
       {/* Top Header Bar */}
       <div className="flex items-center justify-between pb-2.5 sm:pb-3 border-b border-[var(--border)]">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           {currentStep > 0 && !isCompleted && (
             <button
               type="button"
               onClick={handleBack}
-              className="p-1.5 -ml-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] rounded-lg hover:bg-[var(--bg-surface-alt)] transition-colors cursor-pointer"
+              disabled={isFinishing}
+              className="p-1.5 -ml-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] rounded-lg hover:bg-[var(--bg-surface-alt)] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               aria-label="Previous question"
             >
               <ArrowLeft className="size-4" />
             </button>
           )}
-          <span className="text-[11px] font-mono font-bold tracking-wider uppercase text-[var(--accent-amber)]">
-            {isCompleted ? 'Profile Result' : `Question ${currentStep + 1} of ${totalQuestions}`}
-          </span>
+          {isCompleted ? (
+            <span className="text-[11px] font-mono font-bold tracking-wider uppercase text-[var(--accent-amber)]">
+              Profile Result
+            </span>
+          ) : (
+            <QuizProgressRing
+              answered={isFinishing ? totalQuestions : currentStep}
+              total={totalQuestions}
+              current={currentStep + 1}
+            />
+          )}
         </div>
 
         {/* Close Button — min 44x44px touch area */}
@@ -154,25 +163,37 @@ export default function FounderQuizContent({
         </button>
       </div>
 
-      {/* Progress Track */}
-      <div className="w-full bg-[var(--border)] h-1 rounded-full overflow-hidden mt-2.5 mb-3.5 sm:mt-3 sm:mb-5">
-        <div
-          className="h-full bg-gradient-to-r from-[var(--accent-amber)] to-amber-400 transition-all duration-300 ease-out"
-          style={{ width: `${progressPercent}%` }}
-        />
-      </div>
-
       {/* Questions View */}
       {!isCompleted && currentQuestion && (
-        <div className="flex flex-col justify-between min-h-[280px] sm:min-h-[300px]">
+        <div className="flex flex-col justify-between pt-3 min-h-[280px] sm:min-h-[300px]">
           <div>
             {/* Step 0 Welcome Greeting */}
             {currentStep === 0 && (
               <div className="mb-3 sm:mb-4 pb-2.5 sm:pb-3 border-b border-[var(--border)] motion-safe:animate-fade-in motion-reduce:animate-none">
-                <h3 className="text-[17px] sm:text-[18px] font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)] tracking-tight">
-                  {greetingHeading}
-                </h3>
-                <p className="text-[13px] sm:text-[14px] text-[var(--text-secondary)] font-[family-name:var(--font-inter)] leading-snug mt-1">
+                <h2 className="font-[family-name:var(--font-space-grotesk)] font-bold tracking-[-0.01em] leading-[1.2] text-[clamp(1.25rem,3vw,1.5rem)] text-[var(--text-primary)]">
+                  {isSignedIn && user?.firstName ? (
+                    <>
+                      Welcome back, <span className="text-[var(--accent-amber)]">{user.firstName}</span>{' '}
+                      <span
+                        aria-hidden="true"
+                        className="inline-block origin-[70%_70%] motion-safe:animate-hand-wave motion-reduce:animate-none"
+                      >
+                        👋
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      Welcome, <span className="text-[var(--accent-amber)]">founder</span>{' '}
+                      <span
+                        aria-hidden="true"
+                        className="inline-block origin-[70%_70%] motion-safe:animate-hand-wave motion-reduce:animate-none"
+                      >
+                        👋
+                      </span>
+                    </>
+                  )}
+                </h2>
+                <p className="mt-1.5 text-[14px] sm:text-[15px] leading-relaxed text-[var(--text-secondary)] font-[family-name:var(--font-inter)]">
                   Before you build anything, let&apos;s see where you stand. 5 quick taps, 30 seconds, and a bonus scan at the end.
                 </p>
               </div>
@@ -196,8 +217,9 @@ export default function FounderQuizContent({
                   <button
                     key={String(opt.value)}
                     type="button"
+                    disabled={isFinishing}
                     onClick={() => handleSelectOption(opt.value)}
-                    className={`group w-full flex items-center justify-between p-3 sm:p-4 rounded-xl border text-xs sm:text-sm font-medium transition-all text-left cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-amber)] ${
+                    className={`group w-full flex items-center justify-between p-3 sm:p-4 rounded-xl border text-xs sm:text-sm font-medium transition-all text-left cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-amber)] disabled:pointer-events-none ${
                       isSelected
                         ? 'border-[var(--accent-amber)] bg-amber-500/10 text-[var(--text-primary)] shadow-sm'
                         : 'border-[var(--border)] bg-[var(--bg-surface-alt)] text-[var(--text-secondary)] hover:border-[var(--accent-amber)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface)]'
