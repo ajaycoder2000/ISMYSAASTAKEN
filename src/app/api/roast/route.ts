@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
 import { checkIdeaAppropriate, generateRoast } from '@/lib/llm';
 import { SupabaseDB } from '@/lib/supabase/db';
 
@@ -14,6 +15,9 @@ interface RoastRequestBody {
 
 export async function POST(req: NextRequest) {
   try {
+    // Verified server-side Clerk authentication
+    const { userId } = await auth();
+
     const body: RoastRequestBody = await req.json();
     const targetIdOrSlug = body.scanId || body.shareSlug;
 
@@ -41,12 +45,29 @@ export async function POST(req: NextRequest) {
             existingScan.roast.lines.length > 0 &&
             existingScan.roast.takeaway
           ) {
+            const scanReceiptId = String(existingScan._id || existingScan.id || targetIdOrSlug)
+              .replace(/[^a-zA-Z0-9]/g, '')
+              .slice(0, 6)
+              .toUpperCase() || 'ROAST1';
+            const satRaw = (existingScan.saturationScore || 'medium').toLowerCase();
+            const saturation = satRaw === 'low' || satRaw === 'high' ? satRaw : 'medium';
+
             return NextResponse.json({
               success: true,
               declined: false,
               cached: true,
+              receiptId: scanReceiptId,
+              ideaText: existingScan.ideaText,
+              competitorCount: Array.isArray(existingScan.competitors) ? existingScan.competitors.length : 0,
+              saturation,
+              freeAlternatives: null,
+              roastLines: existingScan.roast.lines,
+              takeaway: existingScan.roast.takeaway,
+              createdAt: existingScan.createdAt
+                ? new Date(existingScan.createdAt).toISOString()
+                : new Date().toISOString(),
               roast: existingScan.roast,
-              scanId: targetIdOrSlug,
+              scanId: existingScan.shareSlug || existingScan._id || targetIdOrSlug,
             });
           }
         }
@@ -94,14 +115,35 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    const effectiveScanId = existingScan?._id || existingScan?.id || targetIdOrSlug || 'ROAST1';
+    const receiptId = String(effectiveScanId)
+      .replace(/[^a-zA-Z0-9]/g, '')
+      .slice(0, 6)
+      .toUpperCase() || 'ROAST1';
+    const competitorCount = Array.isArray(competitors)
+      ? competitors.length
+      : Array.isArray(existingScan?.competitors)
+      ? existingScan.competitors.length
+      : 0;
+    const saturationRaw = (saturationScore || existingScan?.saturationScore || 'medium').toLowerCase();
+    const saturation = saturationRaw === 'low' || saturationRaw === 'high' ? saturationRaw : 'medium';
+
     return NextResponse.json({
       success: true,
       declined: false,
+      receiptId,
+      ideaText: cleanIdeaText,
+      competitorCount,
+      saturation,
+      freeAlternatives: null,
+      roastLines: roast.lines,
+      takeaway: roast.takeaway,
+      createdAt: new Date().toISOString(),
       roast: {
         lines: roast.lines,
         takeaway: roast.takeaway,
       },
-      scanId: targetIdOrSlug || existingScan?.shareSlug,
+      scanId: existingScan?.shareSlug || existingScan?._id || targetIdOrSlug,
     });
   } catch (error: any) {
     console.error('Roast generation API error:', error);

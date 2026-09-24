@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 import RoastShareModal from './RoastShareModal';
+import RoastMicrowave from './roast/RoastMicrowave';
+import RoastReceipt, { type RoastReceiptData } from './roast/RoastReceipt';
 
 export interface RoastCardProps {
   ideaText: string;
@@ -16,6 +18,29 @@ export interface RoastCardProps {
   };
 }
 
+function toReceiptData(
+  scanId: string,
+  ideaText: string,
+  competitors: any[],
+  saturationScore: string,
+  roastData: { lines: string[]; takeaway: string }
+): RoastReceiptData {
+  const satRaw = (saturationScore || 'medium').toLowerCase();
+  const saturation = satRaw === 'low' || satRaw === 'high' ? satRaw : 'medium';
+  return {
+    receiptId: String(scanId).replace(/[^a-zA-Z0-9]/g, '').slice(0, 6).toUpperCase() || 'ROAST1',
+    ideaText,
+    competitorCount: Array.isArray(competitors) ? competitors.length : 0,
+    saturation,
+    freeAlternatives: null,
+    roastLines: roastData.lines,
+    takeaway: roastData.takeaway,
+    createdAt: new Date().toISOString(),
+  };
+}
+
+type Phase = 'idle' | 'cooking' | 'ding' | 'receipt' | 'declined' | 'error';
+
 export default function RoastCard({
   ideaText,
   competitors,
@@ -25,20 +50,29 @@ export default function RoastCard({
   shareSlug,
   initialRoast,
 }: RoastCardProps) {
-  const [roast, setRoast] = useState<{ lines: string[]; takeaway: string } | null>(
-    initialRoast && initialRoast.lines?.length > 0 ? initialRoast : null
+  const [phase, setPhase] = useState<Phase>(
+    initialRoast && initialRoast.lines?.length > 0 ? 'receipt' : 'idle'
   );
-  const [loading, setLoading] = useState<boolean>(false);
+  const [receiptData, setReceiptData] = useState<RoastReceiptData | null>(
+    initialRoast && initialRoast.lines?.length > 0
+      ? toReceiptData(scanId, ideaText, competitors, saturationScore, initialRoast)
+      : null
+  );
   const [declinedMessage, setDeclinedMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [shareModalOpen, setShareModalOpen] = useState<boolean>(false);
+  const [printed, setPrinted] = useState<boolean>(
+    Boolean(initialRoast && initialRoast.lines?.length > 0)
+  );
 
   const effectiveId = shareSlug || scanId;
 
   const handleTriggerRoast = async (force: boolean = false) => {
-    setLoading(true);
+    setPhase('cooking');
     setError(null);
     setDeclinedMessage(null);
+    setPrinted(false);
+    const started = Date.now();
 
     try {
       const res = await fetch('/api/roast', {
@@ -57,8 +91,9 @@ export default function RoastCard({
 
       const data = await res.json();
 
-      if (!res.ok) {
-        throw new Error(data.error || 'Failed to generate roast');
+      const elapsed = Date.now() - started;
+      if (elapsed < 1200) {
+        await new Promise((r) => setTimeout(r, 1200 - elapsed));
       }
 
       if (data.declined) {
@@ -66,14 +101,34 @@ export default function RoastCard({
           data.message ||
             "That's not really an idea we can roast — try submitting an actual SaaS concept."
         );
-      } else if (data.roast) {
-        setRoast(data.roast);
+        setPhase('declined');
+        return;
       }
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to generate roast');
+      }
+
+      const formatted: RoastReceiptData = {
+        receiptId: data.receiptId || String(effectiveId).slice(0, 6).toUpperCase(),
+        ideaText: data.ideaText || ideaText,
+        competitorCount:
+          typeof data.competitorCount === 'number'
+            ? data.competitorCount
+            : competitors?.length || 0,
+        saturation: data.saturation || (saturationScore || 'medium').toLowerCase(),
+        freeAlternatives: data.freeAlternatives ?? null,
+        roastLines: data.roastLines || data.roast?.lines || [],
+        takeaway: data.takeaway || data.roast?.takeaway || '',
+        createdAt: data.createdAt || new Date().toISOString(),
+      };
+
+      setReceiptData(formatted);
+      setPhase('ding');
     } catch (err: any) {
       console.error('Error generating roast:', err);
       setError(err.message || 'Something went wrong firing up the grill.');
-    } finally {
-      setLoading(false);
+      setPhase('error');
     }
   };
 
@@ -89,26 +144,19 @@ export default function RoastCard({
           }}
         />
 
-        {/* State 1: Loading State */}
-        {loading && (
-          <div className="py-8 flex flex-col items-center justify-center text-center space-y-4 animate-in fade-in duration-200">
-            <div className="relative flex items-center justify-center">
-              <div className="w-12 h-12 rounded-full border-2 border-orange-500/30 border-t-orange-500 animate-spin" />
-              <span className="absolute text-xl animate-pulse">🔥</span>
-            </div>
-            <div className="space-y-1">
-              <h4 className="text-sm font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)]">
-                Firing up the grill...
-              </h4>
-              <p className="text-xs text-[var(--text-secondary)] font-[family-name:var(--font-mono)]">
-                Analyzing competitor moats, saturated wedges &amp; market traps
-              </p>
-            </div>
+        {/* State 1: Microwave Cooking / Ding */}
+        {(phase === 'cooking' || phase === 'ding') && (
+          <div className="py-2 animate-in fade-in duration-300">
+            <RoastMicrowave
+              cooking={phase === 'cooking'}
+              dinging={phase === 'ding'}
+              onDingComplete={() => setPhase('receipt')}
+            />
           </div>
         )}
 
         {/* State 2: Declined / Input Inappropriate Refusal */}
-        {!loading && declinedMessage && (
+        {phase === 'declined' && declinedMessage && (
           <div className="py-4 space-y-3 animate-in fade-in duration-200">
             <div className="flex items-center gap-2">
               <span className="text-base">🛡️</span>
@@ -126,7 +174,7 @@ export default function RoastCard({
         )}
 
         {/* State 3: Pre-generation CTA (Unroasted) */}
-        {!loading && !declinedMessage && !roast && (
+        {phase === 'idle' && (
           <div className="space-y-4">
             <div className="flex items-start justify-between gap-4">
               <div className="space-y-1">
@@ -167,8 +215,22 @@ export default function RoastCard({
           </div>
         )}
 
-        {/* State 4: Active / Completed Roast Result */}
-        {!loading && roast && (
+        {/* State 4: Error State */}
+        {phase === 'error' && (
+          <div className="py-4 space-y-3 text-center">
+            <p className="text-xs text-red-500 font-mono">{error || 'Something went wrong.'}</p>
+            <button
+              type="button"
+              onClick={() => handleTriggerRoast(false)}
+              className="text-xs font-mono font-bold text-[var(--accent-amber)] hover:underline cursor-pointer"
+            >
+              Try again →
+            </button>
+          </div>
+        )}
+
+        {/* State 5: Active / Completed Roast Receipt Result */}
+        {phase === 'receipt' && receiptData && (
           <div className="space-y-5 animate-in fade-in duration-300">
             {/* Header */}
             <div className="flex items-center justify-between border-b border-orange-500/20 pb-3">
@@ -204,32 +266,12 @@ export default function RoastCard({
               </div>
             </div>
 
-            {/* Roast Lines */}
-            <div className="space-y-2.5">
-              {roast.lines.map((line, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-start gap-3 p-3 rounded-lg bg-[var(--bg-surface-alt)] dark:bg-[hsl(220,14%,9%)] border border-[var(--border)] dark:border-orange-500/20 text-xs sm:text-sm font-[family-name:var(--font-inter)] text-[var(--text-primary)] leading-relaxed"
-                >
-                  <span className="shrink-0 w-5 h-5 rounded-full bg-orange-100 dark:bg-orange-950/80 border border-orange-300 dark:border-orange-500/40 text-orange-700 dark:text-orange-400 flex items-center justify-center text-[10px] font-bold font-mono mt-0.5">
-                    {idx + 1}
-                  </span>
-                  <p className="flex-1 font-medium">{line}</p>
-                </div>
-              ))}
+            {/* Thermal Roast Receipt */}
+            <div className="pt-2">
+              <RoastReceipt data={receiptData} onPrinted={() => setPrinted(true)} />
             </div>
 
-            {/* Constructive Takeaway */}
-            <div className="p-3.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-500/30 text-xs sm:text-sm text-[var(--text-primary)] flex items-start gap-3">
-              <span className="shrink-0 px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/60 border border-emerald-300 dark:border-emerald-500/40 text-[var(--accent-emerald)] font-mono text-[9px] font-bold uppercase tracking-wider mt-0.5">
-                Takeaway
-              </span>
-              <p className="flex-1 font-[family-name:var(--font-inter)] leading-relaxed text-[var(--text-primary)]">
-                {roast.takeaway}
-              </p>
-            </div>
-
-            {/* Footer subtext & share trigger */}
+            {/* Subtext and share trigger */}
             <div className="flex items-center justify-between pt-1 text-[10px] text-[var(--text-muted)] font-mono border-t border-[var(--border)]">
               <span>Roasts the market &amp; positioning, never the founder.</span>
               <button
@@ -245,13 +287,13 @@ export default function RoastCard({
       </div>
 
       {/* Share Preview Modal */}
-      {roast && (
+      {receiptData && (
         <RoastShareModal
           isOpen={shareModalOpen}
           onClose={() => setShareModalOpen(false)}
-          ideaText={ideaText}
-          roastLines={roast.lines}
-          takeaway={roast.takeaway}
+          ideaText={receiptData.ideaText}
+          roastLines={receiptData.roastLines}
+          takeaway={receiptData.takeaway}
           scanId={effectiveId}
         />
       )}

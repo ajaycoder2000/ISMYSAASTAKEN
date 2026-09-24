@@ -311,6 +311,22 @@ body {
   50% { opacity: 0; }
 }
 
+@keyframes plate-spin {
+  from { transform: rotateY(0deg); }
+  to   { transform: rotateY(360deg); }
+}
+
+@keyframes ding-pop {
+  0%   { transform: translateY(6px) scale(0.8); opacity: 0; }
+  60%  { transform: translateY(-4px) scale(1.1); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes receipt-line-in {
+  from { opacity: 0; transform: translateY(-3px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-hand-wave {
     animation: none !important;

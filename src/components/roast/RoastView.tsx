@@ -2,8 +2,10 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import RoastCard from '@/components/RoastCard';
-import { IScanDocument, IRoastData } from '@/types';
+import RoastMicrowave from './RoastMicrowave';
+import RoastReceipt, { type RoastReceiptData } from './RoastReceipt';
+import RoastShareModal from '@/components/RoastShareModal';
+import { IScanDocument } from '@/types';
 
 const SAMPLE_ROASTS = [
   {
@@ -33,19 +35,41 @@ const SAMPLE_ROASTS = [
   },
 ];
 
+function scanToReceiptData(scan: IScanDocument): RoastReceiptData {
+  const satRaw = (scan.saturationScore || 'medium').toLowerCase();
+  const saturation = satRaw === 'low' || satRaw === 'high' ? satRaw : 'medium';
+  return {
+    receiptId: String(scan._id || scan.shareSlug || 'ROAST1')
+      .replace(/[^a-zA-Z0-9]/g, '')
+      .slice(0, 6)
+      .toUpperCase() || 'ROAST1',
+    ideaText: scan.ideaText,
+    competitorCount: Array.isArray(scan.competitors) ? scan.competitors.length : 0,
+    saturation,
+    freeAlternatives: null,
+    roastLines: scan.roast?.lines || [],
+    takeaway: scan.roast?.takeaway || '',
+    createdAt: scan.createdAt ? new Date(scan.createdAt).toISOString() : new Date().toISOString(),
+  };
+}
+
+type Phase = 'idle' | 'cooking' | 'ding' | 'receipt' | 'declined' | 'error';
+
 export default function RoastView({ initialScan }: { initialScan?: IScanDocument }) {
   const [ideaText, setIdeaText] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
+  const [phase, setPhase] = useState<Phase>(
+    initialScan && initialScan.roast ? 'receipt' : 'idle'
+  );
   const [error, setError] = useState<string | null>(null);
   const [declinedMessage, setDeclinedMessage] = useState<string | null>(null);
-  const [result, setResult] = useState<{
-    scan: IScanDocument;
-    roast: IRoastData;
-  } | null>(
-    initialScan && initialScan.roast
-      ? { scan: initialScan, roast: initialScan.roast }
-      : null
+  const [receiptData, setReceiptData] = useState<RoastReceiptData | null>(
+    initialScan && initialScan.roast ? scanToReceiptData(initialScan) : null
   );
+  const [currentScanId, setCurrentScanId] = useState<string>(
+    initialScan ? initialScan.shareSlug || initialScan._id : ''
+  );
+  const [shareModalOpen, setShareModalOpen] = useState<boolean>(false);
+  const [printed, setPrinted] = useState<boolean>(Boolean(initialScan && initialScan.roast));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,10 +79,13 @@ export default function RoastView({ initialScan }: { initialScan?: IScanDocument
       return;
     }
 
-    setLoading(true);
+    setPhase('cooking');
     setError(null);
     setDeclinedMessage(null);
-    setResult(null);
+    setReceiptData(null);
+    setPrinted(false);
+
+    const started = Date.now();
 
     try {
       // 1. Run idea validation scan to ground in competitors
@@ -78,6 +105,7 @@ export default function RoastView({ initialScan }: { initialScan?: IScanDocument
       }
 
       const scan = scanData.data;
+      setCurrentScanId(scan.shareSlug || scan._id);
 
       // 2. Generate Roast grounded in the scan data
       const roastRes = await fetch('/api/roast', {
@@ -95,22 +123,46 @@ export default function RoastView({ initialScan }: { initialScan?: IScanDocument
 
       const roastData = await roastRes.json();
 
+      // Enforce minimum 1.2s cook time so the microwave animation feels natural and never jarring
+      const elapsed = Date.now() - started;
+      if (elapsed < 1200) {
+        await new Promise((r) => setTimeout(r, 1200 - elapsed));
+      }
+
+      // Input moderation refusal — stop microwave, no DING!
       if (roastData.declined) {
         setDeclinedMessage(
           roastData.message ||
             "That's not really an idea we can roast — try submitting an actual SaaS concept."
         );
-      } else if (roastData.roast) {
-        setResult({
-          scan,
-          roast: roastData.roast,
-        });
+        setPhase('declined');
+        return;
       }
+
+      if (!roastRes.ok) {
+        throw new Error(roastData.error || 'Failed to analyze idea for roast.');
+      }
+
+      const formattedReceipt: RoastReceiptData = {
+        receiptId: roastData.receiptId || String(scan._id).slice(0, 6).toUpperCase(),
+        ideaText: roastData.ideaText || scan.ideaText,
+        competitorCount:
+          typeof roastData.competitorCount === 'number'
+            ? roastData.competitorCount
+            : scan.competitors.length,
+        saturation: roastData.saturation || (scan.saturationScore || 'medium').toLowerCase(),
+        freeAlternatives: roastData.freeAlternatives ?? null,
+        roastLines: roastData.roastLines || roastData.roast?.lines || [],
+        takeaway: roastData.takeaway || roastData.roast?.takeaway || '',
+        createdAt: roastData.createdAt || new Date().toISOString(),
+      };
+
+      setReceiptData(formattedReceipt);
+      setPhase('ding');
     } catch (err: any) {
       console.error('Roast error:', err);
       setError(err.message || 'Something went wrong while roasting this idea.');
-    } finally {
-      setLoading(false);
+      setPhase('error');
     }
   };
 
@@ -135,84 +187,89 @@ export default function RoastView({ initialScan }: { initialScan?: IScanDocument
       </div>
 
       {/* 2. Idea Input Form */}
-      <div className="w-full bg-[hsl(220,15%,9%)] border border-orange-500/30 rounded-2xl p-5 sm:p-7 shadow-2xl relative overflow-hidden text-left">
-        <div className="absolute -top-20 -right-20 w-48 h-48 bg-orange-600/10 rounded-full blur-3xl pointer-events-none" />
+      {phase !== 'receipt' && (
+        <div className="w-full bg-[hsl(220,15%,9%)] border border-orange-500/30 rounded-2xl p-5 sm:p-7 shadow-2xl relative overflow-hidden text-left">
+          <div className="absolute -top-20 -right-20 w-48 h-48 bg-orange-600/10 rounded-full blur-3xl pointer-events-none" />
 
-        <form onSubmit={handleSubmit} className="space-y-4 relative z-10">
-          <div className="space-y-1.5">
-            <label
-              htmlFor="roast-idea"
-              className="text-xs font-mono font-semibold uppercase tracking-wider text-orange-300/90 flex items-center justify-between"
-            >
-              <span>Describe your SaaS concept</span>
-              <span className="text-[10px] text-zinc-500 font-normal">
-                {ideaText.length}/300 characters
-              </span>
-            </label>
-            <textarea
-              id="roast-idea"
-              rows={3}
-              maxLength={300}
-              value={ideaText}
-              onChange={(e) => setIdeaText(e.target.value)}
-              placeholder="e.g. AI meeting notes that sync directly to Notion, or a micro-CRM for freelance designers..."
-              disabled={loading}
-              className="w-full bg-[hsl(220,15%,6%)] border border-orange-500/30 focus:border-orange-500 rounded-xl p-3.5 sm:p-4 text-body text-[hsl(40,20%,94%)] placeholder-zinc-600 focus:outline-none transition-colors leading-relaxed font-[family-name:var(--font-inter)] resize-none"
-            />
-          </div>
-
-          {error && (
-            <p className="text-xs text-red-400 font-mono bg-red-950/30 p-2.5 rounded-lg border border-red-900/40">
-              {error}
-            </p>
-          )}
-
-          {declinedMessage && (
-            <div className="p-3.5 rounded-xl bg-amber-950/40 border border-amber-800/40 text-xs text-amber-200 font-[family-name:var(--font-inter)] leading-relaxed flex items-start gap-2.5">
-              <span className="text-sm shrink-0">🛡️</span>
-              <span>{declinedMessage}</span>
-            </div>
-          )}
-
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-1">
-            <div className="text-meta text-[var(--text-muted)] font-mono flex items-center gap-2">
-              <span>✦ Grounded in real competitors</span>
-              <span>•</span>
-              <span>✦ Free &amp; shareable</span>
+          <form onSubmit={handleSubmit} className="space-y-4 relative z-10">
+            <div className="space-y-1.5">
+              <label
+                htmlFor="roast-idea"
+                className="text-xs font-mono font-semibold uppercase tracking-wider text-orange-300/90 flex items-center justify-between"
+              >
+                <span>Describe your SaaS concept</span>
+                <span className="text-[10px] text-zinc-500 font-normal">
+                  {ideaText.length}/300 characters
+                </span>
+              </label>
+              <textarea
+                id="roast-idea"
+                rows={3}
+                maxLength={300}
+                value={ideaText}
+                onChange={(e) => setIdeaText(e.target.value)}
+                placeholder="e.g. AI meeting notes that sync directly to Notion, or a micro-CRM for freelance designers..."
+                disabled={phase === 'cooking' || phase === 'ding'}
+                className="w-full bg-[hsl(220,15%,6%)] border border-orange-500/30 focus:border-orange-500 rounded-xl p-3.5 sm:p-4 text-body text-[hsl(40,20%,94%)] placeholder-zinc-600 focus:outline-none transition-colors leading-relaxed font-[family-name:var(--font-inter)] resize-none"
+              />
             </div>
 
-            <button
-              type="submit"
-              disabled={loading || ideaText.trim().length < 8}
-              className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white text-button font-[family-name:var(--font-mono)] transition-all shadow-lg shadow-orange-950/40 hover:scale-[1.01] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-            >
-              {loading ? (
-                <>
-                  <div className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-                  <span>Grilling idea...</span>
-                </>
-              ) : (
-                <>
-                  <span>Roast My Idea</span>
-                  <span>🔥</span>
-                </>
-              )}
-            </button>
-          </div>
-        </form>
-      </div>
+            {error && (
+              <p className="text-xs text-red-400 font-mono bg-red-950/30 p-2.5 rounded-lg border border-red-900/40">
+                {error}
+              </p>
+            )}
 
-      {/* 3. Live Roasted Result */}
-      {result && (
-        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold font-mono uppercase tracking-widest text-orange-400">
-              🔥 Your Live Roast
+            {declinedMessage && (
+              <div className="p-3.5 rounded-xl bg-amber-950/40 border border-amber-800/40 text-xs text-amber-200 font-[family-name:var(--font-inter)] leading-relaxed flex items-start gap-2.5">
+                <span className="text-sm shrink-0">🛡️</span>
+                <span>{declinedMessage}</span>
+              </div>
+            )}
+
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-1">
+              <div className="text-meta text-[var(--text-muted)] font-mono flex items-center gap-2">
+                <span>✦ Grounded in real competitors</span>
+                <span>•</span>
+                <span>✦ Free &amp; shareable</span>
+              </div>
+
+              <button
+                type="submit"
+                disabled={phase === 'cooking' || phase === 'ding' || ideaText.trim().length < 8}
+                className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white text-button font-[family-name:var(--font-mono)] transition-all shadow-lg shadow-orange-950/40 hover:scale-[1.01] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              >
+                <span>Roast My Idea</span>
+                <span>🔥</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* 3. Microwave Loader State (Cooking or Ding) */}
+      {(phase === 'cooking' || phase === 'ding') && (
+        <div className="py-4 animate-in fade-in duration-300">
+          <RoastMicrowave
+            cooking={phase === 'cooking'}
+            dinging={phase === 'ding'}
+            onDingComplete={() => setPhase('receipt')}
+          />
+        </div>
+      )}
+
+      {/* 4. Live Roast Receipt Result */}
+      {phase === 'receipt' && receiptData && (
+        <div className="space-y-6 animate-in fade-in duration-300">
+          <div className="flex items-center justify-between max-w-[420px] mx-auto">
+            <h2 className="text-xs font-bold font-mono uppercase tracking-widest text-[var(--accent-amber)]">
+              🔥 YOUR ROAST RECEIPT
             </h2>
             <button
               type="button"
               onClick={() => {
-                setResult(null);
+                setPhase('idle');
+                setReceiptData(null);
                 setIdeaText('');
               }}
               className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-mono underline underline-offset-2 transition-colors cursor-pointer"
@@ -221,39 +278,56 @@ export default function RoastView({ initialScan }: { initialScan?: IScanDocument
             </button>
           </div>
 
-          <RoastCard
-            ideaText={result.scan.ideaText}
-            competitors={result.scan.competitors}
-            saturationScore={result.scan.saturationScore}
-            gapAnalysis={result.scan.gapAnalysis}
-            scanId={result.scan._id}
-            shareSlug={result.scan.shareSlug}
-            initialRoast={result.roast}
-          />
+          <RoastReceipt data={receiptData} onPrinted={() => setPrinted(true)} />
 
-          {/* Link to view full standard market report */}
-          <div className="w-full bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-left">
-            <div className="space-y-0.5">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-[var(--accent-emerald)] font-bold">
-                COMPREHENSIVE DATA
-              </span>
-              <p className="text-xs text-[var(--text-secondary)] font-[family-name:var(--font-inter)]">
-                Want to see all {result.scan.competitors.length} competitors, pricing models, and 2D landscape matrix?
-              </p>
+          {/* Action buttons revealed once printing finishes */}
+          {printed && (
+            <div className="space-y-4 max-w-[420px] mx-auto animate-in fade-in duration-300">
+              <button
+                type="button"
+                onClick={() => setShareModalOpen(true)}
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold text-xs font-[family-name:var(--font-mono)] transition-all shadow-lg shadow-orange-950/40 hover:scale-[1.01] cursor-pointer"
+              >
+                <span>Share this roast</span>
+                <span>🔥</span>
+              </button>
+
+              {currentScanId && (
+                <div className="w-full bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-left">
+                  <div className="space-y-0.5">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-[var(--accent-emerald)] font-bold">
+                      COMPREHENSIVE DATA
+                    </span>
+                    <p className="text-xs text-[var(--text-secondary)] font-[family-name:var(--font-inter)]">
+                      Want to see all {receiptData.competitorCount} competitors, pricing models, and 2D landscape matrix?
+                    </p>
+                  </div>
+                  <Link
+                    href={`/scan/${currentScanId}`}
+                    className="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[hsl(220,14%,16%)] hover:bg-[hsl(220,14%,20%)] border border-[hsl(220,10%,24%)] text-xs text-white font-mono font-semibold transition-colors"
+                  >
+                    <span>View Full Report</span>
+                    <span>&rarr;</span>
+                  </Link>
+                </div>
+              )}
             </div>
-            <Link
-              href={`/scan/${result.scan.shareSlug || result.scan._id}`}
-              className="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[hsl(220,14%,16%)] hover:bg-[hsl(220,14%,20%)] border border-[hsl(220,10%,24%)] text-xs text-white font-mono font-semibold transition-colors"
-            >
-              <span>View Full Report</span>
-              <span>&rarr;</span>
-            </Link>
-          </div>
+          )}
+
+          {/* Share Preview Modal */}
+          <RoastShareModal
+            isOpen={shareModalOpen}
+            onClose={() => setShareModalOpen(false)}
+            ideaText={receiptData.ideaText}
+            roastLines={receiptData.roastLines}
+            takeaway={receiptData.takeaway}
+            scanId={currentScanId || receiptData.receiptId}
+          />
         </div>
       )}
 
-      {/* 4. Pre-search Showcase: Sample Roast Examples */}
-      {!result && (
+      {/* 5. Pre-search Showcase: Sample Roast Examples */}
+      {phase !== 'receipt' && phase !== 'cooking' && phase !== 'ding' && (
         <div className="space-y-6 pt-2">
           <div className="text-left space-y-1 border-b border-[var(--border)] pb-3">
             <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[var(--accent-amber)] font-bold">
@@ -316,7 +390,7 @@ export default function RoastView({ initialScan }: { initialScan?: IScanDocument
             ))}
           </div>
 
-          {/* 5. The 3 Roast Guardrails */}
+          {/* The 3 Roast Guardrails */}
           <div className="pt-4 border-t border-[var(--border)]">
             <h4 className="text-xs font-mono uppercase tracking-widest text-[var(--text-muted)] font-bold mb-3 text-left">
               The 3 Roast Guardrails
