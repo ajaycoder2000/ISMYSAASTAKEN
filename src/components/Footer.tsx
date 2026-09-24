@@ -3,8 +3,11 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { motion, type Variants } from "framer-motion";
 import { Minus } from "lucide-react";
+
+const LogoBadge3D = dynamic(() => import("@/components/LogoBadge3D"), { ssr: false });
 
 interface FooterLink {
   label: string;
@@ -247,25 +250,28 @@ export default function Footer() {
               className="col-span-12 lg:col-span-4"
             >
               <div className="flex flex-col gap-4">
-                <Link
-                  href="/"
-                  className="inline-block hover:opacity-90 transition-opacity"
-                >
-                  <Image
-                    src="/logo.png"
-                    alt="IsMySaaSTaken"
-                    width={180}
-                    height={24}
-                    className="h-6 w-auto object-contain theme-logo-dark"
-                  />
-                  <Image
-                    src="/logo-light.png"
-                    alt="IsMySaaSTaken"
-                    width={180}
-                    height={24}
-                    className="h-6 w-auto object-contain theme-logo-light"
-                  />
-                </Link>
+                <div className="flex items-center gap-2 -ml-4">
+                  <LogoBadge3D size={72} />
+                  <Link
+                    href="/"
+                    className="inline-block hover:opacity-90 transition-opacity"
+                  >
+                    <Image
+                      src="/logo.png"
+                      alt="IsMySaaSTaken"
+                      width={180}
+                      height={24}
+                      className="h-6 w-auto object-contain theme-logo-dark"
+                    />
+                    <Image
+                      src="/logo-light.png"
+                      alt="IsMySaaSTaken"
+                      width={180}
+                      height={24}
+                      className="h-6 w-auto object-contain theme-logo-light"
+                    />
+                  </Link>
+                </div>
 
                 <p className="text-xs sm:text-sm leading-relaxed text-[var(--text-muted)] font-[family-name:var(--font-inter)] max-w-sm">
                   Instant market validation, competitor intelligence radar, and gap discovery for SaaS founders. Real-time telemetry to protect your runway.

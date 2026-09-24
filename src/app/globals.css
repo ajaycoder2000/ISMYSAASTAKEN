@@ -33,6 +33,7 @@ html.dark .theme-logo-light,
   --text-dim: #71717a;
   --accent-emerald: #059669;
   --accent-amber: #b45309;
+  --badge-side: #92400e;
 
   /* Aliases connecting to existing internal tokens */
   --background: var(--bg-primary);
@@ -85,6 +86,7 @@ html.dark .theme-logo-light,
   --text-dim: hsl(40, 8%, 50%);
   --accent-emerald: #10b981;
   --accent-amber: #f5a623;
+  --badge-side: #854f0b;
 
   --background: hsl(220, 15%, 8%);
   --foreground: hsl(40, 20%, 92%);
@@ -303,6 +305,10 @@ body {
   display: inline-block;
   transform-origin: 70% 70%;
   animation: hand-wave 0.6s ease-in-out 1;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {

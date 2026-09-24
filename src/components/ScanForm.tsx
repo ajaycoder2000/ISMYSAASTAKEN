@@ -41,6 +41,9 @@ export default function ScanForm({
 
     setLoading(true);
     onScanStart?.();
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event("scan:start"));
+    }
 
     try {
       const res = await fetch('/api/scan', {

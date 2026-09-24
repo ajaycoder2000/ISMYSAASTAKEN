@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import ScanForm from '@/components/ScanForm';
 import ScanResult from '@/components/ScanResult';
 import RadarScanLoader from '@/components/RadarScanLoader';
@@ -20,6 +21,9 @@ import HeroBackground from '@/components/HeroBackground';
 import TypewriterHeadline from '@/components/TypewriterHeadline';
 import PaywallModal from '@/components/PaywallModal';
 import { IScanDocument } from '@/types';
+
+const ScanGlobe = dynamic(() => import('@/components/ScanGlobe'), { ssr: false });
+const LiveTerminalScan = dynamic(() => import('@/components/LiveTerminalScan'), { ssr: false });
 
 export default function HomePage() {
   const [result, setResult] = useState<IScanDocument | null>(null);
@@ -124,6 +128,18 @@ export default function HomePage() {
                 </Link>
               </div>
             )}
+
+            {/* Dotted globe rising from below scan box */}
+            {!result && (
+              <div
+                className="relative mx-auto mt-8 w-full max-w-[320px] h-[170px] md:max-w-[560px] md:h-[300px] overflow-hidden"
+                style={{ maskImage: "linear-gradient(to bottom, black 65%, transparent)" }}
+              >
+                <div className="absolute inset-x-0 top-0">
+                  <ScanGlobe />
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -160,6 +176,21 @@ export default function HomePage() {
           <div className="w-full pb-8 animate-slide-up relative z-10">
             <ScanResult data={result} showShareButton={true} />
           </div>
+        )}
+
+        {/* Watch a scan run — Live Terminal Scan */}
+        {!result && (
+          <section className="w-full pt-8 sm:pt-12 pb-6 border-t border-[var(--border)] text-center relative z-10">
+            <div className="mb-6">
+              <h2 className="text-lg sm:text-xl font-bold font-[family-name:var(--font-space-grotesk)] text-[var(--text-primary)]">
+                Watch a scan run
+              </h2>
+              <p className="mt-1 text-xs sm:text-sm text-[var(--text-secondary)] font-[family-name:var(--font-inter)]">
+                Real sources, real competitors, a clear verdict in seconds.
+              </p>
+            </div>
+            <LiveTerminalScan />
+          </section>
         )}
 
         {/* 1. Momentum / Scale Stat Block */}
