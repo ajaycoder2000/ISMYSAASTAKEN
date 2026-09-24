@@ -10,6 +10,7 @@ const STATUS_LINES = [
 ];
 
 interface Props {
+  ideaText?: string;             // user's SaaS concept displayed on the spinning card
   cooking: boolean;              // true while the request is in flight
   dinging: boolean;              // true once the result arrived; plays the DING
   onDingComplete?: () => void;   // called ~900ms after the DING starts
@@ -21,7 +22,12 @@ function formatTime(total: number) {
   return `${m}:${s < 10 ? "0" : ""}${s}`;
 }
 
-export default function RoastMicrowave({ cooking, dinging, onDingComplete }: Props) {
+export default function RoastMicrowave({
+  ideaText = "",
+  cooking,
+  dinging,
+  onDingComplete,
+}: Props) {
   const [seconds, setSeconds] = useState(0);
   const [statusIdx, setStatusIdx] = useState(0);
   const [reduceMotion, setReduceMotion] = useState(false);
@@ -59,7 +65,7 @@ export default function RoastMicrowave({ cooking, dinging, onDingComplete }: Pro
     <div className="w-full">
       <div
         aria-hidden="true"
-        className="relative mx-auto flex w-full max-w-[420px] aspect-[2/1] gap-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-surface)] p-4 shadow-xl"
+        className="relative mx-auto flex w-full max-w-[400px] aspect-[2/1] gap-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-surface)] p-4 shadow-xl"
       >
         {/* Window */}
         <div
@@ -73,14 +79,14 @@ export default function RoastMicrowave({ cooking, dinging, onDingComplete }: Pro
           {/* Idea card */}
           <div className="absolute bottom-[20%] left-1/2 h-[48%] w-[46%] -translate-x-1/2">
             <div
-              className="flex h-full w-full flex-col gap-1.5 rounded-md border border-[#B4B2A9] bg-white p-2"
+              className="flex h-full w-full flex-col justify-center overflow-hidden rounded-md border border-[#B4B2A9] bg-white p-2 text-left"
               style={{
                 animation: cooking && !reduceMotion ? "plate-spin 2.4s linear infinite" : "none",
               }}
             >
-              <div className="h-1.5 rounded bg-[#D3D1C7]" />
-              <div className="h-1.5 w-3/5 rounded bg-[#D3D1C7]" />
-              <div className="h-1.5 w-4/5 rounded bg-[#D3D1C7]" />
+              <p className="line-clamp-4 text-[10px] leading-snug text-[#2C2C2A] sm:text-[11px]">
+                {ideaText}
+              </p>
             </div>
           </div>
         </div>

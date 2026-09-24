@@ -84,6 +84,7 @@ export default function RoastFlow({
   if (phase === "cooking" || phase === "ding") {
     return (
       <RoastMicrowave
+        ideaText={data?.ideaText || ""}
         cooking={phase === "cooking"}
         dinging={phase === "ding"}
         onDingComplete={onDingComplete}

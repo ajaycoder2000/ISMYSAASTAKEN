@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import Link from 'next/link';
 import RoastMicrowave from './RoastMicrowave';
 import RoastReceipt, { type RoastReceiptData } from './RoastReceipt';
@@ -54,14 +54,17 @@ function scanToReceiptData(scan: IScanDocument): RoastReceiptData {
 }
 
 type Phase = 'idle' | 'cooking' | 'ding' | 'receipt' | 'declined' | 'error';
+const MIN_COOK_MS = 1200;
+const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export default function RoastView({ initialScan }: { initialScan?: IScanDocument }) {
-  const [ideaText, setIdeaText] = useState<string>('');
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [ideaText, setIdeaText] = useState<string>(initialScan ? initialScan.ideaText : '');
   const [phase, setPhase] = useState<Phase>(
     initialScan && initialScan.roast ? 'receipt' : 'idle'
   );
-  const [error, setError] = useState<string | null>(null);
-  const [declinedMessage, setDeclinedMessage] = useState<string | null>(null);
+  const [lockedHeight, setLockedHeight] = useState<number | null>(null);
+  const [message, setMessage] = useState<string>('');
   const [receiptData, setReceiptData] = useState<RoastReceiptData | null>(
     initialScan && initialScan.roast ? scanToReceiptData(initialScan) : null
   );
@@ -71,20 +74,19 @@ export default function RoastView({ initialScan }: { initialScan?: IScanDocument
   const [shareModalOpen, setShareModalOpen] = useState<boolean>(false);
   const [printed, setPrinted] = useState<boolean>(Boolean(initialScan && initialScan.roast));
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleRoast = useCallback(async () => {
     const cleanIdea = ideaText.trim();
     if (!cleanIdea || cleanIdea.length < 8) {
-      setError('Please enter at least 8 characters describing your SaaS idea.');
+      setMessage('Please enter at least 8 characters describing your SaaS idea.');
       return;
     }
 
+    if (cardRef.current) {
+      setLockedHeight(cardRef.current.offsetHeight); // lock height to prevent page jumping
+    }
     setPhase('cooking');
-    setError(null);
-    setDeclinedMessage(null);
-    setReceiptData(null);
     setPrinted(false);
-
+    setMessage('');
     const started = Date.now();
 
     try {
@@ -123,18 +125,19 @@ export default function RoastView({ initialScan }: { initialScan?: IScanDocument
 
       const roastData = await roastRes.json();
 
-      // Enforce minimum 1.2s cook time so the microwave animation feels natural and never jarring
+      // Enforce minimum cook time so the microwave animation feels natural
       const elapsed = Date.now() - started;
-      if (elapsed < 1200) {
-        await new Promise((r) => setTimeout(r, 1200 - elapsed));
+      if (elapsed < MIN_COOK_MS) {
+        await wait(MIN_COOK_MS - elapsed);
       }
 
       // Input moderation refusal — stop microwave, no DING!
       if (roastData.declined) {
-        setDeclinedMessage(
+        setMessage(
           roastData.message ||
             "That's not really an idea we can roast — try submitting an actual SaaS concept."
         );
+        setLockedHeight(null);
         setPhase('declined');
         return;
       }
@@ -161,9 +164,44 @@ export default function RoastView({ initialScan }: { initialScan?: IScanDocument
       setPhase('ding');
     } catch (err: any) {
       console.error('Roast error:', err);
-      setError(err.message || 'Something went wrong while roasting this idea.');
+      setMessage(
+        err.message || 'The microwave broke down. Something went wrong on our side, try again.'
+      );
+      setLockedHeight(null);
       setPhase('error');
     }
+  }, [ideaText]);
+
+  const showInput = phase === 'idle' || phase === 'declined' || phase === 'error';
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!showInput) return;
+    handleRoast();
+  };
+
+  const onDingComplete = useCallback(() => {
+    setLockedHeight(null); // let the card grow to fit the receipt
+    setPhase('receipt');
+    // Keep the top of the card in view as the receipt prints
+    const reduce =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const top = cardRef.current?.getBoundingClientRect().top ?? 0;
+    if (top < 0) {
+      cardRef.current?.scrollIntoView({
+        behavior: reduce ? 'auto' : 'smooth',
+        block: 'start',
+      });
+    }
+  }, []);
+
+  const roastAnother = () => {
+    setPhase('idle');
+    setReceiptData(null);
+    setPrinted(false);
+    setMessage('');
+    // ideaText is kept, so the user can tweak it and roast again
   };
 
   return (
@@ -186,11 +224,16 @@ export default function RoastView({ initialScan }: { initialScan?: IScanDocument
         </p>
       </div>
 
-      {/* 2. Idea Input Form */}
-      {phase !== 'receipt' && (
-        <div className="w-full bg-[hsl(220,15%,9%)] border border-orange-500/30 rounded-2xl p-5 sm:p-7 shadow-2xl relative overflow-hidden text-left">
-          <div className="absolute -top-20 -right-20 w-48 h-48 bg-orange-600/10 rounded-full blur-3xl pointer-events-none" />
+      {/* 2. Interactive Roast Card (Input -> Microwave -> Receipt all in one place) */}
+      <div
+        ref={cardRef}
+        className="w-full bg-[hsl(220,15%,9%)] border border-orange-500/30 rounded-2xl p-5 sm:p-7 shadow-2xl relative overflow-hidden text-left transition-all"
+        style={{ minHeight: lockedHeight ?? undefined }}
+      >
+        <div className="absolute -top-20 -right-20 w-48 h-48 bg-orange-600/10 rounded-full blur-3xl pointer-events-none" />
 
+        {/* Phase A: Input UI (idle, declined, error) */}
+        {showInput && (
           <form onSubmit={handleSubmit} className="space-y-4 relative z-10">
             <div className="space-y-1.5">
               <label
@@ -209,21 +252,21 @@ export default function RoastView({ initialScan }: { initialScan?: IScanDocument
                 value={ideaText}
                 onChange={(e) => setIdeaText(e.target.value)}
                 placeholder="e.g. AI meeting notes that sync directly to Notion, or a micro-CRM for freelance designers..."
-                disabled={phase === 'cooking' || phase === 'ding'}
                 className="w-full bg-[hsl(220,15%,6%)] border border-orange-500/30 focus:border-orange-500 rounded-xl p-3.5 sm:p-4 text-body text-[hsl(40,20%,94%)] placeholder-zinc-600 focus:outline-none transition-colors leading-relaxed font-[family-name:var(--font-inter)] resize-none"
               />
             </div>
 
-            {error && (
-              <p className="text-xs text-red-400 font-mono bg-red-950/30 p-2.5 rounded-lg border border-red-900/40">
-                {error}
-              </p>
-            )}
-
-            {declinedMessage && (
-              <div className="p-3.5 rounded-xl bg-amber-950/40 border border-amber-800/40 text-xs text-amber-200 font-[family-name:var(--font-inter)] leading-relaxed flex items-start gap-2.5">
-                <span className="text-sm shrink-0">🛡️</span>
-                <span>{declinedMessage}</span>
+            {message && (
+              <div
+                role="alert"
+                className={`p-3 rounded-xl text-xs font-[family-name:var(--font-inter)] leading-relaxed flex items-start gap-2.5 ${
+                  phase === 'declined'
+                    ? 'bg-amber-950/40 border border-amber-800/40 text-amber-200'
+                    : 'bg-red-950/30 border border-red-900/40 text-red-400 font-mono'
+                }`}
+              >
+                <span className="text-sm shrink-0">{phase === 'declined' ? '🛡️' : '⚠️'}</span>
+                <span>{message}</span>
               </div>
             )}
 
@@ -236,7 +279,7 @@ export default function RoastView({ initialScan }: { initialScan?: IScanDocument
 
               <button
                 type="submit"
-                disabled={phase === 'cooking' || phase === 'ding' || ideaText.trim().length < 8}
+                disabled={ideaText.trim().length < 8}
                 className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white text-button font-[family-name:var(--font-mono)] transition-all shadow-lg shadow-orange-950/40 hover:scale-[1.01] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 <span>Roast My Idea</span>
@@ -244,87 +287,93 @@ export default function RoastView({ initialScan }: { initialScan?: IScanDocument
               </button>
             </div>
           </form>
-        </div>
-      )}
+        )}
 
-      {/* 3. Microwave Loader State (Cooking or Ding) */}
-      {(phase === 'cooking' || phase === 'ding') && (
-        <div className="py-4 animate-in fade-in duration-300">
-          <RoastMicrowave
-            cooking={phase === 'cooking'}
-            dinging={phase === 'ding'}
-            onDingComplete={() => setPhase('receipt')}
-          />
-        </div>
-      )}
-
-      {/* 4. Live Roast Receipt Result */}
-      {phase === 'receipt' && receiptData && (
-        <div className="space-y-6 animate-in fade-in duration-300">
-          <div className="flex items-center justify-between max-w-[420px] mx-auto">
-            <h2 className="text-xs font-bold font-mono uppercase tracking-widest text-[var(--accent-amber)]">
-              🔥 YOUR ROAST RECEIPT
-            </h2>
-            <button
-              type="button"
-              onClick={() => {
-                setPhase('idle');
-                setReceiptData(null);
-                setIdeaText('');
-              }}
-              className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-mono underline underline-offset-2 transition-colors cursor-pointer"
-            >
-              Roast another idea &rarr;
-            </button>
+        {/* Phase B: Microwave Cooking & Ding */}
+        {(phase === 'cooking' || phase === 'ding') && (
+          <div className="flex h-full min-h-[inherit] flex-col items-center justify-center py-4 relative z-10 animate-in fade-in duration-300">
+            <RoastMicrowave
+              ideaText={ideaText}
+              cooking={phase === 'cooking'}
+              dinging={phase === 'ding'}
+              onDingComplete={onDingComplete}
+            />
           </div>
+        )}
 
-          <RoastReceipt data={receiptData} onPrinted={() => setPrinted(true)} />
-
-          {/* Action buttons revealed once printing finishes */}
-          {printed && (
-            <div className="space-y-4 max-w-[420px] mx-auto animate-in fade-in duration-300">
+        {/* Phase C: Live Roast Receipt Result */}
+        {phase === 'receipt' && receiptData && (
+          <div className="flex flex-col items-center gap-5 py-2 relative z-10 animate-in fade-in duration-300">
+            <div className="w-full flex items-center justify-between max-w-[420px] mx-auto pb-1 border-b border-orange-500/20">
+              <h2 className="text-xs font-bold font-mono uppercase tracking-widest text-[var(--accent-amber)]">
+                🔥 YOUR ROAST RECEIPT
+              </h2>
               <button
                 type="button"
-                onClick={() => setShareModalOpen(true)}
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold text-xs font-[family-name:var(--font-mono)] transition-all shadow-lg shadow-orange-950/40 hover:scale-[1.01] cursor-pointer"
+                onClick={roastAnother}
+                className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-mono underline underline-offset-2 transition-colors cursor-pointer"
               >
-                <span>Share this roast</span>
-                <span>🔥</span>
+                Roast another idea &rarr;
               </button>
-
-              {currentScanId && (
-                <div className="w-full bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-left">
-                  <div className="space-y-0.5">
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-[var(--accent-emerald)] font-bold">
-                      COMPREHENSIVE DATA
-                    </span>
-                    <p className="text-xs text-[var(--text-secondary)] font-[family-name:var(--font-inter)]">
-                      Want to see all {receiptData.competitorCount} competitors, pricing models, and 2D landscape matrix?
-                    </p>
-                  </div>
-                  <Link
-                    href={`/scan/${currentScanId}`}
-                    className="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[hsl(220,14%,16%)] hover:bg-[hsl(220,14%,20%)] border border-[hsl(220,10%,24%)] text-xs text-white font-mono font-semibold transition-colors"
-                  >
-                    <span>View Full Report</span>
-                    <span>&rarr;</span>
-                  </Link>
-                </div>
-              )}
             </div>
-          )}
 
-          {/* Share Preview Modal */}
-          <RoastShareModal
-            isOpen={shareModalOpen}
-            onClose={() => setShareModalOpen(false)}
-            ideaText={receiptData.ideaText}
-            roastLines={receiptData.roastLines}
-            takeaway={receiptData.takeaway}
-            scanId={currentScanId || receiptData.receiptId}
-          />
-        </div>
-      )}
+            <RoastReceipt data={receiptData} onPrinted={() => setPrinted(true)} />
+
+            {/* Action buttons revealed once printing finishes */}
+            {printed && (
+              <div className="w-full max-w-[420px] mx-auto space-y-4 animate-in fade-in duration-300">
+                <div className="flex flex-wrap items-center justify-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setShareModalOpen(true)}
+                    className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold text-xs font-[family-name:var(--font-mono)] transition-all shadow-lg shadow-orange-950/40 hover:scale-[1.01] cursor-pointer"
+                  >
+                    <span>Share this roast</span>
+                    <span>🔥</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={roastAnother}
+                    className="rounded-xl border border-[var(--border)] px-4 py-3 text-xs font-bold font-mono text-[var(--text-primary)] hover:bg-[var(--bg-surface-alt)] transition-colors cursor-pointer"
+                  >
+                    Roast another idea
+                  </button>
+                </div>
+
+                {currentScanId && (
+                  <div className="w-full bg-[var(--bg-surface-alt)] border border-[var(--border)] rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-left">
+                    <div className="space-y-0.5">
+                      <span className="text-[10px] font-mono uppercase tracking-wider text-[var(--accent-emerald)] font-bold">
+                        COMPREHENSIVE DATA
+                      </span>
+                      <p className="text-xs text-[var(--text-secondary)] font-[family-name:var(--font-inter)]">
+                        Want to see all {receiptData.competitorCount} competitors, pricing models, and 2D landscape matrix?
+                      </p>
+                    </div>
+                    <Link
+                      href={`/scan/${currentScanId}`}
+                      className="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[hsl(220,14%,16%)] hover:bg-[hsl(220,14%,20%)] border border-[hsl(220,10%,24%)] text-xs text-white font-mono font-semibold transition-colors"
+                    >
+                      <span>View Full Report</span>
+                      <span>&rarr;</span>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Share Preview Modal */}
+            <RoastShareModal
+              isOpen={shareModalOpen}
+              onClose={() => setShareModalOpen(false)}
+              ideaText={receiptData.ideaText}
+              roastLines={receiptData.roastLines}
+              takeaway={receiptData.takeaway}
+              scanId={currentScanId || receiptData.receiptId}
+            />
+          </div>
+        )}
+      </div>
 
       {/* 5. Pre-search Showcase: Sample Roast Examples */}
       {phase !== 'receipt' && phase !== 'cooking' && phase !== 'ding' && (

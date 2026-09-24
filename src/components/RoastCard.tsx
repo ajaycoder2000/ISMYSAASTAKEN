@@ -148,6 +148,7 @@ export default function RoastCard({
         {(phase === 'cooking' || phase === 'ding') && (
           <div className="py-2 animate-in fade-in duration-300">
             <RoastMicrowave
+              ideaText={ideaText}
               cooking={phase === 'cooking'}
               dinging={phase === 'ding'}
               onDingComplete={() => setPhase('receipt')}
