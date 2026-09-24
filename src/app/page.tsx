@@ -1,11 +1,9 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import ScanForm from '@/components/ScanForm';
-import ScanResult from '@/components/ScanResult';
-import RadarScanLoader from '@/components/RadarScanLoader';
+import ScanCard from '@/components/scan/ScanCard';
 import RateLimitMessage from '@/components/RateLimitMessage';
 import LivePulse from '@/components/LivePulse';
 import MomentumStat from '@/components/MomentumStat';
@@ -27,56 +25,9 @@ const LiveTerminalScan = dynamic(() => import('@/components/LiveTerminalScan'), 
 
 export default function HomePage() {
   const [result, setResult] = useState<IScanDocument | null>(null);
-  const [scanning, setScanning] = useState(false);
-  const [competitors, setCompetitors] = useState<{ name: string }[]>([]);
-  const [scanComplete, setScanComplete] = useState(false);
-  const pendingResultRef = useRef<IScanDocument | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [rateLimitMsg, setRateLimitMsg] = useState<string | null>(null);
   const [paywallMode, setPaywallMode] = useState<'PAYWALL' | 'SIGN_IN_REQUIRED' | null>(null);
-
-  const handleScanStart = () => {
-    setScanning(true);
-    setCompetitors([]);
-    setScanComplete(false);
-    pendingResultRef.current = null;
-    setResult(null);
-    setError(null);
-    setRateLimitMsg(null);
-  };
-
-  const handleScanSuccess = (data: IScanDocument) => {
-    pendingResultRef.current = data;
-    // Map real competitor data returned by the scan API
-    const mappedCompetitors = (data.competitors || []).map((c) => ({
-      name: c.name || 'Competitor',
-    }));
-    setCompetitors(mappedCompetitors);
-    setScanComplete(true);
-  };
-
-  const handleRadarDone = () => {
-    setScanning(false);
-    if (pendingResultRef.current) {
-      setResult(pendingResultRef.current);
-    }
-  };
-
-  const handleError = (message: string) => {
-    setScanning(false);
-    setScanComplete(false);
-    setCompetitors([]);
-    pendingResultRef.current = null;
-    setError(message);
-  };
-
-  const handleRateLimited = (message: string) => {
-    setScanning(false);
-    setScanComplete(false);
-    setCompetitors([]);
-    pendingResultRef.current = null;
-    setRateLimitMsg(message);
-  };
 
   return (
     <div className="min-h-[calc(100vh-3.5rem)] w-full px-4 sm:px-6 lg:px-10 max-w-5xl mx-auto relative">
@@ -101,15 +52,13 @@ export default function HomePage() {
             </div>
           )}
 
-          {/* Scan form */}
-          <div className={`w-full relative z-10 ${result ? 'opacity-80 hover:opacity-100 transition-opacity' : ''}`}>
-            <ScanForm
-              onScanStart={handleScanStart}
-              onScanSuccess={handleScanSuccess}
-              onError={handleError}
-              onRateLimited={handleRateLimited}
+          {/* Scan card */}
+          <div className="w-full relative z-10">
+            <ScanCard
+              onResultChange={(doc) => setResult(doc)}
+              onError={(msg) => setError(msg)}
+              onRateLimited={(msg) => setRateLimitMsg(msg)}
               onPaywall={(mode) => setPaywallMode(mode)}
-              disabled={scanning}
             />
 
             {!result && (
@@ -143,16 +92,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Radar-sweep loading animation */}
-        <div className="w-full relative z-10">
-          <RadarScanLoader
-            active={scanning}
-            competitors={competitors}
-            isComplete={scanComplete}
-            onDone={handleRadarDone}
-          />
-        </div>
-
         {/* Error message */}
         {error && (
           <div className="w-full mx-auto mt-6 bg-[var(--bg-surface-alt)] border border-red-500/30 rounded-lg p-4 sm:p-5 animate-fade-in relative z-10">
@@ -170,13 +109,6 @@ export default function HomePage() {
 
         {/* Rate limit message */}
         {rateLimitMsg && <RateLimitMessage message={rateLimitMsg} />}
-
-        {/* Live Scan Results */}
-        {result && (
-          <div className="w-full pb-8 animate-slide-up relative z-10">
-            <ScanResult data={result} showShareButton={true} />
-          </div>
-        )}
 
         {/* Watch a scan run — Live Terminal Scan */}
         {!result && (
