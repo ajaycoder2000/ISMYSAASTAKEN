@@ -1,6 +1,7 @@
 import { Checkout } from '@dodopayments/nextjs';
 import { auth } from '@clerk/nextjs/server';
 import { NextRequest, NextResponse } from 'next/server';
+import { SITE_URL } from '@/lib/site';
 
 export const dynamic = 'force-dynamic';
 
@@ -8,7 +9,7 @@ function getReturnUrl() {
   return (
     process.env.DODO_PAYMENTS_RETURN_URL ||
     process.env.NEXT_PUBLIC_DODO_RETURN_URL ||
-    'https://ismysaastaken.vercel.app/checkout/success'
+    `${SITE_URL}/checkout/success`
   );
 }
 

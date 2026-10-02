@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import Image from 'next/image';
 import SignalBars from './SignalBars';
+import { SITE_URL } from '@/lib/site';
 
 interface ShareVerdictCardProps {
   ideaText: string;
@@ -28,7 +29,7 @@ export default function ShareVerdictCard({
     if (typeof window !== 'undefined') {
       return `${window.location.origin}/scan/${shareSlug}`;
     }
-    return `https://ismysaastaken.vercel.app/scan/${shareSlug}`;
+    return `${SITE_URL}/scan/${shareSlug}`;
   };
 
   // Dynamically import html-to-image only on demand
@@ -150,7 +151,7 @@ export default function ShareVerdictCard({
         {/* Card Footer */}
         <div className="mt-5 pt-3 border-t border-[var(--border)] flex items-center justify-between text-[10px] font-[family-name:var(--font-mono)] text-[var(--text-dim)] relative z-10">
           <span>Verified via Web-Grounded AI</span>
-          <span>ismysaastaken.com</span>
+          <span>ismysaastaken.live</span>
         </div>
       </div>
 

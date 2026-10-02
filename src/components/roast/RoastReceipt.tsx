@@ -89,7 +89,7 @@ export default function RoastReceipt({
       <div key="take" className="text-left leading-relaxed">{data.takeaway}</div>,
       <Divider key="d5" />,
       <div key="thanks" className="text-center font-semibold">THANKS FOR ORDERING</div>,
-      <div key="url" className="text-center text-[11px]" style={{ color: INK_MUTED }}>ismysaastaken.vercel.app</div>
+      <div key="url" className="text-center text-[11px]" style={{ color: INK_MUTED }}>ismysaastaken.live</div>
     );
     return r;
   }, [data, burn, date]);

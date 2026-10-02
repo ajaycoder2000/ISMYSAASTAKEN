@@ -1,8 +1,9 @@
 import type { MetadataRoute } from 'next';
 import { REAL_SEEDED_SCANS } from '@/lib/seeds/real-scans';
+import { SITE_URL } from '@/lib/site';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://ismysaastaken.vercel.app';
+  const baseUrl = SITE_URL;
   const now = new Date();
 
   // Core pages
@@ -10,6 +11,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}`, lastModified: now, priority: 1.0, changeFrequency: 'daily' },
     { url: `${baseUrl}/keywords`, lastModified: now, priority: 0.8, changeFrequency: 'weekly' },
     { url: `${baseUrl}/is-it-taken`, lastModified: now, priority: 0.8, changeFrequency: 'weekly' },
+    { url: `${baseUrl}/name-check`, lastModified: now, priority: 0.8, changeFrequency: 'weekly' },
+    { url: `${baseUrl}/roast`, lastModified: now, priority: 0.8, changeFrequency: 'weekly' },
+    { url: `${baseUrl}/why-validation-matters`, lastModified: now, priority: 0.7, changeFrequency: 'weekly' },
     { url: `${baseUrl}/pricing`, lastModified: now, priority: 0.8, changeFrequency: 'weekly' },
     { url: `${baseUrl}/roadmap`, lastModified: now, priority: 0.6, changeFrequency: 'weekly' },
     { url: `${baseUrl}/terms`, lastModified: now, priority: 0.3, changeFrequency: 'monthly' },

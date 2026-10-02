@@ -1,5 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { SupabaseDB } from '@/lib/supabase/db';
+import { SITE_URL } from '@/lib/site';
 
 export const alt = 'Is My SaaS Taken? — Market Validation Report';
 export const size = {
@@ -157,7 +158,7 @@ export default async function Image({
               color: '#f5a623',
             }}
           >
-            ismysaastaken.vercel.app
+            {SITE_URL.replace(/^https?:\/\//, '')}
           </span>
         </div>
       </div>

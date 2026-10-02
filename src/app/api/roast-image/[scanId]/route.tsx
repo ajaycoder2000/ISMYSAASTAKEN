@@ -259,7 +259,7 @@ export async function GET(
               fontFamily: 'monospace',
             }}
           >
-            ismysaastaken.com/scan/{scanId}
+            ismysaastaken.live/scan/{scanId}
           </span>
           <span
             style={{

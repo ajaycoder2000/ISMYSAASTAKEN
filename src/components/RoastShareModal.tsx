@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
+import { SITE_URL } from '@/lib/site';
 
 export interface RoastShareModalProps {
   isOpen: boolean;
@@ -65,14 +66,14 @@ export default function RoastShareModal({
     if (typeof window !== 'undefined') {
       return `${window.location.origin}/scan/${scanId}`;
     }
-    return `https://ismysaastaken.com/scan/${scanId}`;
+    return `${SITE_URL}/scan/${scanId}`;
   };
 
   const getImageUrl = () => {
     const base =
       typeof window !== 'undefined'
         ? window.location.origin
-        : 'https://ismysaastaken.com';
+        : SITE_URL;
     return `${base}/api/roast-image/${scanId}?line=${encodeURIComponent(activeLine)}`;
   };
 
@@ -282,7 +283,7 @@ export default function RoastShareModal({
 
             {/* Footer URL note */}
             <div className="flex items-center justify-between pt-1 text-[10px] text-zinc-500 font-mono">
-              <span>ismysaastaken.com</span>
+              <span>ismysaastaken.live</span>
               <span>Roasts the market, not the founder</span>
             </div>
           </div>

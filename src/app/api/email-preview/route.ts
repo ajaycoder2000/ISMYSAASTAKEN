@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { SupabaseDB } from '@/lib/supabase/db';
 import { renderCustomWeeklyReportTemplate, extractUserName } from '@/lib/email-template';
+import { SITE_URL } from '@/lib/site';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,7 +14,7 @@ export async function GET(req: NextRequest) {
 
     // Fetch real weekly gaps
     const gaps = await SupabaseDB.getWeeklyGaps();
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ismysaastaken.vercel.app';
+    const siteUrl = SITE_URL;
     const unsubscribeUrl = `${siteUrl}/api/unsubscribe?token=preview-test-token`;
 
     // Dynamic issue number
@@ -126,7 +127,7 @@ export async function POST(req: NextRequest) {
       }, { status: 400 });
     }
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ismysaastaken.vercel.app';
+    const siteUrl = SITE_URL;
     const fromEmail = process.env.RESEND_FROM_EMAIL || 'IsMySaaSTaken <onboarding@resend.dev>';
     const gaps = await SupabaseDB.getWeeklyGaps();
 

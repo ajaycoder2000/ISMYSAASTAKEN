@@ -5,6 +5,7 @@ import { SupabaseDB } from '@/lib/supabase/db';
 import dbConnect from '@/lib/mongodb';
 import Scan from '@/models/Scan';
 import { DevStore } from '@/lib/dev-store';
+import { SITE_URL } from '@/lib/site';
 
 interface Props {
   params: Promise<{ shareSlug: string }>;
@@ -109,17 +110,17 @@ export default async function SharedScanPage({ params }: Props) {
     author: {
       '@type': 'Organization',
       name: 'IsMySaaSTaken',
-      url: 'https://ismysaastaken.vercel.app',
+      url: SITE_URL,
     },
     publisher: {
       '@type': 'Organization',
       name: 'IsMySaaSTaken',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://ismysaastaken.vercel.app/icon.png',
+        url: `${SITE_URL}/icon.png`,
       },
     },
-    mainEntityOfPage: `https://ismysaastaken.vercel.app/scan/${scan.shareSlug}`,
+    mainEntityOfPage: `${SITE_URL}/scan/${scan.shareSlug}`,
   };
 
   return (

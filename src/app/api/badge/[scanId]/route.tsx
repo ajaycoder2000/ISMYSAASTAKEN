@@ -176,7 +176,7 @@ function renderFallbackBadge(theme: string) {
             marginTop: '2px',
           }}
         >
-          ismysaastaken.vercel.app
+          ismysaastaken.live
         </span>
       </div>
     ),

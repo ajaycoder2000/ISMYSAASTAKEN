@@ -3,6 +3,7 @@ import { auth } from '@clerk/nextjs/server';
 import { SupabaseDB } from '@/lib/supabase/db';
 import { checkEntitlement, incrementFeatureUsage } from '@/lib/checkEntitlement';
 import { recordScanEvent } from '@/lib/scan-events';
+import { SITE_URL } from '@/lib/site';
 
 export const dynamic = 'force-dynamic';
 
@@ -138,7 +139,7 @@ async function checkAllDomains(name: string): Promise<DomainCheckResult[]> {
         method: 'GET',
         headers: {
           Accept: 'application/rdap+json, application/json',
-          'User-Agent': 'IsMySaaSTaken-RDAPBot/1.0 (+https://ismysaastaken.vercel.app)',
+          'User-Agent': `IsMySaaSTaken-RDAPBot/1.0 (+${SITE_URL})`,
         },
         signal: controller.signal,
       });

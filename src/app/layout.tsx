@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FounderQuizLauncher from "@/components/quiz/FounderQuizLauncher";
+import { SITE_URL } from "@/lib/site";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -34,7 +35,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://ismysaastaken.vercel.app'),
+  metadataBase: new URL(SITE_URL),
   title: "Is My SaaS Taken? — Instant Market Validation for SaaS Ideas",
   description:
     "Describe your SaaS idea, get back real competitors, market saturation, and a specific gap you could build toward. No signup required for your first scan.",
@@ -50,7 +51,7 @@ export const metadata: Metadata = {
     'Product Hunt alternatives',
     'startup moat analysis',
   ],
-  authors: [{ name: 'IsMySaaSTaken Team', url: 'https://ismysaastaken.vercel.app' }],
+  authors: [{ name: 'IsMySaaSTaken Team', url: SITE_URL }],
   creator: 'IsMySaaSTaken',
   publisher: 'IsMySaaSTaken',
   category: 'technology',
@@ -88,8 +89,8 @@ const jsonLd = {
   '@graph': [
     {
       '@type': 'WebSite',
-      '@id': 'https://ismysaastaken.vercel.app/#website',
-      url: 'https://ismysaastaken.vercel.app',
+      '@id': `${SITE_URL}/#website`,
+      url: SITE_URL,
       name: 'Is My SaaS Taken?',
       description: 'Instant market validation for SaaS founders. Real competitors, real gaps, no BS.',
       publisher: {
@@ -97,18 +98,18 @@ const jsonLd = {
         name: 'IsMySaaSTaken',
         logo: {
           '@type': 'ImageObject',
-          url: 'https://ismysaastaken.vercel.app/icon.png',
+          url: `${SITE_URL}/icon.png`,
         },
       },
     },
     {
       '@type': 'SoftwareApplication',
-      '@id': 'https://ismysaastaken.vercel.app/#software',
+      '@id': `${SITE_URL}/#software`,
       name: 'Is My SaaS Taken?',
       applicationCategory: 'BusinessApplication',
       operatingSystem: 'All',
       description: 'Instant market validation for SaaS founders. Real competitors, real gaps, no BS.',
-      url: 'https://ismysaastaken.vercel.app',
+      url: SITE_URL,
       offers: {
         '@type': 'Offer',
         price: '0',

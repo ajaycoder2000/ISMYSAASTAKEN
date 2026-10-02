@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import SignalBars from '@/components/SignalBars';
 import { REAL_SEEDED_SCANS, SeedScanData } from '@/lib/seeds/real-scans';
+import { SITE_URL } from '@/lib/site';
 
 interface CategoryInfo {
   name: string;
@@ -110,19 +111,19 @@ export default async function CategoryPage({ params }: Props) {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://ismysaastaken.vercel.app',
+        item: SITE_URL,
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Categories',
-        item: 'https://ismysaastaken.vercel.app/#categories',
+        item: `${SITE_URL}/#categories`,
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: category.name,
-        item: `https://ismysaastaken.vercel.app/category/${slug}`,
+        item: `${SITE_URL}/category/${slug}`,
       },
     ],
   };

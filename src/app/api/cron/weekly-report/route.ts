@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { SupabaseDB } from '@/lib/supabase/db';
 import { renderCustomWeeklyReportTemplate } from '@/lib/email-template';
+import { SITE_URL } from '@/lib/site';
 
 export const dynamic = 'force-dynamic';
 
@@ -44,7 +45,7 @@ export async function GET(req: NextRequest) {
     // 5. Prepare Resend API configuration
     const resendApiKey = process.env.RESEND_API_KEY;
     const fromEmail = process.env.RESEND_FROM_EMAIL || 'IsMySaaSTaken <onboarding@resend.dev>';
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ismysaastaken.vercel.app';
+    const siteUrl = SITE_URL;
 
     // If Resend API key is not configured (e.g. local dev / test), log and return simulated response
     if (!resendApiKey) {

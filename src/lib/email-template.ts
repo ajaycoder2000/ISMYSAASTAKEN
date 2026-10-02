@@ -1,3 +1,5 @@
+import { SITE_URL } from '@/lib/site';
+
 export interface EmailGap {
   id: string;
   idea_text: string;
@@ -43,7 +45,7 @@ export function getPlanBadgeHtml(plan?: string): string {
   return `<span style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 10px; font-weight: 700; color: #8a8f98; background-color: rgba(138,143,152,0.12); border: 1px solid rgba(138,143,152,0.25); padding: 4px 10px; border-radius: 999px; letter-spacing: 1px; text-transform: uppercase;">&#x1F331; FREE TIER</span>`;
 }
 
-export function getPlanStatusText(plan?: string, siteUrl = 'https://ismysaastaken.vercel.app'): string {
+export function getPlanStatusText(plan?: string, siteUrl = SITE_URL): string {
   const normalized = (plan || 'free').toLowerCase();
   if (normalized === 'pro' || normalized === 'founder_pro') {
     return `<strong style="color: #10b981;">Founder Pro</strong> (Unlimited Scans &amp; Deep Web Grounding)`;
@@ -86,7 +88,7 @@ export function renderCustomWeeklyReportTemplate({
   const planBadgeHtml = getPlanBadgeHtml(subscriber.plan);
   const planStatusText = getPlanStatusText(subscriber.plan, siteUrl);
   const scanUrl = `${siteUrl}/`;
-  const companyAddress = `IsMySaaSTaken • Automated Founder Intelligence • ismysaastaken.vercel.app`;
+  const companyAddress = `IsMySaaSTaken • Automated Founder Intelligence • ismysaastaken.live`;
 
   // Only use real gaps (up to 5) — never fabricate or pad with fake ones
   const realGaps = (gaps || []).slice(0, 5);

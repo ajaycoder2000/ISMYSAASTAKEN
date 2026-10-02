@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import WhyValidationMattersSection from '@/components/WhyValidationMattersSection';
+import { SITE_URL } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'Why Idea Validation Matters — Interactive Startup Risk Self-Check | IsMySaaSTaken',
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
     title: 'Why Idea Validation Matters — Interactive Startup Risk Self-Check',
     description:
       '42% of startups fail for one avoidable reason. Answer 3 questions to see which failure mode your SaaS idea is most exposed to.',
-    url: 'https://ismysaastaken.com/why-validation-matters',
+    url: `${SITE_URL}/why-validation-matters`,
   },
   twitter: {
     card: 'summary_large_image',

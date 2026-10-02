@@ -1,3 +1,5 @@
+import { SITE_URL } from '@/lib/site';
+
 /**
  * Badge Qualification and Embed Snippet Utilities (Client-safe)
  */
@@ -22,7 +24,7 @@ export function getSiteBaseUrl(): string {
   if (typeof window !== 'undefined' && window.location.origin) {
     return window.location.origin;
   }
-  return process.env.NEXT_PUBLIC_SITE_URL || 'https://ismysaastaken.vercel.app';
+  return SITE_URL;
 }
 
 export function getBadgeImageUrl(
