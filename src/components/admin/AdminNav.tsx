@@ -11,6 +11,7 @@ interface AdminNavProps {
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: '📊' },
   { href: '/admin/analytics', label: 'Usage Analytics', icon: '📈' },
+  { href: '/admin/waitlist', label: 'Waitlist', icon: '⏳' },
   { href: '/admin/users', label: 'User Directory', icon: '👥' },
   { href: '/admin/coupons', label: 'Coupons & Promos', icon: '🎟️' },
   { href: '/admin/scans', label: 'Scans Feed', icon: '🔍' },

@@ -5,7 +5,6 @@ import { isBadgeEligible } from '@/lib/badge';
 import { isScanOwnerBadgeEntitled } from '@/lib/checkEntitlement';
 
 export const runtime = 'nodejs';
-export const contentType = 'image/png';
 
 export async function GET(
   req: NextRequest,

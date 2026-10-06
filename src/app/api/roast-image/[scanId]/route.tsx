@@ -3,7 +3,6 @@ import { ImageResponse } from 'next/og';
 import { SupabaseDB } from '@/lib/supabase/db';
 
 export const runtime = 'nodejs';
-export const contentType = 'image/png';
 
 export async function GET(
   req: NextRequest,

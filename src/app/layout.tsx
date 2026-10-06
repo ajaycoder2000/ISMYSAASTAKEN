@@ -5,6 +5,7 @@ import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Navbar from "@/components/Navbar";
+import WaitlistBar from "@/components/WaitlistBar";
 import Footer from "@/components/Footer";
 import FounderQuizLauncher from "@/components/quiz/FounderQuizLauncher";
 import { SITE_URL } from "@/lib/site";
@@ -139,6 +140,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-[var(--bg-primary)] text-[var(--text-primary)] antialiased transition-colors duration-200">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <ClerkProvider>
+            <WaitlistBar />
             <Navbar />
             <main className="flex-1 relative">
               {children}

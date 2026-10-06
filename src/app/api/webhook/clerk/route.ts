@@ -4,6 +4,7 @@ import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { isAdminEmail } from '@/lib/auth';
 import { SupabaseDB } from '@/lib/supabase/db';
 import { DevStore } from '@/lib/dev-store';
+import { WaitlistDB } from '@/lib/waitlistDb';
 
 export const dynamic = 'force-dynamic';
 
@@ -61,6 +62,22 @@ export async function POST(req: NextRequest) {
     const plan = isAuthorizedAdmin ? 'founder_pro' : 'free';
     const role = isAuthorizedAdmin ? 'admin' : 'user';
 
+    // Check if new user is eligible for waitlist founding member bonus scans
+    let waitlistBonusScans = 0;
+    if (eventType === 'user.created' && primaryEmail) {
+      try {
+        const claim = await WaitlistDB.claimRewardIfEligible(primaryEmail);
+        if (claim?.claimed) {
+          waitlistBonusScans = claim.bonusScans;
+          console.log(
+            `[Clerk Webhook] Waitlist Founding Member bonus applied for ${primaryEmail}: +${waitlistBonusScans} scans (${claim.referralsCount} referrals)`
+          );
+        }
+      } catch (waitlistErr) {
+        console.warn('[Clerk Webhook] Waitlist reward claim warning:', waitlistErr);
+      }
+    }
+
     // 1. Provision / update in Supabase 'profiles' table (id is Clerk userId)
     if (supabase) {
       try {
@@ -77,7 +94,7 @@ export async function POST(req: NextRequest) {
           profileData.plan = plan;
           profileData.idea_scans_used = 0;
           profileData.new_tools_scans_used = 0;
-          profileData.bonus_scans = 0;
+          profileData.bonus_scans = waitlistBonusScans;
         }
 
         const { error: profileErr } = await supabase
@@ -111,10 +128,15 @@ export async function POST(req: NextRequest) {
           plan,
           role,
           is_admin: isAuthorizedAdmin,
+          ...(waitlistBonusScans > 0 ? { bonus_scans: (existing.bonus_scans || 0) + waitlistBonusScans } : {}),
         });
       } else {
         const u = DevStore.createUser(primaryEmail, role);
-        DevStore.updateUser(u._id, { plan, is_admin: isAuthorizedAdmin });
+        DevStore.updateUser(u._id, {
+          plan,
+          is_admin: isAuthorizedAdmin,
+          bonus_scans: waitlistBonusScans,
+        });
       }
     } catch {
       // ignore
