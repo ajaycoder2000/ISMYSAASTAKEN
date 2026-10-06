@@ -208,6 +208,11 @@ async function sendViaResend({
     console.log(`[WAITLIST EMAIL - DEV SIMULATED MODE]`);
     console.log(`To: ${to}`);
     console.log(`Subject: ${subject}`);
+    const links = Array.from(html.matchAll(/href="([^"]+)"/g)).map((m) => m[1]);
+    if (links.length > 0) {
+      console.log('Action links:');
+      links.forEach((l) => console.log(`  -> ${l}`));
+    }
     console.log('Configure RESEND_API_KEY in production to dispatch live emails.');
     console.log('====================================================\n');
     return { ok: true, simulated: true };
