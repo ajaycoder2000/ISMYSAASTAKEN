@@ -66,6 +66,7 @@ const footerColumns: FooterColumn[] = [
     title: "Platform",
     links: [
       { label: "Pricing & Plans", href: "/pricing" },
+      { label: "Launch Waitlist", href: "/waitlist", badge: "NEW", badgeClass: "bg-amber-500/15 text-[var(--accent-amber)]" },
       { label: "Live Telemetry Feed", href: "/#recent-scans" },
       {
         label: "Product Roadmap",
