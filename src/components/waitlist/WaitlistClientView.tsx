@@ -282,16 +282,6 @@ export default function WaitlistClientView() {
               We&apos;ll email you about launch and product updates. Unsubscribe anytime.
             </p>
           </form>
-
-          {/* Live Scanner Alternative */}
-          <div className="pt-2">
-            <Link
-              href="/"
-              className="text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--accent-amber)] transition-colors font-[family-name:var(--font-inter)] inline-flex items-center gap-1"
-            >
-              Want to try it now? Run a free scan &rarr;
-            </Link>
-          </div>
         </div>
       ) : (
         /* AFTER JOINING (Same Page, No Navigation) */
@@ -350,16 +340,6 @@ export default function WaitlistClientView() {
                 </button>
               ))}
             </div>
-          </div>
-
-          {/* Live Scanner Link */}
-          <div className="pt-2">
-            <Link
-              href="/"
-              className="text-xs text-[var(--text-dim)] hover:text-[var(--accent-amber)] transition-colors font-[family-name:var(--font-inter)]"
-            >
-              Return to scanner homepage &rarr;
-            </Link>
           </div>
         </div>
       )}

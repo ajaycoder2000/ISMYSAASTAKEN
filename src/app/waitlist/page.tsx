@@ -3,23 +3,23 @@ import WaitlistClientView from '@/components/waitlist/WaitlistClientView';
 import { SITE_URL } from '@/lib/site';
 
 export const metadata: Metadata = {
-  title: 'Join the Pre-Launch Waitlist — Founding Member Access | ismysaastaken?',
+  title: 'Is My SaaS Taken? — Pre-Launch Waitlist & Founding Member Access',
   description:
-    'Join the ismysaastaken? launch waitlist. Check if your SaaS idea is taken, find competitors, and lock in Founding Member perks and bonus scans.',
+    'Join the pre-launch waitlist for Is My SaaS Taken?. Uncover live competitors, market saturation, and defensible product wedges. Lock in Founding Member perks and bonus scans.',
   alternates: {
-    canonical: '/waitlist',
+    canonical: '/',
   },
   openGraph: {
-    title: 'Join the Pre-Launch Waitlist — ismysaastaken?',
+    title: 'Is My SaaS Taken? — Pre-Launch Waitlist',
     description:
-      'Check if your SaaS idea is taken, uncover competitor intelligence, and lock in Founding Member perks before public launch.',
-    url: `${SITE_URL}/waitlist`,
+      'Join the pre-launch waitlist for Is My SaaS Taken?. Uncover live competitors, market saturation, and defensible product wedges before public launch.',
+    url: `${SITE_URL}/`,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Join the Pre-Launch Waitlist — ismysaastaken?',
+    title: 'Is My SaaS Taken? — Pre-Launch Waitlist',
     description:
-      'Check if your SaaS idea is taken, uncover competitor intelligence, and lock in Founding Member perks before public launch.',
+      'Join the pre-launch waitlist for Is My SaaS Taken?. Uncover live competitors, market saturation, and defensible product wedges before public launch.',
   },
 };
 

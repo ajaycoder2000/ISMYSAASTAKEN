@@ -14,7 +14,7 @@ export default function WaitlistConfirmedView() {
   const [friendsCount, setFriendsCount] = useState<number | null>(null);
   const [loadingProgress, setLoadingProgress] = useState(false);
 
-  const referralUrl = code ? `${SITE_URL}/waitlist?ref=${encodeURIComponent(code)}` : `${SITE_URL}/waitlist`;
+  const referralUrl = code ? `${SITE_URL}/?ref=${encodeURIComponent(code)}` : `${SITE_URL}/`;
 
   const shareText = `I just joined the waitlist for ismysaastaken?, it checks if your SaaS idea is already taken. Join me: ${referralUrl}`;
   const shareTwitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
@@ -211,16 +211,6 @@ export default function WaitlistConfirmedView() {
             </div>
           </div>
         ) : null}
-
-        {/* Live Scanner Alternative */}
-        <div className="pt-2">
-          <Link
-            href="/"
-            className="text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--accent-amber)] transition-colors font-[family-name:var(--font-inter)] inline-flex items-center gap-1.5"
-          >
-            Run a free SaaS idea scan while you wait &rarr;
-          </Link>
-        </div>
       </div>
     </div>
   );

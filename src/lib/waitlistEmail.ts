@@ -129,7 +129,7 @@ export async function sendWaitlistWelcomeEmail({
   referralCode: string;
   unsubscribeToken: string;
 }): Promise<{ ok: boolean; simulated?: boolean; error?: string }> {
-  const shareUrl = `${SITE_URL}/waitlist?ref=${referralCode}`;
+  const shareUrl = `${SITE_URL}/?ref=${referralCode}`;
   const unsubscribeUrl = `${SITE_URL}/api/waitlist/unsubscribe?token=${unsubscribeToken}`;
 
   const tierRowsHtml = REFERRAL_TIERS.map(
