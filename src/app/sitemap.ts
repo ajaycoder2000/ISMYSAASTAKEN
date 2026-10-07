@@ -6,19 +6,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = SITE_URL;
   const now = new Date();
 
-  // During pre-launch, expose ONLY the root URL to search crawlers
-  if (process.env.PRELAUNCH_MODE === 'true') {
-    return [
-      {
-        url: `${baseUrl}/`,
-        lastModified: now,
-        priority: 1.0,
-        changeFrequency: 'daily',
-      },
-    ];
-  }
-
-  // Normal post-launch pages (never lists /waitlist)
+  // Core pages
   const corePages: MetadataRoute.Sitemap = [
     { url: `${baseUrl}`, lastModified: now, priority: 1.0, changeFrequency: 'daily' },
     { url: `${baseUrl}/keywords`, lastModified: now, priority: 0.8, changeFrequency: 'weekly' },

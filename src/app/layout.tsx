@@ -7,7 +7,6 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FounderQuizLauncher from "@/components/quiz/FounderQuizLauncher";
-import PrelaunchPreviewPill from "@/components/PrelaunchPreviewPill";
 import { SITE_URL } from "@/lib/site";
 
 export const viewport: Viewport = {
@@ -152,7 +151,6 @@ export default function RootLayout({
             </main>
             <Footer />
             <FounderQuizLauncher />
-            <PrelaunchPreviewPill />
           </ClerkProvider>
         </ThemeProvider>
         {/* Lightweight Vercel Analytics */}
