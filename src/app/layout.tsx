@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "Is My SaaS Taken? — Instant Market Validation for SaaS Ideas",
   description:
-    "Describe your SaaS idea, get back real competitors, market saturation, and a specific gap you could build toward. No signup required for your first scan.",
+    "Describe your SaaS idea, get back real competitors, market saturation, and a specific gap you could build toward. 1 free scan on signup.",
   keywords: [
     'SaaS idea validation',
     'market saturation checker',
@@ -119,6 +119,8 @@ const jsonLd = {
   ],
 };
 
+const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-VN8XEW1LCG';
+
 export default function RootLayout({
   children,
 }: {
@@ -131,6 +133,21 @@ export default function RootLayout({
       className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <head>
+        {/* Google tag (gtag.js) */}
+        <script
+          async
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${GA_MEASUREMENT_ID}');
+            `,
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -153,6 +170,7 @@ export default function RootLayout({
             <FounderQuizLauncher />
           </ClerkProvider>
         </ThemeProvider>
+
         {/* Lightweight Vercel Analytics */}
         <Script
           src="https://va.vercel-scripts.com/v1/script.js"

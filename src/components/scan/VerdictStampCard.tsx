@@ -21,20 +21,31 @@ interface Props {
 
 export default function VerdictStampCard({ ideaText, saturation, competitorCount, summary, skip, onStamped }: Props) {
   const v = VERDICTS[saturation] ?? VERDICTS.medium;
-  const [stage, setStage] = useState<"pre" | "stamped" | "done">("pre");
+  const [stage, setStage] = useState<"pre" | "stamped" | "done">(() => (skip ? "done" : "pre"));
 
   useEffect(() => {
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (skip || reduceMotion) {
-      setStage("done");
+    if (skip) {
       onStamped?.();
       return;
     }
+    const reduceMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) {
+      const t = setTimeout(() => {
+        setStage("done");
+        onStamped?.();
+      }, 0);
+      return () => clearTimeout(t);
+    }
     const t1 = setTimeout(() => setStage("stamped"), 250);  // brief beat before the slam
-    const t2 = setTimeout(() => { setStage("done"); onStamped?.(); }, 250 + 450);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [skip]);
+    const t2 = setTimeout(() => {
+      setStage("done");
+      onStamped?.();
+    }, 250 + 450);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, [skip, onStamped]);
 
   const animate = !skip && stage !== "done";
 
