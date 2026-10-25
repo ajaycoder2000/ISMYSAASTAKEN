@@ -36,9 +36,9 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "Is My SaaS Taken? — Instant Market Validation for SaaS Ideas",
+  title: "Is My SaaS Taken? | Instant Market Validation for SaaS Ideas",
   description:
-    "Describe your SaaS idea, get back real competitors, market saturation, and a specific gap you could build toward. 1 free scan on signup.",
+    "Check real competitors and real gaps for your SaaS idea in seconds. No BS.",
   keywords: [
     'SaaS idea validation',
     'market saturation checker',
@@ -59,17 +59,26 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   openGraph: {
-    siteName: 'Is My SaaS Taken?',
-    title: "Is My SaaS Taken? — Instant Market Validation for SaaS Ideas",
-    description:
-      "Instant, honest market validation for SaaS founders. Real competitors. Real gaps. No BS.",
+    title: "Is My SaaS Taken? | Instant Market Validation for SaaS Ideas",
+    description: "Check real competitors and real gaps for your SaaS idea in seconds. No BS.",
+    url: "https://www.ismysaastaken.live/",
+    siteName: "Is My SaaS Taken?",
     type: "website",
+    images: [
+      {
+        url: "https://www.ismysaastaken.live/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Is My SaaS Taken? — Instant Market Validation for SaaS Ideas",
+        type: "image/png",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Is My SaaS Taken?",
-    description:
-      "Describe your SaaS idea, get back real competitors and a gap you could actually build toward.",
+    title: "Is My SaaS Taken? | Instant Market Validation for SaaS Ideas",
+    description: "Check real competitors and real gaps for your SaaS idea in seconds. No BS.",
+    images: ["https://www.ismysaastaken.live/og-image.png"],
   },
   icons: {
     icon: [
