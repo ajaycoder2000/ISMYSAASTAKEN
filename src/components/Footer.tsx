@@ -66,7 +66,13 @@ const footerColumns: FooterColumn[] = [
     title: "Platform",
     links: [
       { label: "Pricing & Plans", href: "/pricing" },
-      { label: "Live Telemetry Feed", href: "/#recent-scans" },
+      {
+        label: "Live Traffic Radar",
+        href: "/live",
+        badge: "LIVE",
+        badgeClass: "bg-emerald-500/15 text-emerald-400",
+      },
+      { label: "Recent Scans Feed", href: "/#recent-scans" },
       {
         label: "Product Roadmap",
         href: "/roadmap",

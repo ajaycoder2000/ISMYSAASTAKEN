@@ -22,6 +22,7 @@ import { IScanDocument } from '@/types';
 
 const ScanGlobe = dynamic(() => import('@/components/ScanGlobe'), { ssr: false });
 const LiveTerminalScan = dynamic(() => import('@/components/LiveTerminalScan'), { ssr: false });
+const LiveVisitorHUD = dynamic(() => import('@/components/live/LiveVisitorHUD'), { ssr: false });
 
 export default function HomePage() {
   const [result, setResult] = useState<IScanDocument | null>(null);
@@ -163,7 +164,12 @@ export default function HomePage() {
           <WeeklyGapSignup />
         </div>
 
-        {/* 7. Recent Scans Live Feed */}
+        {/* 7. Live Global Visitor Telemetry & Active Presence HUD */}
+        <div className="w-full pt-10 sm:pt-16 border-t border-[var(--border)]">
+          <LiveVisitorHUD />
+        </div>
+
+        {/* 8. Recent Scans Live Feed */}
         <div className="w-full pt-12 sm:pt-16 border-t border-[var(--border)]">
           <RecentScansSection />
         </div>
