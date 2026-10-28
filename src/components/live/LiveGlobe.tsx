@@ -41,7 +41,7 @@ export default function LiveGlobe({ markers = [], className = '' }: LiveGlobePro
     });
     io.observe(canvas);
 
-    // Initial globe setup with emerald-green land matrix & dark hacker aesthetic
+    // Initial globe setup matching the site's dark slate & warm amber theme
     const globe = createGlobe(canvas, {
       devicePixelRatio: Math.min(window.devicePixelRatio || 2, 2),
       width: width * 2,
@@ -49,12 +49,12 @@ export default function LiveGlobe({ markers = [], className = '' }: LiveGlobePro
       phi: 0,
       theta: 0.15,
       dark: 1,
-      diffuse: 1.4,
+      diffuse: 1.2,
       mapSamples: 14000,
-      mapBrightness: 7,
-      baseColor: [0.08, 0.45, 0.24], // emerald green terminal dots
-      markerColor: [0.98, 0.65, 0.14], // glowing amber/orange ping markers
-      glowColor: [0.04, 0.12, 0.07],
+      mapBrightness: 5.5,
+      baseColor: [0.24, 0.25, 0.28], // sleek slate dots matching website palette
+      markerColor: [0.96, 0.65, 0.14], // brand amber (#f5a623) ping markers
+      glowColor: [0.06, 0.07, 0.09], // blends with site surface background
       markers: [],
     });
 

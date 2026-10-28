@@ -9,7 +9,7 @@ const LiveGlobe = dynamic(() => import('./LiveGlobe'), {
   ssr: false,
   loading: () => (
     <div className="w-full aspect-square max-w-[340px] sm:max-w-[400px] mx-auto flex items-center justify-center">
-      <div className="w-48 h-48 rounded-full border border-[#10b981]/20 animate-pulse bg-[#10b981]/5" />
+      <div className="w-48 h-48 rounded-full border border-[var(--border)] animate-pulse bg-[var(--bg-surface-alt)]" />
     </div>
   ),
 });
@@ -49,10 +49,9 @@ function formatTimeAgo(timestamp: number, currentNow: number): string {
 
 interface LiveVisitorHUDProps {
   className?: string;
-  compact?: boolean;
 }
 
-export default function LiveVisitorHUD({ className = '', compact = false }: LiveVisitorHUDProps) {
+export default function LiveVisitorHUD({ className = '' }: LiveVisitorHUDProps) {
   const [stats, setStats] = useState<LiveStatsResponse>({
     activeNow: 39,
     countriesCount: 26,
@@ -118,42 +117,42 @@ export default function LiveVisitorHUD({ className = '', compact = false }: Live
 
   return (
     <section
-      className={`w-full bg-[#0a0d0a] border border-[#18261b] rounded-2xl p-4 sm:p-6 md:p-8 text-left relative overflow-hidden shadow-2xl font-[family-name:var(--font-jetbrains-mono)] ${className}`}
+      className={`w-full bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl p-4 sm:p-6 md:p-8 text-left relative overflow-hidden shadow-xl font-[family-name:var(--font-jetbrains-mono)] ${className}`}
     >
-      {/* Background radial atmosphere glows */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#10b981]/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#f59e0b]/5 rounded-full blur-3xl pointer-events-none" />
+      {/* Background ambient radial glows matching site palette */}
+      <div className="absolute top-0 right-1/4 w-80 h-80 bg-[var(--accent-amber)]/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-[var(--accent-emerald)]/5 rounded-full blur-3xl pointer-events-none" />
 
       {/* Top Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-5 border-b border-[#18261b] text-xs">
-        <div className="flex items-center flex-wrap gap-2 text-[#7ca887]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-5 border-b border-[var(--border)] text-xs">
+        <div className="flex items-center flex-wrap gap-2 text-[var(--text-secondary)]">
           {/* Pulsing Emerald Live Indicator */}
-          <span className="flex items-center gap-1.5 font-bold text-[#10b981] tracking-wider">
+          <span className="flex items-center gap-1.5 font-bold text-[var(--accent-emerald)] tracking-wider">
             <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10b981] opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#10b981]" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--accent-emerald)] opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[var(--accent-emerald)]" />
             </span>
             LIVE
           </span>
-          <span className="text-[#3b5240]">·</span>
-          <span className="text-[#96b89e] uppercase tracking-wider text-[11px] sm:text-xs">
+          <span className="text-[var(--border)]">·</span>
+          <span className="text-[var(--text-primary)] uppercase tracking-wider text-[11px] sm:text-xs font-semibold">
             WHO&apos;S ON THE SITE RIGHT NOW
           </span>
-          <span className="text-[#3b5240]">·</span>
-          <span className="text-[#64846c] hidden md:inline text-[11px]">
+          <span className="text-[var(--border)] hidden md:inline">·</span>
+          <span className="text-[var(--text-muted)] hidden md:inline text-[11px]">
             PUBLIC, BECAUSE WHY NOT
           </span>
-          <span className="text-[#3b5240] hidden md:inline">·</span>
+          <span className="text-[var(--border)] hidden md:inline">·</span>
           <Link
             href="/live"
-            className="text-[#10b981] hover:text-[#34d399] transition-colors underline-offset-4 hover:underline text-[11px] font-semibold flex items-center gap-1"
+            className="text-[var(--accent-amber)] hover:text-[var(--text-primary)] transition-colors underline-offset-4 hover:underline text-[11px] font-semibold flex items-center gap-1"
           >
             FULL DASHBOARD →
           </Link>
         </div>
 
         {/* Privacy Note */}
-        <div className="text-[11px] text-[#54735c] sm:text-right tracking-tight">
+        <div className="text-[11px] text-[var(--text-muted)] sm:text-right tracking-tight font-[family-name:var(--font-inter)]">
           country-level only, nobody is identifiable
         </div>
       </div>
@@ -163,7 +162,7 @@ export default function LiveVisitorHUD({ className = '', compact = false }: Live
         {/* Left Column: Interactive 3D Dotted Earth */}
         <div className="lg:col-span-5 flex flex-col items-center justify-center relative">
           <LiveGlobe markers={markers} />
-          <div className="text-[10px] text-[#4f6b56] mt-1 text-center tracking-wide">
+          <div className="text-[10.5px] text-[var(--text-muted)] mt-1.5 text-center tracking-wide font-mono">
             drag to rotate globe
           </div>
         </div>
@@ -172,37 +171,37 @@ export default function LiveVisitorHUD({ className = '', compact = false }: Live
         <div className="lg:col-span-7 flex flex-col justify-center">
           {/* Big Active Counter */}
           <div className="flex items-baseline flex-wrap gap-3 mb-1">
-            <span className="text-5xl sm:text-6xl font-extrabold text-[#f1f5f9] tracking-tight font-[family-name:var(--font-space-grotesk)]">
+            <span className="text-5xl sm:text-6xl font-extrabold text-[var(--text-primary)] tracking-tight font-[family-name:var(--font-space-grotesk)]">
               {stats.activeNow}
             </span>
-            <span className="text-base sm:text-lg text-[#8ba994] font-medium font-[family-name:var(--font-inter)]">
+            <span className="text-base sm:text-lg text-[var(--text-secondary)] font-medium font-[family-name:var(--font-inter)]">
               people on the site right now
             </span>
           </div>
 
           {/* Subtitle Telemetry */}
-          <div className="text-xs sm:text-sm text-[#5d7d66] mb-5 tracking-tight font-mono">
+          <div className="text-xs sm:text-sm text-[var(--text-muted)] mb-5 tracking-tight font-mono">
             from {stats.countriesCount} countries · {stats.totalVisits.toLocaleString()} visits since {stats.startDate}
           </div>
 
           {/* Real-Time Activity Feed */}
-          <div className="space-y-2.5 py-4 border-t border-b border-[#18261b]">
+          <div className="space-y-2.5 py-4 border-t border-b border-[var(--border)]">
             {stats.recentActivity.slice(0, 4).map((activity) => (
               <div
                 key={activity.id}
-                className="flex items-center justify-between text-xs sm:text-[13px] text-[#93b39c] font-mono hover:text-white transition-colors gap-2"
+                className="flex items-center justify-between text-xs sm:text-[13px] text-[var(--text-secondary)] font-mono hover:text-[var(--text-primary)] transition-colors gap-2"
               >
                 <div className="flex items-center gap-2 truncate">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#10b981] shrink-0" />
-                  <span className="font-bold text-[#86a88f] px-1.5 py-0.5 rounded bg-[#132016] border border-[#1c3022] text-[10px]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-emerald)] shrink-0" />
+                  <span className="font-bold text-[var(--accent-amber)] px-1.5 py-0.5 rounded bg-[var(--bg-surface-alt)] border border-[var(--border)] text-[10px]">
                     {activity.countryCode}
                   </span>
                   <span className="truncate">
-                    someone in <span className="text-[#e2e8f0] font-medium">{activity.countryName}</span> is reading{' '}
-                    <span className="text-[#10b981] font-semibold">{activity.path}</span>
+                    someone in <span className="text-[var(--text-primary)] font-medium">{activity.countryName}</span> is reading{' '}
+                    <span className="text-[var(--accent-amber)] font-semibold">{activity.path}</span>
                   </span>
                 </div>
-                <span className="text-[11px] text-[#52705b] shrink-0 font-mono">
+                <span className="text-[11px] text-[var(--text-muted)] shrink-0 font-mono">
                   {formatTimeAgo(activity.timestamp, currentNow)}
                 </span>
               </div>
@@ -211,7 +210,7 @@ export default function LiveVisitorHUD({ className = '', compact = false }: Live
 
           {/* 7-Day Visitors By Country */}
           <div className="mt-5">
-            <div className="text-[10px] uppercase tracking-widest text-[#5c7a65] mb-2.5 font-bold">
+            <div className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] mb-2.5 font-bold">
               VISITORS · 7D · BY COUNTRY
             </div>
 
@@ -219,17 +218,17 @@ export default function LiveVisitorHUD({ className = '', compact = false }: Live
               {stats.topCountries7D.slice(0, 5).map((country) => (
                 <div
                   key={country.code}
-                  className="px-2.5 py-1.5 rounded-lg bg-[#111812] border border-[#1b2b1f] text-xs font-mono flex items-center gap-1.5 text-[#a1c2aa] hover:border-[#2e4734] transition-colors"
+                  className="px-2.5 py-1.5 rounded-lg bg-[var(--bg-surface-alt)] border border-[var(--border)] text-xs font-mono flex items-center gap-1.5 text-[var(--text-primary)] hover:border-[var(--accent-amber)]/40 transition-colors"
                 >
-                  <span className="font-bold text-[#82a38a]">{country.code}</span>
-                  <span className="text-[#e2e8f0] font-semibold">{country.code}</span>
-                  <span className="text-[#597862] text-[11px]">{country.count.toLocaleString()}</span>
+                  <span className="font-bold text-[var(--accent-amber)]">{country.code}</span>
+                  <span className="text-[var(--text-primary)] font-semibold">{country.code}</span>
+                  <span className="text-[var(--text-muted)] text-[11px]">{country.count.toLocaleString()}</span>
                 </div>
               ))}
 
               <Link
                 href="/live"
-                className="px-2.5 py-1.5 rounded-lg bg-[#0e140f] border border-[#17241a] text-xs font-mono text-[#6c8f76] hover:text-[#10b981] hover:border-[#10b981]/40 transition-colors"
+                className="px-2.5 py-1.5 rounded-lg bg-[var(--bg-surface-alt)]/60 border border-[var(--border)] text-xs font-mono text-[var(--text-secondary)] hover:text-[var(--accent-amber)] hover:border-[var(--accent-amber)]/40 transition-colors"
               >
                 + 95 more
               </Link>
