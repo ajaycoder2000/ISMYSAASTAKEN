@@ -11,6 +11,7 @@ import CommunityPoll from './CommunityPoll';
 import RoastCard from './RoastCard';
 import EmbeddableBadgeCard from './EmbeddableBadgeCard';
 import RevealItem from './scan/RevealItem';
+import DownloadReportButton from './reports/DownloadReportButton';
 
 interface ScanResultProps {
   data: IScanDocument;
@@ -31,7 +32,7 @@ export default function ScanResult({ data, skip = true }: ScanResultProps) {
     <div className="w-full mx-auto space-y-6 sm:space-y-8 text-left">
       {/* Top Header Actions */}
       <RevealItem index={0} skip={skip}>
-        <div className="flex items-center justify-between pb-2 border-b border-[var(--border)]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[var(--border)]">
           <div>
             <span className="text-[10px] font-[family-name:var(--font-mono)] uppercase tracking-[0.2em] text-[var(--accent-amber)] font-bold">
               VALIDATION REPORT
@@ -40,7 +41,19 @@ export default function ScanResult({ data, skip = true }: ScanResultProps) {
               Market Intelligence Verdict
             </h2>
           </div>
-          <BookmarkButton scanId={data._id} />
+          <div className="flex items-center gap-2">
+            <DownloadReportButton
+              ideaText={data.ideaText}
+              saturationScore={data.saturationScore}
+              saturationReasoning={data.saturationReasoning}
+              competitors={data.competitors}
+              gapAnalysis={data.gapAnalysis}
+              shareSlug={data.shareSlug}
+              createdAt={data.createdAt}
+              variant="compact"
+            />
+            <BookmarkButton scanId={data._id} />
+          </div>
         </div>
       </RevealItem>
 
@@ -147,9 +160,12 @@ export default function ScanResult({ data, skip = true }: ScanResultProps) {
             <ShareVerdictCard
               ideaText={data.ideaText}
               saturationScore={data.saturationScore}
+              saturationReasoning={data.saturationReasoning}
               competitorsCount={data.competitors.length}
+              competitors={data.competitors}
               gapAnalysis={data.gapAnalysis}
               shareSlug={data.shareSlug}
+              createdAt={data.createdAt}
             />
           </section>
         </div>

@@ -4,6 +4,8 @@ import { useState, useRef } from 'react';
 import Image from 'next/image';
 import SignalBars from './SignalBars';
 import { SITE_URL } from '@/lib/site';
+import { ICompetitor } from '@/types';
+import DownloadReportButton from '@/components/reports/DownloadReportButton';
 
 interface ShareVerdictCardProps {
   ideaText: string;
@@ -11,6 +13,9 @@ interface ShareVerdictCardProps {
   competitorsCount: number;
   gapAnalysis: string;
   shareSlug: string;
+  competitors?: ICompetitor[];
+  saturationReasoning?: string;
+  createdAt?: Date | string;
 }
 
 export default function ShareVerdictCard({
@@ -19,6 +24,9 @@ export default function ShareVerdictCard({
   competitorsCount,
   gapAnalysis,
   shareSlug,
+  competitors = [],
+  saturationReasoning,
+  createdAt,
 }: ShareVerdictCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
@@ -157,6 +165,17 @@ export default function ShareVerdictCard({
 
       {/* Action Toolbar */}
       <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+        <DownloadReportButton
+          ideaText={ideaText}
+          saturationScore={saturationScore}
+          saturationReasoning={saturationReasoning}
+          competitors={competitors}
+          gapAnalysis={gapAnalysis}
+          shareSlug={shareSlug}
+          createdAt={createdAt}
+          variant="primary"
+        />
+
         <button
           onClick={handleDownloadPng}
           disabled={downloading}
