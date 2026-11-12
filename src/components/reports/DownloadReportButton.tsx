@@ -73,25 +73,31 @@ export default function DownloadReportButton({
     }
   };
 
-  const buttonStyle =
-    variant === 'primary'
-      ? 'px-4 py-2 bg-[var(--accent-amber)] hover:opacity-90 text-black font-bold text-xs sm:text-sm rounded-xl transition-all font-[family-name:var(--font-space-grotesk)] shadow-md flex items-center justify-center gap-2'
-      : variant === 'compact'
-      ? 'px-3 py-1.5 bg-[var(--bg-surface-alt)] hover:bg-[var(--border)] border border-[var(--border)] text-[var(--text-primary)] text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5'
-      : 'px-4 py-2 bg-[var(--bg-surface-alt)] hover:bg-[var(--border)] border border-[var(--border)] text-[var(--text-primary)] text-xs sm:text-sm font-semibold rounded-xl transition-all flex items-center justify-center gap-2';
+  const baseStyle =
+    'group relative inline-flex items-center justify-center gap-2 rounded-full ' +
+    'bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-amber-500/15 ' +
+    'hover:from-amber-500/25 hover:via-orange-500/20 hover:to-amber-500/25 ' +
+    'border border-amber-500/35 hover:border-amber-400/60 ' +
+    'shadow-[0_0_15px_rgba(245,166,35,0.12)] hover:shadow-[0_0_24px_rgba(245,166,35,0.25)] ' +
+    'backdrop-blur-sm transition-all duration-200 active:scale-[0.98] select-none';
+
+  const sizeStyle =
+    variant === 'compact'
+      ? 'px-3 py-1.5 sm:px-3.5 sm:py-1.5 text-xs'
+      : 'px-4 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm';
 
   return (
     <>
       <button
         onClick={handleDownloadPdf}
         disabled={loading}
-        className={`${buttonStyle} ${className} cursor-pointer disabled:opacity-60 disabled:cursor-wait`}
+        className={`${baseStyle} ${sizeStyle} ${className} cursor-pointer disabled:opacity-60 disabled:cursor-wait`}
         title="Download high-resolution Executive PDF report"
       >
         {loading ? (
           <>
             <svg
-              className="animate-spin h-3.5 w-3.5 text-current"
+              className="animate-spin h-3.5 w-3.5 text-amber-400"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -110,12 +116,21 @@ export default function DownloadReportButton({
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               />
             </svg>
-            <span>Compiling PDF...</span>
+            <span className="font-semibold font-[family-name:var(--font-space-grotesk)] text-amber-200">
+              Compiling PDF...
+            </span>
           </>
         ) : (
           <>
-            <span>📄</span>
-            <span>Download Report (PDF)</span>
+            <span className="text-amber-300 text-xs sm:text-sm group-hover:scale-110 transition-transform">
+              ✨
+            </span>
+            <span className="font-semibold font-[family-name:var(--font-space-grotesk)] text-amber-100 group-hover:text-white tracking-tight">
+              Download Report
+            </span>
+            <span className="px-1.5 py-0.5 rounded-full bg-[#18140c]/90 border border-amber-500/35 text-[10px] font-mono font-bold text-amber-300 group-hover:border-amber-400/60 transition-colors">
+              PDF · A4
+            </span>
           </>
         )}
       </button>
